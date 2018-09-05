@@ -8,6 +8,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7ac62e44e5b84ef28478c50fbf54e03, type: 3}
-  m_Name: AI_Base
+  m_Script: {fileID: 11500000, guid: 602c4ce3efbf6064ba4e9b0460c8ba00, type: 3}
+  m_Name: AI_2
   m_EditorClassIdentifier: 
