@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Data Object describing the nLanes and nodes plus the placement of units on them. (Deliverd by tick event)">
+    <Position X="0.754" Y="0.645" Height="0.998" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Data Object wrapper that relays the information about an response by an AI">
+    <Position X="2.811" Y="0.626" Height="0.915" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Handles creation and caching of IResponse data objects and transmission to the Tournament Manager.">
+    <Position X="4.719" Y="0.635" Height="0.958" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Basic components and definitions of functionality for the AI sub systems. Inherit from for Ai creation that just works.">
+    <Position X="6.615" Y="0.656" Height="0.927" Width="1.7" />
+  </Comment>
+  <Comment CommentText="An AI">
+    <Position X="7.635" Y="6.354" Height="0.291" Width="0.7" />
+  </Comment>
+  <Comment CommentText="The manager that handles the passing of data to and from AI inculding the IBoardState objects.">
+    <Position X="8.458" Y="0.646" Height="0.75" Width="1.7" />
+  </Comment>
+  <Class Name="ActionResponse" BaseTypeListCollapsed="true">
+    <Position X="2.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAABQAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\AIFramework\ActionResponse.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LanesNodes" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\AIFramework\LanesNodes.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TournamentManager">
+    <Position X="8.5" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQFAAAAACAAAAAAAAAIAQAAAACACAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\Scripts\AIFramework\TournamentManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResponseEvent">
+    <Position X="2.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Events\ResponseEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TickEvent">
+    <Position X="0.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Events\TickEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BasicAI">
+    <Position X="6.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Examples\BasicAI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AI.LogicBase">
+    <Position X="6.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAABCAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\BaseClasses\LogicBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AIResponseManager">
+    <Position X="4.75" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAABADAAAQAAAAAAgAAAAgAgA=</HashCode>
+      <FileName>Assets\Scripts\AIFramework\AIResponseManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="IBoardState">
+    <Position X="0.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Interfaces\IData.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="IResponse">
+    <Position X="2.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Interfaces\IResponse.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Spawnable">
+    <Position X="0.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums\Spawnable.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

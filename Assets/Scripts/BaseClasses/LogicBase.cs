@@ -4,11 +4,11 @@ namespace AI
 {
     public abstract class LogicBase : ScriptableObject
     {
-        private AIResponseManagemer _AIResponder;
+        private AIResponseManager _AIResponder;
 
         public abstract void OnTick(IBoardState data);
 
-        protected AIResponseManagemer AIResponse
+        protected AIResponseManager AIResponse
         {
             get
             {
@@ -18,7 +18,7 @@ namespace AI
 
         public void init()
         {
-            _AIResponder = new AIResponseManagemer();
+            _AIResponder = new AIResponseManager();
             TournamentManager._instance.OnTick.AddListener(_AIResponder.onTick);
         }
     }
