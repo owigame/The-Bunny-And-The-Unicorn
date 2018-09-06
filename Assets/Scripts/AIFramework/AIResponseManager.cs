@@ -32,8 +32,8 @@ public class AIResponseManager {
 	}
 	private int cost;
 
-	public bool Spawn (Spawnable spawnable, int lane) {
-		IResponse response = new ActionResponse (spawnable, lane);
+	public bool Spawn (Spawnable spawnable, int lane, AI.LogicBase logicBase) {
+		IResponse response = new ActionResponse (spawnable, lane, logicBase);
 		/* fail the Spawn */
 		if (cost <= 0) {
 			return false;

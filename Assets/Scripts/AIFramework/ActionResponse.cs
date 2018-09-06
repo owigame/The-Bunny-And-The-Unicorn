@@ -2,11 +2,13 @@
 {
     private int _lane;
     private Spawnable _spawnable;
+    private AI.LogicBase _logicBase;
 
-    public ActionResponse(Spawnable Spawnable,int Lane)
+    public ActionResponse(Spawnable Spawnable,int Lane, AI.LogicBase LogicBase)
     {
         _lane = Lane;
         _spawnable = Spawnable;
+        _logicBase = LogicBase;
     }
 
     Spawnable IResponse.spawnable
@@ -30,6 +32,18 @@
         set
         {
             _lane = value;
+        }
+    }
+
+    AI.LogicBase IResponse.player
+    {
+        get
+        {
+            return _logicBase;
+        }
+        set
+        {
+            _logicBase = value;
         }
     }
 }

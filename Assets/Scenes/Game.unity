@@ -557,6 +557,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 370656673}
+  - component: {fileID: 370656674}
   m_Layer: 0
   m_Name: Lane
   m_TagString: Untagged
@@ -579,6 +580,19 @@ Transform:
   m_Father: {fileID: 1369396298}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &370656674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 370656672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8feb6649acb499a469abee6211d4ee77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartNode: {fileID: 935903485}
+  EndNode: {fileID: 2069155397}
 --- !u!1 &419886286
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,6 +1670,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   P1: {fileID: 11400000, guid: bc49361edfd831542a50877a241f7f0d, type: 2}
   P2: {fileID: 11400000, guid: 37c21c484cd1f134d906a2947803d926, type: 2}
+  lanes: []
   unicornPrefab: {fileID: 465001108}
   bunnyPrefab: {fileID: 1969109267}
 --- !u!1001 &1713338964

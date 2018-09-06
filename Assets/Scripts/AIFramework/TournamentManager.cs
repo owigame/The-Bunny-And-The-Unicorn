@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class TournamentManager : MonoBehaviour {
     public TickEvent OnTick;
@@ -6,6 +7,9 @@ public class TournamentManager : MonoBehaviour {
 
     [Header ("Player Setup")]
     public AI.LogicBase P1, P2;
+
+    [Header ("Lanes")]
+    public List<LanesNodes> lanes = new List<LanesNodes>();
 
     [Header ("Prefabs")]
     public GameObject unicornPrefab;
@@ -40,7 +44,7 @@ public class TournamentManager : MonoBehaviour {
     private void Update () {
         if (playersReady == 2) { //Max ready players 2
             playersReady = 0;
-            
+
             IBoardState data = new LanesNodes ();
             OnTick.Invoke (data);
         }
@@ -50,6 +54,19 @@ public class TournamentManager : MonoBehaviour {
         playersReady++;
         foreach (var item in ResponseChain) {
             Debug.Log (item.spawnable + " spawned in lane " + item.Lane);
+
+            GameObject _spawnable = null;
+            if (item.spawnable == Spawnable.Bunny) {
+                _spawnable = Instantiate (bunnyPrefab);
+            } else if (item.spawnable == Spawnable.Unicorn) {
+                _spawnable = Instantiate (unicornPrefab);
+            }
+
+            if (item.player == P1) { //Player 1
+
+            } else if (item.player == P2){ //Player 2
+
+            }
         }
     }
 }
