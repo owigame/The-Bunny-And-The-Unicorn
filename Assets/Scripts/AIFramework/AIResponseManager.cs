@@ -12,13 +12,16 @@ public class AIResponseManager {
     }
 	
     // Event that communicates the AI response to the manager.
-	public ResponseEvent Response;
+	private ResponseEvent Response;
 
     // Local chain of responses before sending them off.
-	public List<IResponse> ResponseChain;
+	private List<IResponse> ResponseChain;
 
     // The cost increase module. 
-	public void onTick(IBoardState data)
+    //The code really should be compiled into a dll so this doesn't appear in the drop-down list [attribte hides it]
+    // Possible OOP rejuggling required
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public void onTick(IBoardState data)
 	{
 		cost++;
 	}
@@ -32,7 +35,7 @@ public class AIResponseManager {
 	private int cost;
 
     
-    public bool spawn(Spawnable spawnable,int lane)
+    public bool Spawn(Spawnable spawnable,int lane)
 	{
 		IResponse response = new ActionResponse(spawnable,lane);
 		/* fail the Spawn */
@@ -45,7 +48,7 @@ public class AIResponseManager {
 		}
 	}
 
-	public bool finalizeResponse()
+	public bool FinalizeResponse()
 	{
 		/* fail the finalize */
 		//if(false)

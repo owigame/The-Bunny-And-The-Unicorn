@@ -6,12 +6,12 @@ public class BasicAI : LogicBase
 {
     public override void OnTick(IBoardState data)
     {
-		if (!AIResponse.spawn(Spawnable.Unicorn,1))
+        if (!AIResponse.Spawn(Spawnable.Unicorn,1))
         {
 
         }
         //IResponse[] responses = AIResponse.QueryResponse();
-        AIResponse.finalizeResponse();
+        AIResponse.FinalizeResponse();
     }
 
 }

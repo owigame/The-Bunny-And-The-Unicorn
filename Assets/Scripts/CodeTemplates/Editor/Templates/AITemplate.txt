@@ -13,5 +13,4 @@ public class ##NAME## : LogicBase
         //IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.finalizeResponse();
     }
-
 }
