@@ -4,13 +4,14 @@ public class TournamentManager : MonoBehaviour {
     public TickEvent OnTick;
     public static TournamentManager _instance;
 
-    [Header("Player Setup")]
+    [Header ("Player Setup")]
     public AI.LogicBase P1, P2;
 
-    [Header("Prefabs")]
+    [Header ("Prefabs")]
     public GameObject unicornPrefab;
     public GameObject bunnyPrefab;
 
+    int playersReady = 0;
 
     //Singleton management
     private void Awake () {
@@ -31,13 +32,24 @@ public class TournamentManager : MonoBehaviour {
         OnTick.AddListener (P2.OnTick);
         P1.init ();
         P2.init ();
-    }
 
-    private void Update () {
         IBoardState data = new LanesNodes ();
         OnTick.Invoke (data);
     }
-    public void OnResponse (IResponse[] ResponseChain) {
 
+    private void Update () {
+        if (playersReady == 2) { //Max ready players 2
+            playersReady = 0;
+            
+            IBoardState data = new LanesNodes ();
+            OnTick.Invoke (data);
+        }
+    }
+    public void OnResponse (IResponse[] ResponseChain) {
+        Debug.Log ("--- OnResponse");
+        playersReady++;
+        foreach (var item in ResponseChain) {
+            Debug.Log (item.spawnable + " spawned in lane " + item.Lane);
+        }
     }
 }

@@ -5,25 +5,26 @@ using UnityEngine;
 
 public class UIHumanInput : MonoBehaviour {
 
-	public Human humanLogicBase;
+	public Transform[] flipForP2;
+
+	Human humanLogicBase;
 	RectTransform _child;
 
-	void Start () {
+	void Awake () {
 		_child = transform.GetChild (0).GetComponent<RectTransform> ();
 	}
 
 	public void Init (bool player1) {
 		if (!player1) {
-			_child.pivot = new Vector2 (1, 0);
-			_child.anchorMin = new Vector2 (1, 0);
-			_child.anchorMax = new Vector2 (1, 0);
-			_child.anchoredPosition = new Vector2 (-30f, 30);
 			_child.localScale = new Vector3 (-1, 1, 1);
+			foreach (var item in flipForP2) {
+				item.localScale = new Vector3 (-1, 1, 1);
+			}
 		}
 	}
 
 	public void OnSpawnClick (int _spawnable) {
-		humanLogicBase.Spawn ((Spawnable)_spawnable);
+		humanLogicBase.Spawn ((Spawnable) _spawnable);
 	}
 
 	public void OnSelectLane (int _laneNumber) {
@@ -31,6 +32,14 @@ public class UIHumanInput : MonoBehaviour {
 	}
 
 	public void OnSkipTurnClick () {
-		humanLogicBase.SkipTurn ();
+		humanLogicBase.SkipTurn (true);
+	}
+
+	public void OnBackClick () {
+		humanLogicBase.SkipTurn (false);
+	}
+
+	public void SetLogicBase (Human humanLogicBase) {
+		this.humanLogicBase = humanLogicBase;
 	}
 }

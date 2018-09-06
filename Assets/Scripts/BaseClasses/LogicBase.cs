@@ -18,6 +18,10 @@ namespace AI
 
         public void init()
         {
+            if (this is Human){
+                (this as Human).Start();
+            }
+            
             _AIResponder = new AIResponseManager();
             TournamentManager._instance.OnTick.AddListener(_AIResponder.onTick);
         }

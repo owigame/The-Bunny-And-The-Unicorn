@@ -803,6 +803,11 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3788f3ad37b572c448b94d4be985545d, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &465001108 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1812885407933568, guid: 3788f3ad37b572c448b94d4be985545d,
+    type: 2}
+  m_PrefabInternal: {fileID: 465001107}
 --- !u!1001 &478001152
 Prefab:
   m_ObjectHideFlags: 0
@@ -1649,10 +1654,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c45f21dfdfeca3469e6520f200bc481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  P1: {fileID: 11400000, guid: a02b76df65320c643aeba8cd127a109f, type: 2}
-  P2: {fileID: 11400000, guid: 6f0387af4d1508e4f8b3afd257c0dcff, type: 2}
-  unicornPrefab: {fileID: 0}
-  bunnyPrefab: {fileID: 0}
+  P1: {fileID: 11400000, guid: bc49361edfd831542a50877a241f7f0d, type: 2}
+  P2: {fileID: 11400000, guid: 37c21c484cd1f134d906a2947803d926, type: 2}
+  unicornPrefab: {fileID: 465001108}
+  bunnyPrefab: {fileID: 1969109267}
 --- !u!1001 &1713338964
 Prefab:
   m_ObjectHideFlags: 0
@@ -1924,6 +1929,11 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09600b3f16ce6d746a71bd7cdf9389e0, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &1969109267 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1954499941595712, guid: 09600b3f16ce6d746a71bd7cdf9389e0,
+    type: 2}
+  m_PrefabInternal: {fileID: 1969109266}
 --- !u!1 &2045461658
 GameObject:
   m_ObjectHideFlags: 0
