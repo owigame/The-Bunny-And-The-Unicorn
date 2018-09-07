@@ -47,7 +47,7 @@ public class Human : LogicBase {
     }
 
     public void SelectLane (int _laneNumber) {
-        if (!AIResponse.Spawn (Spawnable.Unicorn, _laneNumber, this)) {
+        if (!AIResponse.Spawn (lastSpawnable, _laneNumber, this)) {
             Debug.Log ("Could not spawn " + lastSpawnable + " in lane " + _laneNumber);
             SkipTurn (false);
         } else {

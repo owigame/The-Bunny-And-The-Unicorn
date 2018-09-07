@@ -35,7 +35,7 @@ public class AIResponseManager {
 	public bool Spawn (Spawnable spawnable, int lane, AI.LogicBase logicBase) {
 		IResponse response = new ActionResponse (spawnable, lane, logicBase);
 		/* fail the Spawn */
-		if (cost <= 0) {
+		if (cost <= 0 || lane > TournamentManager._instance.lanes.Count) {
 			return false;
 		} else {
 			cost --;

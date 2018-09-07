@@ -9,7 +9,7 @@ public class TournamentManager : MonoBehaviour {
     public AI.LogicBase P1, P2;
 
     [Header ("Lanes")]
-    public List<LanesNodes> lanes = new List<LanesNodes>();
+    public List<LanesNodes> lanes = new List<LanesNodes> ();
 
     [Header ("Prefabs")]
     public GameObject unicornPrefab;
@@ -34,6 +34,10 @@ public class TournamentManager : MonoBehaviour {
         OnTick = new TickEvent ();
         OnTick.AddListener (P1.OnTick);
         OnTick.AddListener (P2.OnTick);
+        foreach (LanesNodes lane in lanes) {
+            OnTick.AddListener (lane.onTick);
+        }
+
         P1.init ();
         P2.init ();
 
@@ -53,7 +57,7 @@ public class TournamentManager : MonoBehaviour {
         Debug.Log ("--- OnResponse");
         playersReady++;
         foreach (var item in ResponseChain) {
-            Debug.Log (item.spawnable + " spawned in lane " + item.Lane);
+            Debug.Log ("Player" + ((item.player == P1) ? " 1 " : " 2 ") + "spawned " + item.spawnable + " in lane " + item.Lane);
 
             GameObject _spawnable = null;
             if (item.spawnable == Spawnable.Bunny) {
@@ -61,12 +65,11 @@ public class TournamentManager : MonoBehaviour {
             } else if (item.spawnable == Spawnable.Unicorn) {
                 _spawnable = Instantiate (unicornPrefab);
             }
+            CreatureBase _creature = _spawnable.AddComponent<CreatureBase> ();
+            _creature.Init (item.player);
 
-            if (item.player == P1) { //Player 1
+            lanes[item.Lane - 1]?.AssignToLane (_creature, item.player == P1 ? true : false);
 
-            } else if (item.player == P2){ //Player 2
-
-            }
         }
     }
 }
