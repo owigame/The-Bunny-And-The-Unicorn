@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TournamentManager : MonoBehaviour {
@@ -11,11 +12,24 @@ public class TournamentManager : MonoBehaviour {
     [Header ("Lanes")]
     public List<LanesNodes> lanes = new List<LanesNodes> ();
 
+    [Header ("Game Settings")]
+    public int offTickInterval = 1;
+    public int onTickInterval = 2;
+    public int bunnyRange = 1;
+    public int unicornRange = 3;
+
+    [Header ("Timing")]
+    public float moveWait = 1;
+    public float attackWait = 1;
+    public float dieWait = 1;
+    public float laneReadyWait = 1;
+
     [Header ("Prefabs")]
     public GameObject unicornPrefab;
     public GameObject bunnyPrefab;
 
     int playersReady = 0;
+    int lanesReady = 0;
 
     //Singleton management
     private void Awake () {
@@ -32,10 +46,14 @@ public class TournamentManager : MonoBehaviour {
     // Setup the two Ai players 
     private void Start () {
         OnTick = new TickEvent ();
+
+        //Set Player listeners
         OnTick.AddListener (P1.OnTick);
         OnTick.AddListener (P2.OnTick);
+
+        //Set Lane listeners
         foreach (LanesNodes lane in lanes) {
-            OnTick.AddListener (lane.onTick);
+            lane.OnLaneReady.AddListener (LaneReady);
         }
 
         P1.init ();
@@ -43,19 +61,55 @@ public class TournamentManager : MonoBehaviour {
 
         IBoardState data = new LanesNodes ();
         OnTick.Invoke (data);
+
+        StartCoroutine (TickTockUpdate ());
     }
 
-    private void Update () {
-        if (playersReady == 2) { //Max ready players 2
-            playersReady = 0;
+    void LaneReady () {
+        lanesReady++;
+    }
 
-            IBoardState data = new LanesNodes ();
-            OnTick.Invoke (data);
+    IEnumerator TickTockUpdate () {
+        while (true) {
+
+            if (playersReady == 2) { //Max ready players 2
+                playersReady = 0;
+
+                yield return new WaitForSeconds (offTickInterval);
+
+                int lastLanesReady = -1;
+
+                //Wait for lanes to execute move, attack per lane
+                while (lanesReady < lanes.Count) {
+                    if (lastLanesReady != lanesReady) {
+                        lastLanesReady = lanesReady;
+
+                        if (lanes[lanesReady].creatures.Count > 0){
+                            lanes[lanesReady].OffTick ();
+                        } else {
+                            LaneReady();
+                        }
+                    }
+
+                    yield return null;
+                }
+
+                lanesReady = 0;
+                yield return new WaitForSeconds (onTickInterval);
+
+                IBoardState ondata = new LanesNodes ();
+                OnTick.Invoke (ondata);
+            } else {
+                yield return null;
+            }
+
         }
     }
+
     public void OnResponse (IResponse[] ResponseChain) {
         Debug.Log ("--- OnResponse");
         playersReady++;
+
         foreach (var item in ResponseChain) {
             Debug.Log ("Player" + ((item.player == P1) ? " 1 " : " 2 ") + "spawned " + item.spawnable + " in lane " + item.Lane);
 
@@ -66,7 +120,8 @@ public class TournamentManager : MonoBehaviour {
                 _spawnable = Instantiate (unicornPrefab);
             }
             CreatureBase _creature = _spawnable.AddComponent<CreatureBase> ();
-            _creature.Init (item.player);
+            OnTick.AddListener (_creature.onTick);
+            _creature.Init (item.player, TournamentManager._instance.lanes[item.Lane - 1], item.spawnable);
 
             lanes[item.Lane - 1]?.AssignToLane (_creature, item.player == P1 ? true : false);
 

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - SpawnNode
   - KillNode
+  - Creature
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - 
   - PostProcessing
   - Spawn
-  - 
+  - Creature
   - 
   - 
   - 
