@@ -8,7 +8,7 @@ public class UILane : MonoBehaviour {
 
 	void Start () {
 		if (laneNumber != null)
-			laneNumber.text = GetComponent<LanesNodes>().LaneNumber.ToString ();
+			laneNumber.text = GetComponent<LaneManager>().LaneNumber.ToString ();
 	}
 
 	void Update () {

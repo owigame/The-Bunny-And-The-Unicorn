@@ -63,7 +63,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1060731291561100
 GameObject:
   m_ObjectHideFlags: 1
@@ -254,7 +254,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1372053825943264
 GameObject:
   m_ObjectHideFlags: 1
@@ -289,7 +289,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1510466441691690
 GameObject:
   m_ObjectHideFlags: 1
@@ -424,7 +424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1830144840351378
 GameObject:
   m_ObjectHideFlags: 1
@@ -495,7 +495,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1895245852346720
 GameObject:
   m_ObjectHideFlags: 1
@@ -1704,6 +1704,12 @@ MonoBehaviour:
   - {fileID: 224225266402352616}
   - {fileID: 224401817298469556}
   - {fileID: 224518170542515594}
+  laneNumbers:
+  - {fileID: 1029949160388588}
+  - {fileID: 1471016570258614}
+  - {fileID: 1370796992377288}
+  - {fileID: 1866518657861844}
+  - {fileID: 1771974267891536}
 --- !u!114 &114822911141781672
 MonoBehaviour:
   m_ObjectHideFlags: 1

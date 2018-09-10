@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4374521986298552}
   - component: {fileID: 65766463011117420}
+  - component: {fileID: 114959698584247032}
   m_Layer: 0
   m_Name: Node (1)
   m_TagString: Untagged
@@ -84,6 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4803699133045484}
   - component: {fileID: 65954626000304840}
+  - component: {fileID: 114201687848562668}
   m_Layer: 0
   m_Name: Node (5)
   m_TagString: Untagged
@@ -100,6 +102,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4567385197998494}
   - component: {fileID: 65375593610286696}
+  - component: {fileID: 114683416792080412}
   m_Layer: 0
   m_Name: EndNode
   m_TagString: SpawnNode
@@ -116,6 +119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4019720363041734}
   - component: {fileID: 65078839077589326}
+  - component: {fileID: 114634226586144856}
   m_Layer: 0
   m_Name: Node
   m_TagString: Untagged
@@ -132,6 +136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4715485957336588}
   - component: {fileID: 65479563136172050}
+  - component: {fileID: 114014814675861814}
   m_Layer: 0
   m_Name: StartNode
   m_TagString: KillNode
@@ -148,6 +153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4915717330536420}
   - component: {fileID: 65834005641327484}
+  - component: {fileID: 114190964197307356}
   m_Layer: 0
   m_Name: Node (4)
   m_TagString: Untagged
@@ -164,6 +170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4094822877540688}
   - component: {fileID: 65553275726914216}
+  - component: {fileID: 114643571099449490}
   m_Layer: 0
   m_Name: Node (6)
   m_TagString: Untagged
@@ -180,6 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4762766748724556}
   - component: {fileID: 65167452069113870}
+  - component: {fileID: 114385921657615086}
   m_Layer: 0
   m_Name: Node (3)
   m_TagString: Untagged
@@ -213,6 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4173427135952350}
   - component: {fileID: 65567732952746478}
+  - component: {fileID: 114756655954580288}
   m_Layer: 0
   m_Name: Node (7)
   m_TagString: Untagged
@@ -262,6 +271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4963610551527080}
   - component: {fileID: 65586720224590166}
+  - component: {fileID: 114405349147477248}
   m_Layer: 0
   m_Name: Node (2)
   m_TagString: Untagged
@@ -371,9 +381,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4567385197998494}
-  - {fileID: 4923446598392628}
   - {fileID: 4715485957336588}
+  - {fileID: 4923446598392628}
+  - {fileID: 4567385197998494}
   m_Father: {fileID: 4287805184390810}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -447,7 +457,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4256523057292100}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4715485957336588
 Transform:
@@ -460,7 +470,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4256523057292100}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!4 &4726616032501794
 Transform:
@@ -979,6 +989,71 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &114014814675861814
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1463926134632928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
+--- !u!114 &114190964197307356
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1483070361175868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
+--- !u!114 &114201687848562668
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1391993028941204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
+--- !u!114 &114385921657615086
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1547916532920306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
+--- !u!114 &114405349147477248
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1875731065049270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
 --- !u!114 &114407202502902394
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1002,6 +1077,58 @@ MonoBehaviour:
   - {fileID: 4094822877540688}
   - {fileID: 4173427135952350}
   creatures: []
+--- !u!114 &114634226586144856
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1440516504398052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
+--- !u!114 &114643571099449490
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1516001323371598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
+--- !u!114 &114683416792080412
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1408399236956348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
+--- !u!114 &114756655954580288
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1734431316295278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []
 --- !u!114 &114950912562386008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1014,3 +1141,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laneNumber: {fileID: 102254109234080344}
+--- !u!114 &114959698584247032
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1053077024137196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77a16b43387e1c4a993e11a0c9669ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laneManager: {fileID: 114407202502902394}
+  activeCreatures: []

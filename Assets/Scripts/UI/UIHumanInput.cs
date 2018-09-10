@@ -9,9 +9,13 @@ public class UIHumanInput : MonoBehaviour {
 
 	Human humanLogicBase;
 	RectTransform _child;
+	public GameObject[] laneNumbers;
 
 	void Awake () {
 		_child = transform.GetChild (0).GetComponent<RectTransform> ();
+		for (int i = 0; i < TournamentManager._instance.lanes.Count; i++){
+			laneNumbers[i].SetActive(true);
+		}
 	}
 
 	public void Init (bool player1) {

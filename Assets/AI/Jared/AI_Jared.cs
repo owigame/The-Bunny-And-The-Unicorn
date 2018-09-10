@@ -6,7 +6,7 @@ public class AI_Jared : LogicBase
 {
     public override void OnTick(IBoardState data)
     {
-        if (!AIResponse.Spawn(Spawnable.Unicorn,1, this))
+        if (!AIResponse.Spawn(Spawnable.Unicorn,1))
         {
 
         }

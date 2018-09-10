@@ -22,7 +22,7 @@ namespace AI
                 (this as Human).Start();
             }
             
-            _AIResponder = new AIResponseManager();
+            _AIResponder = new AIResponseManager(this);
             TournamentManager._instance.OnTick.AddListener(_AIResponder.onTick);
         }
     }

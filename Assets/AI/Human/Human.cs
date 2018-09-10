@@ -21,7 +21,7 @@ public class Human : LogicBase {
     void Finalise () {
         IResponse[] responses = AIResponse.QueryResponse ();
         AIResponse.FinalizeResponse ();
-        Debug.Log(this.name + " cost: " + AIResponse.Cost);
+        Debug.Log(this.name + " cost: " + AIResponse.Tokens);
     }
 
     public void Start () {
@@ -47,9 +47,11 @@ public class Human : LogicBase {
     }
 
     public void SelectLane (int _laneNumber) {
-        if (!AIResponse.Spawn (lastSpawnable, _laneNumber, this)) {
+        if (!AIResponse.Spawn (lastSpawnable, _laneNumber)) {
             Debug.Log ("Could not spawn " + lastSpawnable + " in lane " + _laneNumber);
             SkipTurn (false);
+        } else if (AIResponse.Tokens > 0) {
+            OpenUI ();
         } else {
             Finalise ();
             CloseUI ();
