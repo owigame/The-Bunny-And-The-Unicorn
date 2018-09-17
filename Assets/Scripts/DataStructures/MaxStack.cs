@@ -123,7 +123,6 @@ namespace DataStructures
         {
             return _list.GetEnumerator();
         }
-
         #endregion
     }
 }
