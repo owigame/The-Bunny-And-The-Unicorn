@@ -1,10 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Logging;
 
 public class TournamentManager : MonoBehaviour {
-    public TickEvent OnTick;
+    #region  Singleton management
     public static TournamentManager _instance;
+    private void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+    private void OnDestroy()
+    {
+        _instance = null;
+    }
+    #endregion
+
+    public TickEvent OnTick;
 
     [Header ("Player Setup")]
     public AI.LogicBase P1, P2;
@@ -12,13 +31,16 @@ public class TournamentManager : MonoBehaviour {
     [Header ("Lanes")]
     public List<LaneManager> lanes = new List<LaneManager> ();
 
-    [Header ("Game Settings")]
+    [Header ("Character Settings")]
     public int offTickInterval = 1;
     public int onTickInterval = 2;
     public int bunnyRange = 1;
     public int unicornRange = 3;
     public float bunnyDamage = 3;
     public float unicornDamage = 1;
+
+    [Header("Game Settings")]
+    public int tokensPerRound = 1;
 
     [Header ("Timing")]
     public float moveWait = 1;
@@ -41,18 +63,6 @@ public class TournamentManager : MonoBehaviour {
     int playersReady = 0;
     int lanesReady = 0;
 
-    //Singleton management
-    private void Awake () {
-        if (_instance == null) {
-            _instance = this;
-        } else {
-            Destroy (this);
-        }
-    }
-    private void OnDestroy () {
-        _instance = null;
-    }
-
     // Setup the two Ai players 
     private void Start () {
         OnTick = new TickEvent ();
@@ -69,10 +79,10 @@ public class TournamentManager : MonoBehaviour {
         P1.init ();
         P2.init ();
 
-        IBoardState data = new LaneManager ();
+        IBoardState data = FindObjectOfType< LaneManager>();
         OnTick.Invoke (data);
 
-        StartCoroutine (TickTockUpdate ());
+        LogStack.Log("Tournament Manager initialised", LogLevel.System);
     }
 
     void LaneReady () {
@@ -88,75 +98,5 @@ public class TournamentManager : MonoBehaviour {
         UIManager._instance.UpdateScore ();
     }
 
-    IEnumerator TickTockUpdate () {
-        while (true) {
-
-            if (playersReady == 2) { //Max ready players 2
-                playersReady = 0;
-
-                yield return new WaitForSeconds (offTickInterval);
-
-                int lastLanesReady = -1;
-
-                //Wait for lanes to execute move, attack per lane
-                while (lanesReady < lanes.Count) {
-                    if (lastLanesReady != lanesReady) {
-                        lastLanesReady = lanesReady;
-
-                        if (lanes[lanesReady].creatures.Count > 0) {
-                            lanes[lanesReady].OffTick ();
-                        } else {
-                            LaneReady ();
-                        }
-                    }
-
-                    yield return null;
-                }
-
-                lanesReady = 0;
-                yield return new WaitForSeconds (onTickInterval);
-
-                IBoardState ondata = new LaneManager ();
-                OnTick.Invoke (ondata);
-            } else {
-                yield return null;
-            }
-
-        }
-    }
-
-    public void OnResponse (IResponse[] ResponseChain) {
-        Debug.Log ("--- OnResponse");
-        playersReady++;
-
-        foreach (var item in ResponseChain) {
-            Debug.Log ("Player" + ((item.player == P1) ? " 1 " : " 2 ") + "spawned " + item.spawnable + " in lane " + item.Lane);
-
-            //Spawn Creature
-            GameObject _spawnable = null;
-            if (item.spawnable == Spawnable.Bunny) {
-                _spawnable = Instantiate (bunnyPrefab);
-            } else if (item.spawnable == Spawnable.Unicorn) {
-                _spawnable = Instantiate (unicornPrefab);
-            }
-            CreatureBase _creature = _spawnable.AddComponent<CreatureBase> ();
-            OnTick.AddListener (_creature.onTick);
-
-            //Spawn HealthBar
-            GameObject _healthBar = Instantiate (uiHealthBar, mainCanvas);
-            _healthBar.GetComponent<UIFollow> ().Init (_spawnable.transform, mainCanvas.GetComponent<RectTransform> ());
-
-            //Creature Setup
-            _creature.Init (
-                item.player,
-                TournamentManager._instance.lanes[item.Lane - 1],
-                item.spawnable,
-                _healthBar.GetComponent<UIHealth> (),
-                item.spawnable == Spawnable.Bunny ? bunnyDamage : unicornDamage
-            );
-
-            lanes[item.Lane - 1]?.AssignToLane (_creature, item.player == P1 ? true : false);
-
-        }
-    }
+    
 }

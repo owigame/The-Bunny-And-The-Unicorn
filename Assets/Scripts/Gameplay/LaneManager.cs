@@ -2,7 +2,23 @@
 using System.Collections.Generic;
 using AI;
 using UnityEngine;
+// lane validation
 public class LaneManager : MonoBehaviour, IBoardState {
+
+    private void Awake()
+    {
+        laneNumber = transform.GetSiblingIndex() + 1;
+        //Add all LaneNode components to list
+        allNodes.Add(startNode.GetComponent<LaneNode>());
+        foreach (Transform node in middleNodes)
+        {
+            allNodes.Add(node.GetComponent<LaneNode>());
+        }
+        allNodes.Add(endNode.GetComponent<LaneNode>());
+    }
+
+
+
     public LaneEvent OnLaneReady = new LaneEvent ();
     public Transform startNode, endNode;
     public Transform[] middleNodes;
@@ -16,19 +32,6 @@ public class LaneManager : MonoBehaviour, IBoardState {
         }
     }
 
-    private void Awake () {
-
-        laneNumber = transform.GetSiblingIndex () + 1;
-
-        //Add all LaneNode components to list
-        allNodes.Add (startNode.GetComponent<LaneNode> ());
-        foreach (Transform node in middleNodes) {
-            allNodes.Add (node.GetComponent<LaneNode> ());
-        }
-        allNodes.Add (endNode.GetComponent<LaneNode> ());
-
-    }
-
     public void AssignToLane (CreatureBase creature, bool player1) {
         Transform spawnNode = player1 ? startNode : endNode;
 
@@ -39,7 +42,7 @@ public class LaneManager : MonoBehaviour, IBoardState {
     }
 
     public void OffTick () {
-        StartCoroutine (TickTockExecute ());
+        //PerformPhase ();
     }
 
     public List<CreatureBase> SearchRange (int range, LaneNode currentNode) {
@@ -63,58 +66,46 @@ public class LaneManager : MonoBehaviour, IBoardState {
         } else {
             return allNodes[allNodes.IndexOf (currentNode) + (rightFacing ? 1 : -1)];
         }
-
     }
 
     public LaneNode GetFirstLaneNode (bool rightFacing) {
         return allNodes[rightFacing ? 0 : allNodes.Count - 1];
     }
 
-    IEnumerator TickTockExecute () {
-        //Move
-        yield return new WaitForSeconds (TournamentManager._instance.moveWait);
-        foreach (CreatureBase creature in creatures) {
-            if (creature.CreatureType == Spawnable.Bunny) {
-                creature.Move ();
-            } else {
-                yield return new WaitForSeconds (TournamentManager._instance.moveWait);
-                creature.Attack ();
-            }
-        }
+    //public void PerformPhase () {
 
-        //Attack
-        yield return new WaitForSeconds (TournamentManager._instance.attackWait);
-        foreach (CreatureBase creature in creatures) {
-            if (creature.CreatureType == Spawnable.Bunny) {
-                creature.Attack ();
-            } else {
-                yield return new WaitForSeconds (TournamentManager._instance.attackWait);
-                creature.Move ();
-            }
-        }
+    //    // rejigger for use on tokens
+    //    //Move
+    //    foreach (CreatureBase creature in creatures) {
+    //        if (creature.CreatureType == Spawnable.Bunny) {
+    //            creature.Move ();
+    //        } else {
+    //            creature.Attack ();
+    //        }
+    //    }
 
-        //Kill
-        // yield return new WaitForSeconds (TournamentManager._instance.attackWait);
-        // foreach (CreatureBase creature in creatures) {
-        //     creature.KillInRange ();
-        // }
+    //    //Attack
+    //    foreach (CreatureBase creature in creatures) {
+    //        if (creature.CreatureType == Spawnable.Bunny) {
+    //            creature.Attack ();
+    //        } else {
+    //            creature.Move ();
+    //        }
+    //    }
 
-        //Die/Win
-        yield return new WaitForSeconds (TournamentManager._instance.dieWait);
-        foreach (CreatureBase creature in creatures) {
-            // creature.Die ();
-            creature.Win ();
-        }
-        for (int i = 0; i < creatures.Count; i++) {
-            if (creatures[i].isDead) {
-                creatures.Remove (creatures[i]);
-                i--;
-            }
-        }
+    //    //Die/Win
+    //    foreach (CreatureBase creature in creatures) {
+    //        creature.Win ();
+    //    }
+    //    for (int i = 0; i < creatures.Count; i++) {
+    //        if (creatures[i].isDead) {
+    //            creatures.Remove (creatures[i]);
+    //            i--;
+    //        }
+    //    }
 
-        //Lane Complete
-        yield return new WaitForSeconds (TournamentManager._instance.laneReadyWait);
-        OnLaneReady.Invoke ();
-    }
+    //    //Lane Complete
+    //    OnLaneReady.Invoke ();
+    //}
 
 }

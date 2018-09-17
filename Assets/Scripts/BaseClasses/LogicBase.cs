@@ -7,6 +7,7 @@ namespace AI
         private AIResponseManager _AIResponder;
 
         public abstract void OnTick(IBoardState data);
+       // public abstract void OnValidateFail(IBoardState data,IResponse[] chain);
 
         protected AIResponseManager AIResponse
         {

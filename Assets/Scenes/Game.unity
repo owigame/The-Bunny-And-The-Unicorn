@@ -671,11 +671,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3788f3ad37b572c448b94d4be985545d, type: 2}
   m_IsPrefabAsset: 0
---- !u!1 &465001108 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1812885407933568, guid: 3788f3ad37b572c448b94d4be985545d,
-    type: 2}
-  m_PrefabInternal: {fileID: 465001107}
 --- !u!4 &493088257 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4287805184390810, guid: f9d51a3e8c16fc843bc346b7076a809d,
@@ -1265,6 +1260,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1604112042}
+  - {fileID: 2109917831}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1279,6 +1275,7 @@ GameObject:
   - component: {fileID: 1604112043}
   - component: {fileID: 1604112044}
   - component: {fileID: 1604112045}
+  - component: {fileID: 1604112046}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1322,12 +1319,15 @@ MonoBehaviour:
   unicornRange: 4
   bunnyDamage: 3
   unicornDamage: 1
+  tokensPerRound: 1
   moveWait: 0.5
   attackWait: 0.5
   dieWait: 0.1
   laneReadyWait: 0.1
-  unicornPrefab: {fileID: 465001108}
-  bunnyPrefab: {fileID: 1969109267}
+  unicornPrefab: {fileID: 1812885407933568, guid: 3788f3ad37b572c448b94d4be985545d,
+    type: 2}
+  bunnyPrefab: {fileID: 1954499941595712, guid: 09600b3f16ce6d746a71bd7cdf9389e0,
+    type: 2}
   uiHealthBar: {fileID: 1606791171770786, guid: bd107493fee666e4586d8c77cc7dae35,
     type: 2}
   mainCanvas: {fileID: 2045461659}
@@ -1363,6 +1363,18 @@ MonoBehaviour:
   shakeDuration: 1
   shakeAmount: 0.05
   decreaseFactor: 1
+--- !u!114 &1604112046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1604112041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78633a0bae7876f4b8308235391d4f3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tickState: 0
 --- !u!1001 &1698911797
 Prefab:
   m_ObjectHideFlags: 0
@@ -1628,11 +1640,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09600b3f16ce6d746a71bd7cdf9389e0, type: 2}
   m_IsPrefabAsset: 0
---- !u!1 &1969109267 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1954499941595712, guid: 09600b3f16ce6d746a71bd7cdf9389e0,
-    type: 2}
-  m_PrefabInternal: {fileID: 1969109266}
 --- !u!1 &2045461658
 GameObject:
   m_ObjectHideFlags: 0
@@ -1874,3 +1881,43 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &2109917829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2109917831}
+  - component: {fileID: 2109917830}
+  m_Layer: 0
+  m_Name: LogStack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2109917830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2109917829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69c739c64a66a6c4da0190572dff49d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2109917831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2109917829}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 5.090355, y: -14.930397, z: -6.2756753}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1519465483}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

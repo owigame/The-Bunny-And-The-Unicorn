@@ -13,7 +13,7 @@ public class Human : LogicBase {
     Animator _uiAnimator;
 
     public override void OnTick (IBoardState data) {
-        Debug.Log (this.name + " OnTick()");
+     //   Debug.Log (this.name + " OnTick()");
         OpenUI ();
 
     }
@@ -25,7 +25,7 @@ public class Human : LogicBase {
     }
 
     public void Start () {
-        Debug.Log (this.name + " Start()");
+        //Debug.Log (this.name + " Start()");
 
         //Assign variables
         _cam = Camera.main;

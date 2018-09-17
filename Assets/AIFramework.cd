@@ -21,35 +21,27 @@
   <Class Name="ActionResponse" BaseTypeListCollapsed="true">
     <Position X="2.75" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAABAABQAAAAAAAABAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAACAAAAAAABAAhQAAAAAAAABAAAAAAAAAA=</HashCode>
       <FileName>Assets\Scripts\AIFramework\ActionResponse.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="LanesNodes" BaseTypeListCollapsed="true">
-    <Position X="0.75" Y="2" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\Scripts\AIFramework\LanesNodes.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="TournamentManager">
     <Position X="8.5" Y="2" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAQFAAAAACAAAAAAAAAIAQAAAACACAAAAAAAAAAAAEA=</HashCode>
-      <FileName>Assets\Scripts\AIFramework\TournamentManager.cs</FileName>
+      <HashCode>AAAVAEEgASFgAAAAQBQMAQQACACBCAEAioAAAAAgAEA=</HashCode>
+      <FileName>Assets\Scripts\Gameplay\TournamentManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ResponseEvent">
-    <Position X="2.75" Y="6" Width="1.5" />
+    <Position X="2.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Assets\Scripts\Events\ResponseEvent.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="TickEvent">
-    <Position X="0.75" Y="4" Width="1.5" />
+    <Position X="0.75" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Assets\Scripts\Events\TickEvent.cs</FileName>
@@ -59,7 +51,7 @@
     <Position X="6.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\Scripts\Examples\BasicAI.cs</FileName>
+      <FileName>Assets\AI\Example\BasicAI.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="AI.LogicBase">
@@ -70,23 +62,30 @@
     </TypeIdentifier>
   </Class>
   <Class Name="AIResponseManager">
-    <Position X="4.75" Y="2" Width="1.75" />
+    <Position X="4.75" Y="1.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAABAAAAAAAAAABADAAAQAAAAAAgAAAAgAgA=</HashCode>
+      <HashCode>AAECAAAAAABAAAAAAAEAIAACAAIAAAIAAAgAAAAhAAA=</HashCode>
       <FileName>Assets\Scripts\AIFramework\AIResponseManager.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="LaneNode" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQAAAAAACAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Gameplay\LaneNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="IBoardState">
-    <Position X="0.75" Y="3" Width="1.5" />
+    <Position X="4.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Assets\Scripts\Interfaces\IData.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="IResponse">
-    <Position X="2.75" Y="4.5" Width="1.5" />
+    <Position X="2.75" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAABAQAAAAAAAAA=</HashCode>
       <FileName>Assets\Scripts\Interfaces\IResponse.cs</FileName>
     </TypeIdentifier>
   </Interface>
