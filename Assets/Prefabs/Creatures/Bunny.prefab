@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 95556433774504716}
   - component: {fileID: 54176163435876058}
   - component: {fileID: 65830889880805632}
+  - component: {fileID: 114007296661288038}
   m_Layer: 10
   m_Name: Bunny
   m_TagString: Creature
@@ -603,3 +604,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114007296661288038
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1954499941595712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c32f3c73dfec0324cbeab31b9cecd377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  creatureType: 1

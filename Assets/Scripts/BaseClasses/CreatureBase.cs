@@ -9,7 +9,7 @@ public class CreatureBase : MonoBehaviour {
 	private LogicBase owner;
 	private LaneManager lane;
 	private LaneNode activeLaneNode;
-	private Spawnable creatureType;
+	[SerializeField]private Spawnable creatureType;
 	private float range;
 	private int laneProgress = 0;
 	private bool rightFacing = false;

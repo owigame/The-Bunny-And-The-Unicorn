@@ -1,6 +1,7 @@
 ﻿public interface IResponse
 {
-    Spawnable spawnable { get; set; }
+    CreatureBase creature { get; set; }
     int Lane { get; set; }
     AI.LogicBase player { get; set;}
+    ResponseActionType responseActionType { get; set; }
 }

@@ -232,6 +232,7 @@ GameObject:
   - component: {fileID: 95909489988624028}
   - component: {fileID: 54336828630963736}
   - component: {fileID: 65904869332889742}
+  - component: {fileID: 114899586270232018}
   m_Layer: 10
   m_Name: Unicorn
   m_TagString: Creature
@@ -1263,3 +1264,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114899586270232018
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1812885407933568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c32f3c73dfec0324cbeab31b9cecd377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  creatureType: 0
