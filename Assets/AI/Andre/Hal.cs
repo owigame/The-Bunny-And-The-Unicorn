@@ -6,14 +6,17 @@ public class Hal : LogicBase {
     public override void OnTick (IBoardState data) {
         AIResponse.onTick (null);
 
-        if (!AIResponse.Spawn (Spawnable.Bunny, 1)){
-            AIResponse.Move(TournamentManager._instance.lanes[0].creatures[0]);
+        for (int i = 0; i < AIResponse.Tokens; i++) {
+            if (!AIResponse.Spawn (Spawnable.Bunny, 1)) {
+                AIResponse.Move (TournamentManager._instance.lanes[0].creatures[0]);
+            }
+
+            // {
+
+            // }
+            // //IResponse[] responses = AIResponse.QueryResponse();
         }
-
-        // {
-
-        // }
-        // //IResponse[] responses = AIResponse.QueryResponse();
+        
         AIResponse.FinalizeResponse ();
     }
 }

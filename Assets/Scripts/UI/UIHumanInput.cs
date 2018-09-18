@@ -31,6 +31,10 @@ public class UIHumanInput : MonoBehaviour {
 		humanLogicBase.Spawn ((Spawnable) _spawnable);
 	}
 
+	public void OnSpawnOptions () {
+		humanLogicBase.SpawnOptions();
+	}
+
 	public void OnSelectLane (int _laneNumber) {
 		humanLogicBase.SelectLane (_laneNumber);
 	}
@@ -41,6 +45,12 @@ public class UIHumanInput : MonoBehaviour {
 
 	public void OnBackClick () {
 		humanLogicBase.SkipTurn (false);
+	}
+	public void OnAttackClick () {
+		humanLogicBase.humanActions.Attack();
+	}
+	public void OnMoveClick () {
+		humanLogicBase.humanActions.Move();
 	}
 
 	public void SetLogicBase (Human humanLogicBase) {

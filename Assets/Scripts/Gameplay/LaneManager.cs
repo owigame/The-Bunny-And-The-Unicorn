@@ -9,19 +9,19 @@ public class LaneManager : MonoBehaviour, IBoardState {
     {
         laneNumber = transform.GetSiblingIndex() + 1;
         //Add all LaneNode components to list
-        allNodes.Add(startNode.GetComponent<LaneNode>());
-        foreach (Transform node in middleNodes)
+        allNodes.Add(startNode);
+        foreach (LaneNode node in middleNodes)
         {
-            allNodes.Add(node.GetComponent<LaneNode>());
+            allNodes.Add(node);
         }
-        allNodes.Add(endNode.GetComponent<LaneNode>());
+        allNodes.Add(endNode);
     }
 
 
 
     public LaneEvent OnLaneReady = new LaneEvent ();
-    public Transform startNode, endNode;
-    public Transform[] middleNodes;
+    public LaneNode startNode, endNode;
+    public LaneNode[] middleNodes;
     List<LaneNode> allNodes = new List<LaneNode> ();
     public List<CreatureBase> creatures = new List<CreatureBase> ();
 
@@ -33,7 +33,7 @@ public class LaneManager : MonoBehaviour, IBoardState {
     }
 
     public void AssignToLane (CreatureBase creature, bool player1) {
-        Transform spawnNode = player1 ? startNode : endNode;
+        Transform spawnNode = player1 ? startNode.transform : endNode.transform;
 
         creature.transform.position = spawnNode.transform.position;
         creature.transform.rotation = spawnNode.transform.rotation;

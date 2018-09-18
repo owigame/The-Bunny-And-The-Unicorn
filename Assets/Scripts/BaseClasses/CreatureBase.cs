@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AI;
 using UnityEngine;
+using Logging;
 
 public class CreatureBase : MonoBehaviour {
 
@@ -9,7 +10,7 @@ public class CreatureBase : MonoBehaviour {
 	private LogicBase owner;
 	private LaneManager lane;
 	private LaneNode activeLaneNode;
-	[SerializeField]private Spawnable creatureType;
+	[SerializeField] private Spawnable creatureType;
 	private float range;
 	private int laneProgress = 0;
 	private bool rightFacing = false;
@@ -40,7 +41,8 @@ public class CreatureBase : MonoBehaviour {
 			init = true;
 			rightFacing = _owner == TournamentManager._instance.P1 ? true : false;
 			activeLaneNode = lane.GetFirstLaneNode (rightFacing);
-			Debug.Log ("Creature owned by " + owner);
+			activeLaneNode.activeCreatures.Add (this);
+			// Debug.Log ("Creature owned by " + owner);
 		}
 	}
 
@@ -50,6 +52,7 @@ public class CreatureBase : MonoBehaviour {
 
 	public void Attack () {
 		if (!dead) {
+			LogStack.Log(this.name + " attacking", LogLevel.Stack);
 			animator.SetBool ("Attack", true);
 			animator.SetTrigger ("AttackInit");
 			CameraShake._CameraShake.DoCameraShake (0.1f, rightFacing ? 0.5f : -0.5f);

@@ -46,27 +46,38 @@ public class AIResponseManager {
 		IResponse response = new ActionResponse (creature == Spawnable.Bunny ? TournamentManager._instance.bunnyPrefab.GetComponent<CreatureBase> () : TournamentManager._instance.unicornPrefab.GetComponent<CreatureBase> (), lane, logicBase, ResponseActionType.Spawn);
 		/* fail the Spawn */
 		LogStack.Log ("Tokens: " + tokens, LogLevel.Debug);
-		if (tokens <= 0 || lane > TournamentManager._instance.lanes.Count || lanesTaken.Contains (lane)) {
-			LogStack.Log ("Response | TODO", LogLevel.Stack);
+		LaneNode node = logicBase == TournamentManager._instance.P1 ? TournamentManager._instance.lanes[lane - 1].startNode : TournamentManager._instance.lanes[lane - 1].endNode;
+		LogStack.Log ("Node Creature Count: " + node.activeCreatures.Count, LogLevel.System);
+		if (tokens <= 0 || lane > TournamentManager._instance.lanes.Count || lanesTaken.Contains (lane) || node.activeCreatures.Count > 0) {
+			LogStack.Log ("Response | Spawn Failed Lane: " + lane, LogLevel.Stack);
 			return false;
 		} else {
-			tokens--;
+			SpendToken ();
 			lanesTaken.Add (lane);
-			UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
 			ResponseChain.Add (response);
 			return true;
 		}
 	}
 
 	public bool Move (CreatureBase creature) {
-		LogStack.Log ("Response | TODO", LogLevel.Stack);
+		SpendToken ();
+		LogStack.Log ("Response | Move", LogLevel.Stack);
 		IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Move);
+		ResponseChain.Add (response);
 		return true;
 	}
+
 	public bool Attack (CreatureBase creature) {
-		LogStack.Log ("Response | TODO", LogLevel.Stack);
+		SpendToken ();
+		LogStack.Log ("Response | Attack", LogLevel.Stack);
 		IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Attack);
+		ResponseChain.Add (response);
 		return true;
+	}
+
+	void SpendToken () {
+		tokens--;
+		UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
 	}
 
 	public bool FinalizeResponse () {
