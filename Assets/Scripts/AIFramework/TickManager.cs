@@ -28,9 +28,9 @@ public class TickManager : MonoBehaviour {
         switch (tickState) {
             case TickState.AwaitingResponses:
                 ResponsesRecieved++;
-                LogStack.Log ("ResponseChain Length: " + ResponseChain.Length, LogLevel.Stack);
+                // LogStack.Log ("ResponseChain Length: " + ResponseChain.Length, LogLevel.Stack);
                 if (ResponseChain.Length > 0) {
-                    LogStack.Log ("Awaiting Responses, " + ResponsesRecieved + " Players ready", LogLevel.Stack);
+                    // LogStack.Log ("Awaiting Responses, " + ResponsesRecieved + " Players ready", LogLevel.Stack);
                     if (ResponseChain[0].player == TournamentManager._instance.P1) {
                         P1 = ResponseChain;
                     } else {
@@ -44,7 +44,7 @@ public class TickManager : MonoBehaviour {
                 }
                 break;
             case TickState.ValidateResponses:
-                LogStack.Log ("Validate Responses | TODO", LogLevel.Stack);
+                // LogStack.Log ("Validate Responses | TODO", LogLevel.Stack);
                 //AIResponseManager.Move/Attack/Spawn validate | use code
 
                 //for loop of the response chain double checks everthing is good
@@ -65,7 +65,7 @@ public class TickManager : MonoBehaviour {
                 // step to TickState.FireTick:
                 break;
             case TickState.FireTick:
-                LogStack.Log ("Fire Tick", LogLevel.Stack);
+                // LogStack.Log ("Fire Tick", LogLevel.Stack);
                 // restart the loop
                 // eject states for win lose conditions
 
@@ -98,11 +98,15 @@ public class TickManager : MonoBehaviour {
         foreach (IResponse response in ResponseChain) {
             if (response.creature.CreatureType == Spawnable.Bunny && response.responseActionType == ResponseActionType.Move) {
                 LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
-                response.creature.Move ();
+                response.creature.Move (response.laneNode);
             } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Attack) {
                 yield return new WaitForSeconds (TournamentManager._instance.moveWait);
                 LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Attack ();
+                LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
+                if ((nextNode == response.laneNode.laneManager.startNode && !response.creature.RightFacing) || (nextNode == response.laneNode.laneManager.endNode && response.creature.RightFacing)) {
+                    response.creature.Move(nextNode);
+                }
             }
         }
         yield return new WaitForSeconds (TournamentManager._instance.moveWait);
@@ -115,7 +119,7 @@ public class TickManager : MonoBehaviour {
             } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Move) {
                 yield return new WaitForSeconds (TournamentManager._instance.attackWait);
                 LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
-                response.creature.Move ();
+                response.creature.Move (response.laneNode);
             }
         }
         yield return new WaitForSeconds (TournamentManager._instance.attackWait);
@@ -128,7 +132,7 @@ public class TickManager : MonoBehaviour {
     public void Spawn (IResponse response) {
         // ResponsesRecieved++;
 
-        LogStack.Log ("Player" + ((response.player == TournamentManager._instance.P1) ? " 1 " : " 2 ") + "spawned " + response.creature + " in lane " + response.Lane, LogLevel.Stack);
+        // LogStack.Log ("Player" + ((response.player == TournamentManager._instance.P1) ? " 1 " : " 2 ") + "spawned " + response.creature + " in lane " + response.Lane, LogLevel.Stack);
 
         //Spawn Creature
         GameObject _spawnable = null;

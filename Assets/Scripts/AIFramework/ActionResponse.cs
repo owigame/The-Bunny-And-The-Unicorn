@@ -1,63 +1,61 @@
-﻿public class ActionResponse : IResponse
-{
+﻿public class ActionResponse : IResponse {
     private int _lane;
     private CreatureBase _creatureBase;
     private AI.LogicBase _logicBase;
     private ResponseActionType _responseActionType;
+    private LaneNode _laneNode;
 
-    public ActionResponse(CreatureBase Creature,int Lane, AI.LogicBase LogicBase, ResponseActionType ResponseActionType)
-    {
+    public ActionResponse (CreatureBase Creature, int Lane, AI.LogicBase LogicBase, ResponseActionType ResponseActionType, LaneNode LaneNode) {
         _lane = Lane;
         _creatureBase = Creature;
         _logicBase = LogicBase;
         _responseActionType = ResponseActionType;
+        _laneNode = LaneNode;
     }
 
-    int IResponse.Lane
-    {
-        get
-        {
+    int IResponse.Lane {
+        get {
             return _lane;
         }
-        set
-        {
+        set {
             _lane = value;
         }
     }
 
-    AI.LogicBase IResponse.player
-    {
-        get
-        {
+    AI.LogicBase IResponse.player {
+        get {
             return _logicBase;
         }
-        set
-        {
+        set {
             _logicBase = value;
         }
     }
 
-    CreatureBase IResponse.creature
-    {
-        get
-        {
+    CreatureBase IResponse.creature {
+        get {
             return _creatureBase;
         }
 
-        set
-        {
+        set {
             _creatureBase = value;
         }
     }
 
     ResponseActionType IResponse.responseActionType {
-        get
-        {
+        get {
             return _responseActionType;
         }
-        set
-        {
+        set {
             _responseActionType = value;
+        }
+    }
+
+    LaneNode IResponse.laneNode {
+        get {
+            return _laneNode;
+        }
+        set {
+            _laneNode = value;
         }
     }
 }

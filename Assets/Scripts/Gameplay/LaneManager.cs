@@ -1,28 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using AI;
+using Logging;
 using UnityEngine;
 // lane validation
 public class LaneManager : MonoBehaviour, IBoardState {
 
-    private void Awake()
-    {
-        laneNumber = transform.GetSiblingIndex() + 1;
+    private void Awake () {
+        laneNumber = transform.GetSiblingIndex () + 1;
         //Add all LaneNode components to list
-        allNodes.Add(startNode);
-        foreach (LaneNode node in middleNodes)
-        {
-            allNodes.Add(node);
+        allNodes.Add (startNode);
+        foreach (LaneNode node in middleNodes) {
+            allNodes.Add (node);
         }
-        allNodes.Add(endNode);
+        allNodes.Add (endNode);
     }
 
-
+    void Start () {
+        TournamentManager._instance.OnTick.AddListener (OnTick);
+    }
 
     public LaneEvent OnLaneReady = new LaneEvent ();
     public LaneNode startNode, endNode;
     public LaneNode[] middleNodes;
     List<LaneNode> allNodes = new List<LaneNode> ();
+    [SerializeField] List<LaneNode> lanesTakenThisRound = new List<LaneNode> ();
     public List<CreatureBase> creatures = new List<CreatureBase> ();
 
     private int laneNumber = 0;
@@ -41,8 +43,8 @@ public class LaneManager : MonoBehaviour, IBoardState {
         creatures.Add (creature);
     }
 
-    public void OffTick () {
-        //PerformPhase ();
+    public void OnTick (IBoardState data) {
+        lanesTakenThisRound.Clear ();
     }
 
     public List<CreatureBase> SearchRange (int range, LaneNode currentNode) {
@@ -50,8 +52,8 @@ public class LaneManager : MonoBehaviour, IBoardState {
 
         for (int i = -range; i < range + 1; i++) {
             if (allNodes.IndexOf (currentNode) + i >= 0 && allNodes.IndexOf (currentNode) + i < allNodes.Count) {
-                if (allNodes[allNodes.IndexOf (currentNode) + i].activeCreatures.Count > 0) {
-                    creaturesInRange.AddRange (allNodes[allNodes.IndexOf (currentNode) + i].activeCreatures);
+                if (allNodes[allNodes.IndexOf (currentNode) + i].activeCreature != null) {
+                    creaturesInRange.Add (allNodes[allNodes.IndexOf (currentNode) + i].activeCreature);
                 }
             }
         }
@@ -59,53 +61,32 @@ public class LaneManager : MonoBehaviour, IBoardState {
         return creaturesInRange;
     }
 
-    public LaneNode GetNextLaneNode (LaneNode currentNode, bool rightFacing, float range) {
+    public int GetOpenNodes (LaneNode currentNode, bool rightFacing) {
+        int openNodes = 0;
+        for (int i = 0; i < currentNode.laneManager.allNodes.Count; i++) {
+            LaneNode nextNode = allNodes[Mathf.Clamp(allNodes.IndexOf (currentNode) + (rightFacing ? i : -i), 0, currentNode.laneManager.allNodes.Count-1)];
+            if (nextNode != null && nextNode.activeCreature == null) {
+                openNodes++;
+            }
+        }
+        return openNodes;
+    }
+
+    public LaneNode GetNextLaneNode (LaneNode currentNode, bool rightFacing, int range, bool forced = false) {
         //If the next block has a creature in it, fail the move
-        if (allNodes[allNodes.IndexOf (currentNode) + (rightFacing ? 1 : -1)].activeCreatures.Count > 0) {
-            return allNodes[allNodes.IndexOf (currentNode)]; //Fail Move
+        LaneNode nextNode = allNodes[Mathf.Clamp(allNodes.IndexOf (currentNode) + (rightFacing ? range : -range), 0, currentNode.laneManager.allNodes.Count-1)];
+
+        if (nextNode != null && (!lanesTakenThisRound.Contains (nextNode) || forced)) {
+            LogStack.Log ("nextNode not null and available", LogLevel.System);
+            if (!forced) lanesTakenThisRound.Add (nextNode);
+            return nextNode;
         } else {
-            return allNodes[allNodes.IndexOf (currentNode) + (rightFacing ? 1 : -1)];
+            return null;
         }
     }
 
     public LaneNode GetFirstLaneNode (bool rightFacing) {
         return allNodes[rightFacing ? 0 : allNodes.Count - 1];
     }
-
-    //public void PerformPhase () {
-
-    //    // rejigger for use on tokens
-    //    //Move
-    //    foreach (CreatureBase creature in creatures) {
-    //        if (creature.CreatureType == Spawnable.Bunny) {
-    //            creature.Move ();
-    //        } else {
-    //            creature.Attack ();
-    //        }
-    //    }
-
-    //    //Attack
-    //    foreach (CreatureBase creature in creatures) {
-    //        if (creature.CreatureType == Spawnable.Bunny) {
-    //            creature.Attack ();
-    //        } else {
-    //            creature.Move ();
-    //        }
-    //    }
-
-    //    //Die/Win
-    //    foreach (CreatureBase creature in creatures) {
-    //        creature.Win ();
-    //    }
-    //    for (int i = 0; i < creatures.Count; i++) {
-    //        if (creatures[i].isDead) {
-    //            creatures.Remove (creatures[i]);
-    //            i--;
-    //        }
-    //    }
-
-    //    //Lane Complete
-    //    OnLaneReady.Invoke ();
-    //}
 
 }

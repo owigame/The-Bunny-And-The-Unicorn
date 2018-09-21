@@ -5,7 +5,7 @@ using UnityEngine;
 public class LaneNode : MonoBehaviour {
 
 	public LaneManager laneManager;
-	public List<CreatureBase> activeCreatures = new List<CreatureBase>();
+	public CreatureBase activeCreature;
 
 	void Start () {
 		
