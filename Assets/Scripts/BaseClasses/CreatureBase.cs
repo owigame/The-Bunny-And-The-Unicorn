@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using AI;
+using Logging;
 using UnityEngine;
 
 public class CreatureBase : MonoBehaviour {
@@ -8,8 +9,8 @@ public class CreatureBase : MonoBehaviour {
 	private bool init = false;
 	private LogicBase owner;
 	private LaneManager lane;
-	private LaneNode activeLaneNode;
-	[SerializeField]private Spawnable creatureType;
+	[SerializeField] private LaneNode activeLaneNode;
+	[SerializeField] private Spawnable creatureType;
 	private float range;
 	private int laneProgress = 0;
 	private bool rightFacing = false;
@@ -20,8 +21,10 @@ public class CreatureBase : MonoBehaviour {
 	private float health = 3;
 
 	public bool isDead { get { return dead; } }
+	public bool RightFacing { get { return rightFacing; } }
 	public LogicBase Owner { get { return owner; } }
 	public Spawnable CreatureType { get { return creatureType; } }
+	public LaneNode ActiveLaneNode { get { return activeLaneNode; } }
 	public int LaneProgress { get { return laneProgress; } }
 	public float Range { get { return range; } }
 
@@ -40,7 +43,9 @@ public class CreatureBase : MonoBehaviour {
 			init = true;
 			rightFacing = _owner == TournamentManager._instance.P1 ? true : false;
 			activeLaneNode = lane.GetFirstLaneNode (rightFacing);
-			Debug.Log ("Creature owned by " + owner);
+			activeLaneNode.activeCreature = this;
+			owner._Creatures.Add (this);
+			// Debug.Log ("Creature owned by " + owner);
 		}
 	}
 
@@ -50,6 +55,7 @@ public class CreatureBase : MonoBehaviour {
 
 	public void Attack () {
 		if (!dead) {
+			LogStack.Log (this.name + " attacking", LogLevel.Stack);
 			animator.SetBool ("Attack", true);
 			animator.SetTrigger ("AttackInit");
 			CameraShake._CameraShake.DoCameraShake (0.1f, rightFacing ? 0.5f : -0.5f);
@@ -85,32 +91,36 @@ public class CreatureBase : MonoBehaviour {
 
 	public void Die () {
 		if (dead) {
-			activeLaneNode.activeCreatures.Remove (this);
+			activeLaneNode.activeCreature = null;
+			owner._Creatures.Remove (this);
 			animator.SetBool ("Die", true);
 			uiHealth.gameObject.SetActive (false);
 		}
 	}
 
 	public void Win () {
-		if ((activeLaneNode.transform == lane.endNode && rightFacing) || (activeLaneNode.transform == lane.startNode && !rightFacing)) {
+		if ((activeLaneNode == lane.endNode && rightFacing) || (activeLaneNode == lane.startNode && !rightFacing)) {
 			//Made it to the end
 			Debug.Log (gameObject.name + " made it to the end. 1 point to " + owner.name);
 			TournamentManager._instance.ScoreUpdate (this);
 			animator.SetBool ("Win", true);
 			dead = true;
-			activeLaneNode.activeCreatures.Remove (this);
+			activeLaneNode.activeCreature = null;
 			uiHealth.gameObject.SetActive (false);
 		}
 	}
 
-	public void Move () {
+	public void Move (LaneNode nextNode) {
 		Debug.Log ("Moving Creature");
 		CameraShake._CameraShake.DoCameraShake (0.2f, rightFacing ? 0.2f : -0.2f);
-		activeLaneNode.activeCreatures.Remove (this);
-		activeLaneNode = lane.GetNextLaneNode (activeLaneNode, rightFacing, range);
-		activeLaneNode.activeCreatures.Add (this);
+		if (activeLaneNode.activeCreature == this) activeLaneNode.activeCreature = null;
+		LogStack.Log ("MOVING: Current Node - " + activeLaneNode.name, LogLevel.System);
+		activeLaneNode = nextNode;
+		LogStack.Log ("MOVING: New Node - " + activeLaneNode.name, LogLevel.System);
+		activeLaneNode.activeCreature = this;
 
 		transform.position = activeLaneNode.transform.position;
+		Win ();
 	}
 
 	void OnTriggerEnter (Collider other) {

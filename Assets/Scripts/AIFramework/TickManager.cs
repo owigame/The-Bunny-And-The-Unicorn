@@ -1,24 +1,22 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Linq;
 using Logging;
-using System.Collections;
+using UnityEngine;
 
-public class TickManager : MonoBehaviour
-{
+public class TickManager : MonoBehaviour {
     #region  Singleton management
     public static TickManager _instance;
-    private void Awake()
-    {
-        if (_instance == null)
-        {
+    private void Awake () {
+        if (_instance == null) {
             _instance = this;
+        } else {
+            Destroy (this);
         }
-        else
-        {
-            Destroy(this);
-        }
+
+        P1 = new IResponse[0];
+        P2 = new IResponse[0];
     }
-    private void OnDestroy()
-    {
+    private void OnDestroy () {
         _instance = null;
     }
     #endregion
@@ -26,30 +24,27 @@ public class TickManager : MonoBehaviour
     public TickState tickState;
     private IResponse[] P1, P2;
     int ResponsesRecieved = 0;
-    public void OnResponse(IResponse[] ResponseChain)
-    {
-        switch (tickState)
-        {
+    public void OnResponse (IResponse[] ResponseChain) {
+        switch (tickState) {
             case TickState.AwaitingResponses:
                 ResponsesRecieved++;
-                if (ResponseChain[0].player == TournamentManager._instance.P1)
-                {
-                    P1 = ResponseChain;
+                // LogStack.Log ("ResponseChain Length: " + ResponseChain.Length, LogLevel.Stack);
+                if (ResponseChain.Length > 0) {
+                    // LogStack.Log ("Awaiting Responses, " + ResponsesRecieved + " Players ready", LogLevel.Stack);
+                    if (ResponseChain[0].player == TournamentManager._instance.P1) {
+                        P1 = ResponseChain;
+                    } else {
+                        P2 = ResponseChain;
+                    }
                 }
-                else
-                {
-                    P2 = ResponseChain;
-                }
-                 if (ResponsesRecieved == 2){ //Max ready players 2
-                      ResponsesRecieved = 0;
+                if (ResponsesRecieved == 2) {
+                    ResponsesRecieved = 0;
                     tickState = TickState.PerformingResponses;
-                    OnResponse(P1);
-                    OnResponse(P2);
+                    OnResponse (null);
                 }
-                  LogStack.Log("Awaiting Responses, "+ ResponsesRecieved + " Players ready", LogLevel.Stack);
                 break;
             case TickState.ValidateResponses:
-                LogStack.Log("Validate Responses | TODO", LogLevel.Stack);
+                // LogStack.Log ("Validate Responses | TODO", LogLevel.Stack);
                 //AIResponseManager.Move/Attack/Spawn validate | use code
 
                 //for loop of the response chain double checks everthing is good
@@ -58,156 +53,116 @@ public class TickManager : MonoBehaviour
                 tickState = TickState.PerformingResponses;
                 break;
             case TickState.PerformingResponses:
-                LogStack.Log("Performing Responses", LogLevel.Stack);
-                StartCoroutine(PerformActions(ResponseChain));
+                LogStack.Log ("Performing Responses", LogLevel.Stack);
+                if (P1 != null && P2 != null) {
+                    StartCoroutine (PerformActions (P1.Concat (P2).ToArray ()));
+                } else if (P1 != null) {
+                    StartCoroutine (PerformActions (P1));
+                } else {
+                    StartCoroutine (PerformActions (P2));
+                }
                 // stagger out perform phase based on wait times from tournament manager
                 // step to TickState.FireTick:
                 break;
             case TickState.FireTick:
-                LogStack.Log("Fire Tick", LogLevel.Stack);
+                // LogStack.Log ("Fire Tick", LogLevel.Stack);
                 // restart the loop
                 // eject states for win lose conditions
-                TournamentManager._instance.OnTick.Invoke(FindObjectOfType<LaneManager>());
+
+                // ResponsesRecieved++;
+                // if (ResponsesRecieved == 2) {
+                // ResponsesRecieved = 0;
+                tickState = TickState.AwaitingResponses;
+                TournamentManager._instance.OnTick.Invoke (FindObjectOfType<LaneManager> ());
+                P1 = new IResponse[0];
+                P2 = new IResponse[0];
+                // }
                 break;
             default:
                 break;
         }
     }
 
-    IEnumerator PerformActions(IResponse[] ResponseChain)
-    {
+    IEnumerator PerformActions (IResponse[] ResponseChain) {
+        LogStack.Log ("--- PerformActions BEGIN", LogLevel.System);
         //Spawning
-        yield return new WaitForSeconds(TournamentManager._instance.laneReadyWait);
-        foreach (IResponse response in ResponseChain)
-        {
-            if (response.responseActionType == ResponseActionType.Spawn)
-            {
-                Spawn(response);
+        foreach (IResponse response in ResponseChain) {
+            if (response.responseActionType == ResponseActionType.Spawn) {
+                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                Spawn (response);
             }
         }
+        yield return new WaitForSeconds (TournamentManager._instance.laneReadyWait);
 
         //Move
-        yield return new WaitForSeconds(TournamentManager._instance.moveWait);
-        foreach (IResponse response in ResponseChain)
-        {
-            if (response.creature.CreatureType == Spawnable.Bunny && response.responseActionType == ResponseActionType.Move)
-            {
-                response.creature.Move();
-            }
-            else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Attack)
-            {
-                yield return new WaitForSeconds(TournamentManager._instance.moveWait);
-                response.creature.Attack();
+        foreach (IResponse response in ResponseChain) {
+            if (response.creature.CreatureType == Spawnable.Bunny && response.responseActionType == ResponseActionType.Move) {
+                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                response.creature.Move (response.laneNode);
+            } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Attack) {
+                yield return new WaitForSeconds (TournamentManager._instance.moveWait);
+                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                response.creature.Attack ();
+                LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
+                if ((nextNode == response.laneNode.laneManager.startNode && !response.creature.RightFacing) || (nextNode == response.laneNode.laneManager.endNode && response.creature.RightFacing)) {
+                    response.creature.Move(nextNode);
+                }
             }
         }
+        yield return new WaitForSeconds (TournamentManager._instance.moveWait);
 
         //Attack
-        yield return new WaitForSeconds(TournamentManager._instance.attackWait);
-        foreach (IResponse response in ResponseChain)
-        {
-            if (response.creature.CreatureType == Spawnable.Bunny && response.responseActionType == ResponseActionType.Attack)
-            {
-                response.creature.Attack();
-            }
-            else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Move)
-            {
-                yield return new WaitForSeconds(TournamentManager._instance.attackWait);
-                response.creature.Move();
+        foreach (IResponse response in ResponseChain) {
+            if (response.creature.CreatureType == Spawnable.Bunny && response.responseActionType == ResponseActionType.Attack) {
+                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                response.creature.Attack ();
+            } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Move) {
+                yield return new WaitForSeconds (TournamentManager._instance.attackWait);
+                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                response.creature.Move (response.laneNode);
             }
         }
+        yield return new WaitForSeconds (TournamentManager._instance.attackWait);
 
         tickState = TickState.FireTick;
-        OnResponse(null);
+        OnResponse (null);
+        LogStack.Log ("--- PerformActions END", LogLevel.System);
     }
 
-    public void Spawn(IResponse response)
-    {
-        LogStack.Log("--- OnResponse", LogLevel.System);
-        ResponsesRecieved++;
+    public void Spawn (IResponse response) {
+        // ResponsesRecieved++;
 
-        
-        LogStack.Log("Player" + ((response.player == TournamentManager._instance.P1) ? " 1 " : " 2 ") + "spawned " + response.creature + " in lane " + response.Lane, LogLevel.Stack);
+        // LogStack.Log ("Player" + ((response.player == TournamentManager._instance.P1) ? " 1 " : " 2 ") + "spawned " + response.creature + " in lane " + response.Lane, LogLevel.Stack);
 
         //Spawn Creature
         GameObject _spawnable = null;
-        if (response.creature.CreatureType == Spawnable.Bunny)
-        {
-            _spawnable = Instantiate(TournamentManager._instance.bunnyPrefab);
+        if (response.creature.CreatureType == Spawnable.Bunny) {
+            _spawnable = Instantiate (TournamentManager._instance.bunnyPrefab);
+        } else if (response.creature.CreatureType == Spawnable.Unicorn) {
+            _spawnable = Instantiate (TournamentManager._instance.unicornPrefab);
         }
-        else if (response.creature.CreatureType == Spawnable.Unicorn)
-        {
-            _spawnable = Instantiate(TournamentManager._instance.unicornPrefab);
-        }
-        CreatureBase _creature = _spawnable.AddComponent<CreatureBase>();
-        TournamentManager._instance.OnTick.AddListener(_creature.onTick);
+        CreatureBase _creature = _spawnable.GetComponent<CreatureBase> ();
+        TournamentManager._instance.OnTick.AddListener (_creature.onTick);
 
         //Spawn HealthBar
-        GameObject _healthBar = Instantiate(TournamentManager._instance.uiHealthBar, TournamentManager._instance.mainCanvas);
-        _healthBar.GetComponent<UIFollow>().Init(_spawnable.transform, TournamentManager._instance.mainCanvas.GetComponent<RectTransform>());
+        GameObject _healthBar = Instantiate (TournamentManager._instance.uiHealthBar, TournamentManager._instance.mainCanvas);
+        _healthBar.GetComponent<UIFollow> ().Init (_spawnable.transform, TournamentManager._instance.mainCanvas.GetComponent<RectTransform> ());
 
         //Creature Setup
-        _creature.Init(
+        _creature.Init (
             response.player,
             TournamentManager._instance.lanes[response.Lane - 1],
             response.creature.CreatureType,
-            _healthBar.GetComponent<UIHealth>(),
+            _healthBar.GetComponent<UIHealth> (),
             response.creature.CreatureType == Spawnable.Bunny ? TournamentManager._instance.bunnyDamage : TournamentManager._instance.unicornDamage
         );
 
-        TournamentManager._instance.lanes[response.Lane - 1]?.AssignToLane(_creature, response.player == TournamentManager._instance.P1 ? true : false);
+        TournamentManager._instance.lanes[response.Lane - 1]?.AssignToLane (_creature, response.player == TournamentManager._instance.P1 ? true : false);
 
     }
 
-    //    IEnumerator TickTockUpdate()
-    //    {
-
-    //        while (true)
-    //        {
-
-    //            if (playersReady == 2)
-    //            { //Max ready players 2
-    //                playersReady = 0;
-
-    //                yield return new WaitForSeconds(offTickInterval);
-
-    //                int lastLanesReady = -1;
-
-    //                //Wait for lanes to execute move, attack per lane
-    //                while (lanesReady < lanes.Count)
-    //                {
-    //                    if (lastLanesReady != lanesReady)
-    //                    {
-    //                        lastLanesReady = lanesReady;
-
-    //                        if (lanes[lanesReady].creatures.Count > 0)
-    //                        {
-    //                            lanes[lanesReady].OffTick();
-    //                        }
-    //                        else
-    //                        {
-    //                            LaneReady();
-    //                        }
-    //                    }
-
-    //                    yield return null;
-    //                }
-
-    //                lanesReady = 0;
-    //                yield return new WaitForSeconds(onTickInterval);
-
-    //                IBoardState ondata = new LaneManager();
-    //                OnTick.Invoke(ondata);
-    //            }
-    //            else
-    //            {
-    //                yield return null;
-    //            }
-
-    //        }
-    //    }
 }
-public enum TickState
-{
+public enum TickState {
     AwaitingResponses,
     ValidateResponses,
     PerformingResponses,

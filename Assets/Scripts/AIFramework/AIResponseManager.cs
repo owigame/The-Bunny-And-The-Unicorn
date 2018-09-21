@@ -19,7 +19,6 @@ public class AIResponseManager {
 	private List<IResponse> ResponseChain;
 
 	private AI.LogicBase logicBase;
-	private List<int> lanesTaken = new List<int> ();
 
 	// The tokens increase module. 
 	// The code really should be compiled into a dll so this doesn't appear in the drop-down list [attribte hides it]
@@ -38,41 +37,56 @@ public class AIResponseManager {
 	}
 	private int tokens;
 
-    /// <summary>
-    /// Spawns a creature // detailed instructions
-    /// </summary>
-    /// <param name="spawnable">the creature</param>
-    public bool Spawn(Spawnable creature, int lane)
-    {
-        IResponse response = new ActionResponse(creature == Spawnable.Bunny ? TournamentManager._instance.bunnyPrefab.GetComponent<CreatureBase>() : TournamentManager._instance.unicornPrefab.GetComponent<CreatureBase>(), lane, logicBase, ResponseActionType.Spawn);
-        /* fail the Spawn */
-        if (tokens <= 0 || lane > TournamentManager._instance.lanes.Count || lanesTaken.Contains(lane))
-        {
-            LogStack.Log("Response | TODO",LogLevel.Stack);
-            return false;
-        }
-        else
-        {
-            tokens--;
-            lanesTaken.Add(lane);
-            UIManager._instance.UpdateToken(logicBase == TournamentManager._instance.P1, tokens);
-            ResponseChain.Add(response);
-            return true;
-        }
-    }
+	List<LaneNode> spawnNodesTaken = new List<LaneNode> ();
 
-    public bool Move(CreatureBase creature)
-    {
-        LogStack.Log("Response | TODO", LogLevel.Stack);
-        IResponse response = new ActionResponse(creature, 0, logicBase, ResponseActionType.Move);
-        return true;
-    }
-    public bool Attack(CreatureBase creature)
-    {
-        LogStack.Log("Response | TODO", LogLevel.Stack);
-        IResponse response = new ActionResponse(creature, 0, logicBase, ResponseActionType.Attack);
-        return true;
-    }
+	/// <summary>
+	/// Spawns a creature // detailed instructions
+	/// </summary>
+	/// <param name="spawnable">the creature</param>
+	public bool Spawn (Spawnable creature, int lane) {
+		LaneNode node = logicBase == TournamentManager._instance.P1 ? TournamentManager._instance.lanes[lane - 1].startNode : TournamentManager._instance.lanes[lane - 1].endNode;
+		IResponse response = new ActionResponse (creature == Spawnable.Bunny ? TournamentManager._instance.bunnyPrefab.GetComponent<CreatureBase> () : TournamentManager._instance.unicornPrefab.GetComponent<CreatureBase> (), lane, logicBase, ResponseActionType.Spawn, node);
+		/* fail the Spawn */
+		// LogStack.Log ("Tokens: " + tokens, LogLevel.Debug);
+		// LogStack.Log ("Node Creature Count: " + (node.activeCreature != null ? 1 : 0), LogLevel.System);
+		if (tokens <= 0 || lane > TournamentManager._instance.lanes.Count || node.activeCreature != null || spawnNodesTaken.Contains (node)) {
+			// LogStack.Log ("Response | Spawn Failed Lane: " + lane, LogLevel.Stack);
+			return false;
+		} else {
+			// LogStack.Log ("Response | Spawn Success Lane: " + lane, LogLevel.Stack);
+			spawnNodesTaken.Add (node);
+			SpendToken ();
+			ResponseChain.Add (response);
+			return true;
+		}
+	}
+
+	public bool Move (CreatureBase creature, int range = 1) {
+		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.RightFacing, range);
+		if (creature != null && nextNode != null && nextNode.activeCreature == null && tokens >= range) {
+			SpendToken (range);
+			// LogStack.Log ("Response | Move", LogLevel.Stack);
+			IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Move, nextNode);
+			ResponseChain.Add (response);
+			return true;
+		} else {
+			// LogStack.Log ("Response | Move Failed", LogLevel.Stack);
+			return false;
+		}
+	}
+
+	public bool Attack (CreatureBase creature) {
+		SpendToken ();
+		// LogStack.Log ("Response | Attack", LogLevel.Stack);
+		IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Attack, creature.ActiveLaneNode);
+		ResponseChain.Add (response);
+		return true;
+	}
+
+	void SpendToken (int amount = 1) {
+		tokens-= amount;
+		UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
+	}
 
 	public bool FinalizeResponse () {
 		/* fail the finalize */
@@ -80,9 +94,9 @@ public class AIResponseManager {
 		//{
 		//	return false;
 		//}else{
-		lanesTaken.Clear();
 		Response.Invoke (ResponseChain.ToArray ());
 		ResponseChain.Clear ();
+		spawnNodesTaken.Clear ();
 		return true;
 		//}
 	}

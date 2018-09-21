@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace AI
 {
     public abstract class LogicBase : ScriptableObject
     {
         private AIResponseManager _AIResponder;
+        public List<CreatureBase> _Creatures = new List<CreatureBase>();
 
         public abstract void OnTick(IBoardState data);
        // public abstract void OnValidateFail(IBoardState data,IResponse[] chain);

@@ -12,11 +12,19 @@ public class UIManager : MonoBehaviour {
 	public Text player2ScoreText;
 	public Text player1TokenText;
 	public Text player2TokenText;
+	public Text winText;
+
+	public void Winner (string name) {
+		if (winText != null) {
+			winText.transform.parent.gameObject.SetActive(true);
+			winText.text = name + " wins!";
+		}
+	}
 
 	void Awake () {
 		_instance = this;
 	}
-	
+
 	public void UpdateScore () {
 		player1ScoreText.text = TournamentManager._instance.player1Score.ToString ();
 		player2ScoreText.text = TournamentManager._instance.player2Score.ToString ();

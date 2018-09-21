@@ -1,24 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Logging;
+using UnityEngine;
 
 public class TournamentManager : MonoBehaviour {
     #region  Singleton management
     public static TournamentManager _instance;
-    private void Awake()
-    {
-        if (_instance == null)
-        {
+    private void Awake () {
+        if (_instance == null) {
             _instance = this;
-        }
-        else
-        {
-            Destroy(this);
+            OnTick = new TickEvent ();
+
+            //Set Player listeners
+            OnTick.AddListener (P1.OnTick);
+            OnTick.AddListener (P2.OnTick);
+        } else {
+            Destroy (this);
         }
     }
-    private void OnDestroy()
-    {
+    private void OnDestroy () {
         _instance = null;
     }
     #endregion
@@ -39,7 +39,7 @@ public class TournamentManager : MonoBehaviour {
     public float bunnyDamage = 3;
     public float unicornDamage = 1;
 
-    [Header("Game Settings")]
+    [Header ("Game Settings")]
     public int tokensPerRound = 1;
 
     [Header ("Timing")]
@@ -65,11 +65,6 @@ public class TournamentManager : MonoBehaviour {
 
     // Setup the two Ai players 
     private void Start () {
-        OnTick = new TickEvent ();
-
-        //Set Player listeners
-        OnTick.AddListener (P1.OnTick);
-        OnTick.AddListener (P2.OnTick);
 
         //Set Lane listeners
         foreach (LaneManager lane in lanes) {
@@ -79,24 +74,34 @@ public class TournamentManager : MonoBehaviour {
         P1.init ();
         P2.init ();
 
-        IBoardState data = FindObjectOfType< LaneManager>();
+        IBoardState data = FindObjectOfType<LaneManager> ();
         OnTick.Invoke (data);
 
-        LogStack.Log("Tournament Manager initialised", LogLevel.System);
+        // LogStack.Log ("Tournament Manager initialised", LogLevel.System);
     }
 
     void LaneReady () {
         lanesReady++;
     }
 
+    void Winner (AI.LogicBase winner) {
+        Time.timeScale = 0;
+        UIManager._instance.Winner(winner.name);
+    }
+
     public void ScoreUpdate (CreatureBase creature) {
         if (creature.Owner == P1) {
             player1Score++;
+            if (player1Score >= 3) {
+                Winner (creature.Owner);
+            }
         } else if (creature.Owner == P2) {
             player2Score++;
+            if (player2Score >= 3) {
+                Winner (creature.Owner);
+            }
         }
         UIManager._instance.UpdateScore ();
     }
 
-    
 }

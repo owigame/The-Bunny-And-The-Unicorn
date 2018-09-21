@@ -8,10 +8,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94115698d718e144887278eace2c5431, type: 3}
-  m_Name: Human 2
+  m_Script: {fileID: 11500000, guid: 25c51c20645b5a249bc3a7a4340b765e, type: 3}
+  m_Name: Hal
   m_EditorClassIdentifier: 
-  humanActions: {fileID: 0}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 1024
