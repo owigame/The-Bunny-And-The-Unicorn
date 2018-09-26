@@ -1,8 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using AI;
 
-[CreateAssetMenu(fileName = "##NAME##", menuName = "AI/##NAME##", order = 0)]
-public class ##NAME## : LogicBase
+[CreateAssetMenu(fileName = "basic", menuName = "AI/basic", order = 0)]
+public class basic : LogicBase
 {
     public override void OnTick(IBoardState data)
     {
