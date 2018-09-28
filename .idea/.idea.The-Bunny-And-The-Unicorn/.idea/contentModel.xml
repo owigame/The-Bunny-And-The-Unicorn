@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Daniel\.Rider2018.1\system\resharper-host\Local\Transient\ReSharperHost\v12\SolutionCaches\_The-Bunny-And-The-Unicorn.-1096515856.00" t="ExcludeRecursive" />
+    <e p="E:\UnityProjects\The-Bunny-And-The-Unicorn" t="IncludeRecursive">
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="AI" t="Include">
+          <e p="DanR" t="Include">
+            <e p="Hyena.cs" t="Include" />
+          </e>
+          <e p="Example" t="Include">
+            <e p="BasicAI.cs" t="Include" />
+          </e>
+          <e p="Human" t="Include">
+            <e p="Human.cs" t="Include" />
+            <e p="HumanActions.cs" t="Include" />
+          </e>
+          <e p="Jared" t="Include">
+            <e p="AI_Jared.cs" t="Include" />
+            <e p="basic.cs" t="Include" />
+            <e p="Hal.cs" t="Include" />
+          </e>
+        </e>
+        <e p="AIFramework.cd" t="Include" />
+        <e p="EasyButtons" t="Include">
+          <e p="ButtonAttribute.cs" t="Include" />
+          <e p="ButtonsExample.cs" t="Include" />
+          <e p="CustomEditorButtonsExample.cs" t="Include" />
+          <e p="Editor" t="Include">
+            <e p="ButtonEditor.cs" t="Include" />
+            <e p="CustomEditorButtonsExampleEditor.cs" t="Include" />
+            <e p="EasyButtonsEditorExtensions.cs" t="Include" />
+          </e>
+          <e p="ScriptableObjectExample.cs" t="Include" />
+        </e>
+        <e p="Scripts" t="Include">
+          <e p="AIFramework" t="Include">
+            <e p="ActionResponse.cs" t="Include" />
+            <e p="AIResponseManager.cs" t="Include" />
+            <e p="TickManager.cs" t="Include" />
+          </e>
+          <e p="BaseClasses" t="Include">
+            <e p="CreatureBase.cs" t="Include" />
+            <e p="LogicBase.cs" t="Include" />
+          </e>
+          <e p="CodeTemplates" t="Include">
+            <e p="Editor" t="Include">
+              <e p="CodeTemplates.cs" t="Include" />
+              <e p="CodeTemplatesMenuItems.cs" t="Include" />
+              <e p="Templates" t="Include">
+                <e p="AITemplate.txt" t="Include" />
+              </e>
+            </e>
+          </e>
+          <e p="DataStructures" t="Include">
+            <e p="MaxStack.cs" t="Include" />
+          </e>
+          <e p="Editor" t="Include">
+            <e p="EnumFlagDrawer.cs" t="Include" />
+          </e>
+          <e p="EnumFlagAttribute.cs" t="Include" />
+          <e p="Enums" t="Include">
+            <e p="ResponseActionType.cs" t="Include" />
+            <e p="Spawnable.cs" t="Include" />
+          </e>
+          <e p="Events" t="Include">
+            <e p="LaneEvent.cs" t="Include" />
+            <e p="ResponseEvent.cs" t="Include" />
+            <e p="TickEvent.cs" t="Include" />
+          </e>
+          <e p="Gameplay" t="Include">
+            <e p="LaneManager.cs" t="Include" />
+            <e p="LaneNode.cs" t="Include" />
+            <e p="TournamentManager.cs" t="Include" />
+            <e p="UIManager.cs" t="Include" />
+          </e>
+          <e p="Interfaces" t="Include">
+            <e p="IData.cs" t="Include" />
+            <e p="IResponse.cs" t="Include" />
+          </e>
+          <e p="Logging" t="Include">
+            <e p="LogDemo.cs" t="Include" />
+            <e p="Loggers" t="Include">
+              <e p="ConsoleLogger.cs" t="Include" />
+              <e p="StackLogger.cs" t="Include" />
+              <e p="SystemLogger.cs" t="Include" />
+            </e>
+            <e p="Logging.cs" t="Include" />
+            <e p="LogLevel.cs" t="Include" />
+            <e p="LogStack.cs" t="Include" />
+          </e>
+          <e p="UI" t="Include">
+            <e p="CameraShake.cs" t="Include" />
+            <e p="UIFollow.cs" t="Include" />
+            <e p="UIHealth.cs" t="Include" />
+            <e p="UIHumanInput.cs" t="Include" />
+            <e p="UILane.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="Library" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
+      <e p="The-Bunny-And-The-Unicorn.sln" t="IncludeFlat" />
+    </e>
+  </component>
+</project>
