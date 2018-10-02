@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44165573, g: 0.49054664, b: 0.5705391, a: 1}
+  m_IndirectSpecularColor: {r: 0.4416554, g: 0.49054563, b: 0.57053846, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -584,9 +584,9 @@ RectTransform:
   m_Father: {fileID: 27180217}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 95.5, y: -30}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &419886288
@@ -851,9 +851,9 @@ RectTransform:
   m_Father: {fileID: 27180217}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 24.5, y: -30}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &789760793
@@ -1615,8 +1615,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c45f21dfdfeca3469e6520f200bc481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  P1: {fileID: 11400000, guid: 9ae60098e1a91d34bb54ef53b38fe4c4, type: 2}
-  P2: {fileID: 11400000, guid: 31797fa16bc107d4b8d23c073dfabe2d, type: 2}
+  P1: {fileID: 11400000, guid: 7d256f0147f09b64691b1631399b6158, type: 2}
+  P2: {fileID: 11400000, guid: 9ae60098e1a91d34bb54ef53b38fe4c4, type: 2}
   lanes:
   - {fileID: 370656674}
   - {fileID: 493088259}
@@ -2074,9 +2074,9 @@ RectTransform:
   m_Father: {fileID: 27180217}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 60, y: -30}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 3, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2094542975
