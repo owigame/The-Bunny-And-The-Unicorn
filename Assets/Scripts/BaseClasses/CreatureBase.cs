@@ -84,18 +84,17 @@ public class CreatureBase : MonoBehaviour {
 		uiHealth.SetHealth (health);
 
 		if (health <= 0) {
-			dead = true;
 			Die ();
 		}
 	}
 
 	public void Die () {
-		if (dead) {
-			activeLaneNode.activeCreature = null;
-			owner._Creatures.Remove (this);
-			animator.SetBool ("Die", true);
-			uiHealth.gameObject.SetActive (false);
-		}
+		dead = true;
+		activeLaneNode.activeCreature = null;
+		owner._Creatures.Remove (this);
+		animator.SetBool ("Die", true);
+		uiHealth.gameObject.SetActive (false);
+		TournamentManager.OnCreatureDead(this);
 	}
 
 	public void Win () {
@@ -104,9 +103,7 @@ public class CreatureBase : MonoBehaviour {
 			Debug.Log (gameObject.name + " made it to the end. 1 point to " + owner.name);
 			TournamentManager._instance.ScoreUpdate (this);
 			animator.SetBool ("Win", true);
-			dead = true;
-			activeLaneNode.activeCreature = null;
-			uiHealth.gameObject.SetActive (false);
+			Die ();
 		}
 	}
 

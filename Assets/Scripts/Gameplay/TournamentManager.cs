@@ -25,6 +25,9 @@ public class TournamentManager : MonoBehaviour {
 
     public TickEvent OnTick;
 
+    public delegate void CreatureEvents(CreatureBase creature);
+    public static CreatureEvents OnCreatureDead;
+
     [Header ("Player Setup")]
     public AI.LogicBase P1, P2;
 
