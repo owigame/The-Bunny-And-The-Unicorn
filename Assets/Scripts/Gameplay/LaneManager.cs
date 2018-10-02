@@ -47,7 +47,7 @@ public class LaneManager : MonoBehaviour, IBoardState {
         lanesTakenThisRound.Clear ();
     }
 
-    public List<CreatureBase> SearchRange (int range, LaneNode currentNode) {
+    public List<CreatureBase> SearchRange (int range, LaneNode currentNode, LogicBase player) {
         List<CreatureBase> creaturesInRange = new List<CreatureBase> ();
 
         for (int i = -range; i < range + 1; i++) {
@@ -56,6 +56,9 @@ public class LaneManager : MonoBehaviour, IBoardState {
                     creaturesInRange.Add (allNodes[allNodes.IndexOf (currentNode) + i].activeCreature);
                 }
             }
+        }
+        if (player._PlayerNumber == 2) {
+            creaturesInRange.Reverse ();
         }
 
         return creaturesInRange;

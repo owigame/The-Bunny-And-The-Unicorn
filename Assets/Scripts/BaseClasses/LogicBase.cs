@@ -5,7 +5,7 @@ namespace AI {
     public abstract class LogicBase : ScriptableObject {
         private AIResponseManager _AIResponder;
         public List<CreatureBase> _Creatures = new List<CreatureBase> ();
-        int _PlayerNumber = 0;
+        public int _PlayerNumber = 0;
 
         public abstract void OnTick (IBoardState data);
         // public abstract void OnValidateFail(IBoardState data,IResponse[] chain);

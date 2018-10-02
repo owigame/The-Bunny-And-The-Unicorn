@@ -49,13 +49,12 @@ public class AIResponseManager {
 		/* fail the Spawn */
 		// LogStack.Log ("Tokens: " + tokens, LogLevel.Debug);
 		// LogStack.Log ("Node Creature Count: " + (node.activeCreature != null ? 1 : 0), LogLevel.System);
-		if (tokens <= 0 || lane > TournamentManager._instance.lanes.Count || node.activeCreature != null || spawnNodesTaken.Contains (node)) {
+		if (!SpendToken () || lane > TournamentManager._instance.lanes.Count || node.activeCreature != null || spawnNodesTaken.Contains (node)) {
 			// LogStack.Log ("Response | Spawn Failed Lane: " + lane, LogLevel.Stack);
 			return false;
 		} else {
 			// LogStack.Log ("Response | Spawn Success Lane: " + lane, LogLevel.Stack);
 			spawnNodesTaken.Add (node);
-			SpendToken ();
 			ResponseChain.Add (response);
 			return true;
 		}
@@ -63,29 +62,33 @@ public class AIResponseManager {
 
 	public bool Move (CreatureBase creature, int range = 1) {
 		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.RightFacing, range);
-		if (creature != null && nextNode != null && nextNode.activeCreature == null && tokens >= range) {
-			SpendToken (range);
+
+		if (SpendToken (range) && creature != null && nextNode != null && nextNode.activeCreature == null) {
 			// LogStack.Log ("Response | Move", LogLevel.Stack);
 			IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Move, nextNode);
 			ResponseChain.Add (response);
 			return true;
 		} else {
-			// LogStack.Log ("Response | Move Failed", LogLevel.Stack);
 			return false;
 		}
 	}
 
 	public bool Attack (CreatureBase creature) {
-		SpendToken ();
+		if (!SpendToken ()) return false;
+
 		// LogStack.Log ("Response | Attack", LogLevel.Stack);
 		IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Attack, creature.ActiveLaneNode);
 		ResponseChain.Add (response);
 		return true;
 	}
 
-	void SpendToken (int amount = 1) {
-		tokens-= amount;
-		UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
+	bool SpendToken (int amount = 1) {
+		if (tokens + amount >= 0) {
+			tokens -= amount;
+			UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
+			return true;
+		}
+		return false;
 	}
 
 	public bool FinalizeResponse () {
