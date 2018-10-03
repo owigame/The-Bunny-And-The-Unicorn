@@ -18,7 +18,8 @@ public class Test : LogicBase
                 if (!AIResponse.Spawn(Random.Range(0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, randomLane))
                  {
                      //--get a random creature to move/attack with... --HOW do I choose a type of creature?
-                    if (_Creatures.Count > 0){
+                    if (_Creatures.Count > 0)
+                    {
                         CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
                         AttemptAttack(randomCreature);
                     }
