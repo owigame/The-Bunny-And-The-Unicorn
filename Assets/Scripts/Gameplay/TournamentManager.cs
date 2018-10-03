@@ -25,6 +25,9 @@ public class TournamentManager : MonoBehaviour {
 
     public TickEvent OnTick;
 
+    public delegate void CreatureEvents(CreatureBase creature);
+    public static CreatureEvents OnCreatureDead;
+
     [Header ("Player Setup")]
     public AI.LogicBase P1, P2;
 
@@ -74,7 +77,7 @@ public class TournamentManager : MonoBehaviour {
         P1.init ();
         P2.init ();
 
-        IBoardState data = FindObjectOfType<LaneManager> ();
+        IBoardState[] data = FindObjectsOfType<LaneManager> ();
         OnTick.Invoke (data);
 
         // LogStack.Log ("Tournament Manager initialised", LogLevel.System);

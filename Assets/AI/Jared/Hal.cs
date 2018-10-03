@@ -5,7 +5,7 @@ using UnityEngine;
 
 [CreateAssetMenu (fileName = "Hal", menuName = "AI/Hal", order = 0)]
 public class Hal : LogicBase {
-    public override void OnTick (IBoardState data) {
+    public override void OnTick (IBoardState[] data) {
         AIResponse.onTick (null);
 
         //Spend all tokens
@@ -32,7 +32,7 @@ public class Hal : LogicBase {
 
     void AttemptMoveAttack (CreatureBase creature) {
         if (creature != null) {
-            List<CreatureBase> searchTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode);
+            List<CreatureBase> searchTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode, this);
             bool foundAttackTarget = false;
             foreach (CreatureBase _creature in searchTargetCreatures) {
                 if (_creature.Owner != creature.Owner) { //Found enemy creature in range

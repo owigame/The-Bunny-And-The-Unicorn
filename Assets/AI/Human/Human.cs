@@ -17,7 +17,7 @@ public class Human : LogicBase {
 
     public LayerMask layerMask;
 
-    public override void OnTick (IBoardState data) {
+    public override void OnTick (IBoardState[] data) {
         //   Debug.Log (this.name + " OnTick()");
         OpenUI ();
 
