@@ -32,7 +32,7 @@ public class Hal : LogicBase {
 
     void AttemptMoveAttack (CreatureBase creature) {
         if (creature != null) {
-            List<CreatureBase> searchTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode);
+            List<CreatureBase> searchTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode, this);
             bool foundAttackTarget = false;
             foreach (CreatureBase _creature in searchTargetCreatures) {
                 if (_creature.Owner != creature.Owner) { //Found enemy creature in range

@@ -68,10 +68,10 @@ public class CreatureBase : MonoBehaviour {
 	}
 
 	public void KillInRange () {
-		Debug.Log ("--- " + owner + "searchInRange ---");
-		foreach (var creature in lane.SearchRange ((int) range, activeLaneNode)) {
+		LogStack.Log ("--- " + owner + "searchInRange ---", LogLevel.Stack);
+		foreach (var creature in lane.SearchRange ((int) range, activeLaneNode, owner)) {
 			if (creature.Owner != owner) {
-				Debug.Log (creature + " in range. Kill it.");
+				LogStack.Log (creature + " in range. Kill it.", LogLevel.Stack);
 				creature.Damage (this, damageAmount);
 				break;
 			}
@@ -79,39 +79,36 @@ public class CreatureBase : MonoBehaviour {
 	}
 
 	public void Damage (CreatureBase killer, float amount) {
-		Debug.Log (transform.name + " killed by Player " + (killer == TournamentManager._instance.P1 ? "1" : "2") + "'s " + killer.CreatureType);
+		LogStack.Log (transform.name + " killed by Player " + (killer == TournamentManager._instance.P1 ? "1" : "2") + "'s " + killer.CreatureType, LogLevel.Stack);
 		health -= amount;
 		uiHealth.SetHealth (health);
 
 		if (health <= 0) {
-			dead = true;
 			Die ();
 		}
 	}
 
 	public void Die () {
-		if (dead) {
-			activeLaneNode.activeCreature = null;
-			owner._Creatures.Remove (this);
-			animator.SetBool ("Die", true);
-			uiHealth.gameObject.SetActive (false);
-		}
+		dead = true;
+		activeLaneNode.activeCreature = null;
+		owner._Creatures.Remove (this);
+		animator.SetBool ("Die", true);
+		uiHealth.gameObject.SetActive (false);
+		if (TournamentManager.OnCreatureDead != null) TournamentManager.OnCreatureDead (this);
 	}
 
 	public void Win () {
 		if ((activeLaneNode == lane.endNode && rightFacing) || (activeLaneNode == lane.startNode && !rightFacing)) {
 			//Made it to the end
-			Debug.Log (gameObject.name + " made it to the end. 1 point to " + owner.name);
+			LogStack.Log (gameObject.name + " made it to the end. 1 point to " + owner.name, LogLevel.Stack);
 			TournamentManager._instance.ScoreUpdate (this);
 			animator.SetBool ("Win", true);
-			dead = true;
-			activeLaneNode.activeCreature = null;
-			uiHealth.gameObject.SetActive (false);
+			Die ();
 		}
 	}
 
 	public void Move (LaneNode nextNode) {
-		Debug.Log ("Moving Creature");
+		LogStack.Log ("Moving Creature", LogLevel.Stack);
 		CameraShake._CameraShake.DoCameraShake (0.2f, rightFacing ? 0.2f : -0.2f);
 		if (activeLaneNode.activeCreature == this) activeLaneNode.activeCreature = null;
 		LogStack.Log ("MOVING: Current Node - " + activeLaneNode.name, LogLevel.System);
