@@ -49,7 +49,7 @@ public class CreatureBase : MonoBehaviour {
 		}
 	}
 
-	public void onTick (IBoardState data) {
+	public void onTick (IBoardState[] data) {
 		animator.SetBool ("Attack", false);
 	}
 
