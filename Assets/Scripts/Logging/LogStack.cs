@@ -6,7 +6,7 @@ public class LogStack : MonoBehaviour
 {
     #region  Singleton management
     private static LogStack _instance;
-    Logging.Logging logger,LoggerSystem ,loggerStack;
+    Logging.Logging logger,LoggerSystem ,loggerStack,Color;
 
     private void Awake()
     {
@@ -18,6 +18,7 @@ public class LogStack : MonoBehaviour
             // chain the stack log to follow the console. makes it reachable through logger.message
             LoggerSystem = logger.SetNext(new SystemLogger(LogLevel.System | LogLevel.System));
             loggerStack = LoggerSystem.SetNext(new StackLogger(LogLevel.Stack, 5));
+            Color = loggerStack.SetNext(new ColorLogger(LogLevel.Color, "green"));
         }
         else
         {
@@ -53,5 +54,9 @@ public class LogStack : MonoBehaviour
             Debug.Log("> " + item);
         }
         Debug.Log("--- End Stack Contents ---");
+    }
+    public static void SetColor(string color)
+    {
+        _instance.Color.SetNext( new ColorLogger(LogLevel.Color, color));
     }
 }
