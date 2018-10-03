@@ -1,40 +1,94 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using AI;
+using UnityEngine;
 
-[CreateAssetMenu(fileName = "Kitty", menuName = "AI/Kitty", order = 0)]
+[CreateAssetMenu (fileName = "Kitty", menuName = "AI/Kitty", order = 0)]
 public class Kitty : LogicBase
 {
     CreatureBase _targetCreature;
-    public override void OnTick(IBoardState[] data)
+    public override void OnTick (IBoardState[] data)
     {
         //--list of closest creature in each lane--
-        List<CreatureBase> closestCreatures = new List<CreatureBase>();
-		//--lanes with enemies...
-        foreach (LaneManager lane in TournamentManager._instance.lanes){
+        List<CreatureBase> closestCreatures = new List<CreatureBase> ();
+        //--lanes with enemies...
+        foreach (LaneManager lane in TournamentManager._instance.lanes)
+        {
+
+            int enemyCount = lane.GetEnemiesInLane (this).Count;
+            int friendlyCount = lane.GetFriendliesInLane (this).Count;
+
             int highestLaneProgress = 0;
             CreatureBase closestEnemy = null;
-            //--each enemy in lane--
-            foreach(CreatureBase creature in lane.GetEnemiesInLane(this)){
-                if (creature.LaneProgress > highestLaneProgress){
-                    closestEnemy = creature;
-                    highestLaneProgress = closestEnemy.LaneProgress;
+
+            if (enemyCount > 0)
+            {
+                //--each enemy in lane--
+                foreach (CreatureBase creature in lane.GetEnemiesInLane (this))
+                {
+                    if (creature.LaneProgress > highestLaneProgress)
+                    {
+                        closestEnemy = creature;
+                        highestLaneProgress = closestEnemy.LaneProgress;
+                    }
+                    if (closestEnemy != null)
+                    {
+                        if (!AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, TournamentManager._instance.lanes.IndexOf (closestEnemy.ActiveLaneNode.laneManager) + 1))
+                        {
+                            //Could not Spawn
+                        }
+                    }
                 }
+                closestCreatures.Add (closestEnemy);
             }
-            closestCreatures.Add(closestEnemy);
-            
         }
 
-        foreach(CreatureBase enemycreature in closestCreatures)
+        if (closestCreatures.Count > 0)
         {
-            int highestLaneProgress = 0;
-            if (enemycreature.LaneProgress > highestLaneProgress)
+            foreach (CreatureBase enemycreature in closestCreatures)
             {
-                _targetCreature = enemycreature;
-                highestLaneProgress = enemycreature.LaneProgress;
+                int highestLaneProgress = 0;
+                if (enemycreature != null)
+                {
+                    if (enemycreature.LaneProgress > highestLaneProgress)
+                    {
+                        _targetCreature = enemycreature;
+                        highestLaneProgress = enemycreature.LaneProgress;
+                    }
+                    AttemptMoveAttack(_targetCreature);
+                }
             }
         }
+        else
+        {
+            int randomLane = Random.Range (1, TournamentManager._instance.lanes.Count + 1);
+            //--attampt spawn in lane---
+            if (!AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, randomLane))
+            {
+
+            }
+        }
+
         //IResponse[] responses = AIResponse.QueryResponse();
-        AIResponse.FinalizeResponse();
+        AIResponse.FinalizeResponse ();
+    }
+
+    void AttemptMoveAttack (CreatureBase creature)
+    {
+        //Find friendly in same lane as _targetCreature
+        CreatureBase closestFriendly = creature.ActiveLaneNode.laneManager.GetFriendliesInLane (this) [0];
+        if (closestFriendly == null)
+        {
+            //No friendly
+        }
+        int openNodes = _targetCreature.ActiveLaneNode.laneManager.GetOpenNodes (closestFriendly.ActiveLaneNode, _RightFacing);
+
+        if (openNodes < closestFriendly.Range)
+        {
+            AIResponse.Attack (closestFriendly);
+        }
+        else
+        {
+            AIResponse.Move (closestFriendly, openNodes);
+        }
     }
 }
