@@ -77,7 +77,7 @@ public class TournamentManager : MonoBehaviour {
         P1.init ();
         P2.init ();
 
-        IBoardState data = FindObjectOfType<LaneManager> ();
+        IBoardState[] data = FindObjectsOfType<LaneManager> ();
         OnTick.Invoke (data);
 
         // LogStack.Log ("Tournament Manager initialised", LogLevel.System);

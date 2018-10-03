@@ -24,6 +24,7 @@ public class TickManager : MonoBehaviour {
     public TickState tickState;
     private IResponse[] P1, P2;
     int ResponsesRecieved = 0;
+
     public void OnResponse (IResponse[] ResponseChain) {
         switch (tickState) {
             case TickState.AwaitingResponses:
@@ -73,7 +74,7 @@ public class TickManager : MonoBehaviour {
                 // if (ResponsesRecieved == 2) {
                 // ResponsesRecieved = 0;
                 tickState = TickState.AwaitingResponses;
-                TournamentManager._instance.OnTick.Invoke (FindObjectOfType<LaneManager> ());
+                TournamentManager._instance.OnTick.Invoke (FindObjectsOfType<LaneManager> ());
                 P1 = new IResponse[0];
                 P2 = new IResponse[0];
                 // }
