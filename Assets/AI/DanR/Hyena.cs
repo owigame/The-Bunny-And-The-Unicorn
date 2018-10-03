@@ -1,69 +1,96 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using AI;
+using UnityEngine;
 
-[CreateAssetMenu(fileName = "Hyena", menuName = "AI/Hyena", order = 0)]
+[CreateAssetMenu (fileName = "Hyena", menuName = "AI/Hyena", order = 0)]
 public class Hyena : LogicBase
 {
-    public override void OnTick(IBoardState data)
-    {
-        AIResponse.onTick(null);
+    public int lanetospawn = 1;
+    private Spawnable LastSpawned;
 
-        //Spend all tokens
-        //Spawn in each lane otherwise attack or move
-        var maxCycles = 99;
+    public override void OnTick (IBoardState data)
+    {
+        AIResponse.onTick (null);
+
+        int maxCycles = 99;
 
         while (AIResponse.Tokens > 0 && maxCycles > 0)
         {
-            //Spend all tokens
-            maxCycles--;
-            if (Random.Range(0, 2) == 0 || _Creatures.Count == 0)
+            if (lanetospawn > 3)
+                lanetospawn = 1;
+
+            if (LastSpawned == Spawnable.Unicorn)
             {
-                var randomLane = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
-                // LogStack.Log ("Random Spawn Lane " + randomLane, LogLevel.System);
-                if (!AIResponse.Spawn(Random.Range(0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, randomLane))
+
+                if (!AIResponse.Spawn (Spawnable.Bunny, lanetospawn))
+                    MoveOrAttack (_Creatures[Random.Range (0, _Creatures.Count)]);
+
+                else
+                    LastSpawned = Spawnable.Bunny;
+
+            }
+            else if (LastSpawned == Spawnable.Bunny)
+            {
+
+                if (!AIResponse.Spawn (Spawnable.Unicorn, lanetospawn))
+                    MoveOrAttack (_Creatures[Random.Range (0, _Creatures.Count)]);
+                else
+                    LastSpawned = Spawnable.Unicorn;
+            }
+            else
+            {
+
+                if (!AIResponse.Spawn (Spawnable.Unicorn, lanetospawn))
                 {
-                    var randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                    AttemptMoveAttack(randomCreature);
+
+                    MoveOrAttack (_Creatures[Random.Range (0, _Creatures.Count)]);
                 }
+                else
+                    LastSpawned = Spawnable.Unicorn;
             }
-            else if (_Creatures.Count > 0)
-            {
-                var randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                AttemptMoveAttack(randomCreature);
-            }
+
+            lanetospawn++;
+
+            maxCycles--;
         }
 
-        AIResponse.FinalizeResponse();
+        AIResponse.FinalizeResponse ();
     }
 
-    private void AttemptMoveAttack(CreatureBase creature)
+    private void MoveOrAttack (CreatureBase creature)
     {
         if (creature == null) return;
-        
-        var searchTargetCreatures =
-            creature.ActiveLaneNode.laneManager.SearchRange((int) creature.Range, creature.ActiveLaneNode);
-        
+
+        var searchTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode);
+
         var foundAttackTarget = false;
 
         foreach (var thisCreature in searchTargetCreatures)
         {
             if (thisCreature.Owner == creature.Owner) continue;
 
-            //Found enemy creature in range
-            foundAttackTarget = true;
-            AIResponse.Attack(creature);
+            var CreatureTarget = creature.ActiveLaneNode.laneManager.SearchRange ((int) 0, creature.ActiveLaneNode);
+
+            if (CreatureTarget != null)
+            {
+                //Found enemy creature in range
+                foundAttackTarget = true;
+            }
         }
 
         if (!foundAttackTarget)
         {
             var moveSpaces =
-                creature.ActiveLaneNode.laneManager.GetOpenNodes(creature.ActiveLaneNode, creature.RightFacing);
+                creature.ActiveLaneNode.laneManager.GetOpenNodes (creature.ActiveLaneNode, creature.RightFacing);
 
             if (moveSpaces > AIResponse.Tokens)
                 moveSpaces = AIResponse.Tokens;
 
-            AIResponse.Move(creature, moveSpaces);
+            AIResponse.Move (creature, moveSpaces);
+        }
+        else
+        {
+            AIResponse.Attack (creature);
         }
     }
 }
