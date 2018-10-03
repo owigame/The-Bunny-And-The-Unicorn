@@ -23,17 +23,20 @@ public class DanielG_Action : LogicBase
         B_Init = false;
     }
 
-    public override void OnTick(IBoardState data)
+    public override void OnTick(IBoardState[] data)
     {
-        if (!B_Init) Init();        
-
+        if (!B_Init) Init();
+        int iCount = 0;
+        UpdateLaneAdvantage();
         // Defense.        
         //bool b_DefendedOnce = false;
-        while (AIResponse.Tokens > iDefTokenThreshold /*|| !b_DefendedOnce*/)
+        while (AIResponse.Tokens > iDefTokenThreshold /*|| !b_DefendedOnce*/ && iCount < 99)
         {
-            if (TokenCheck() == false) return;
-            //b_DefendedOnce = true;
+            iCount++;
+            if (TokenCheck() == false) return;            
+            //b_DefendedOnce = true;        
             int iWeakLane = GetDefendingLane();
+            LogStack.Log("Weak Lane = " + iWeakLane.ToString(), LogLevel.Debug);
 
             //if (!AIResponse.Spawn(Spawnable.Bunny, iWeakLane + 1))
             //{
@@ -50,22 +53,23 @@ public class DanielG_Action : LogicBase
             if (creatureofFirstNode == null)
             {
                 LogStack.Log("Trying to spawn in slot... 0:" + iWeakLane, LogLevel.Debug);
-                if (!AIResponse.Spawn(Spawnable.Bunny, iWeakLane + 1))
+                if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
                 {
                     // Failed                    
                 }
             }
-            else
-            {
-                LogStack.Log("Failed... Trying to shift Lane", LogLevel.Debug);
-                if (ShiftLane(iWeakLane)) // Failed - Space Occupied - Shift entire row...
-                {
-                    if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
-                    {
-                        // Failed
-                    }                   
-                }
-            }
+            else ShiftLane(iWeakLane);
+            //{
+            //    LogStack.Log("Failed... Trying to shift Lane", LogLevel.Debug);
+                
+            //    if (ShiftLane(iWeakLane)) // Failed - Space Occupied - Shift entire row...
+            //    {
+            //        if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
+            //        {
+            //            // Failed
+            //        }
+            //    }
+            //}
         }
 
         
@@ -106,8 +110,8 @@ public class DanielG_Action : LogicBase
 
             foreach (CreatureBase _creature in searchTargetCreatures)
             {
-                if (TokenCheck() == false) return;
-                if (_creature.Owner != creature.Owner) AIResponse.Attack(creature);               
+                //if (TokenCheck() == false) return;
+                if (_creature.Owner != this) AIResponse.Attack(creature);               
             }
         }
 
@@ -123,20 +127,20 @@ public class DanielG_Action : LogicBase
         //}
 
         // Offense - Moving.
-        while (AIResponse.Tokens >= iAttackTokenThreshold)
-        {
-            if (TokenCheck() == false) return;
-            int iLane = Random.Range(0, 2);
-            List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
+        //while (AIResponse.Tokens >= iAttackTokenThreshold)
+        //{
+            //if (TokenCheck() == false) return;
+            //int iLane = Random.Range(0, 2);
+            //List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
 
-            if (AvailableLaneTroops.Count > 0)
-            {
-                if (!AIResponse.Move(AvailableLaneTroops[0], 1))
-                {
-                    // Failed. TODO - Add outputs of fail to logstack.
-                }
-            }
-        }
+            //if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= iAttackTokenThreshold)
+            //{
+            //    if (!AIResponse.Move(AvailableLaneTroops[0], 1))
+            //    {
+            //        // Failed. TODO - Add outputs of fail to logstack.
+            //    }
+            //}
+        //}
 
         //IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse();
@@ -198,6 +202,10 @@ public class DanielG_Action : LogicBase
         {
             LaneManager activeLane = TournamentManager._instance.lanes[i];
             LI_LaneAdvantage[i] = activeLane.GetFriendliesInLane(this).Count - activeLane.GetEnemiesInLane(this).Count;
+            LogStack.Log("Friendlies = " + activeLane.GetFriendliesInLane(this).Count.ToString(), LogLevel.Debug);
+            LogStack.Log("Enemies = " + activeLane.GetEnemiesInLane(this).Count.ToString(), LogLevel.Debug);
+
+            LogStack.Log(LI_LaneAdvantage[i].ToString(), LogLevel.Debug);
         }
     }
 

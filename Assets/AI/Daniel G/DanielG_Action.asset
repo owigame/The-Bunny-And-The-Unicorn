@@ -11,18 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b383c7a24d528544b0d62cae87f067b, type: 3}
   m_Name: DanielG_Action
   m_EditorClassIdentifier: 
-  _Creatures:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  _Creatures: []
   _PlayerNumber: 1
-  B_Init: 1
+  B_Init: 0
   B_StartLeft: 1
   iDefTokenThreshold: 4
   iAttackTokenThreshold: 7
