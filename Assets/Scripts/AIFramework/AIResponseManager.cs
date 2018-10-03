@@ -64,7 +64,7 @@ public class AIResponseManager {
 	}
 
 	public bool Move (CreatureBase creature, int range = 1) {
-		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.RightFacing, range);
+		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.Owner._RightFacing, range);
 
 		if (creature != null && nextNode != null && nextNode.activeCreature == null) {
 			if (!SpendToken ()) return false;

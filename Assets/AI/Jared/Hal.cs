@@ -41,7 +41,7 @@ public class Hal : LogicBase {
                 }
             }
             if (!foundAttackTarget) {
-                int moveSpaces = creature.ActiveLaneNode.laneManager.GetOpenNodes (creature.ActiveLaneNode, creature.RightFacing);
+                int moveSpaces = creature.ActiveLaneNode.laneManager.GetOpenNodes (creature.ActiveLaneNode, _RightFacing);
                 if (moveSpaces > AIResponse.Tokens){
                     moveSpaces = AIResponse.Tokens;
                 }
