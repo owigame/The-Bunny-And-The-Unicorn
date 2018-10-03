@@ -7,14 +7,10 @@ public class Test : LogicBase
 {
     public override void OnTick(IBoardState data)
     {
-        //if (!AIResponse.Spawn(Spawnable.Unicorn,1))
-        //      {}
-
-        //---creaturecount is always 3? --WHY?
-
         //--have at least three creatures in play..spawn on lanes with enemies first... --HOW?
-        if (_Creatures.Count <= 3)
+        if (_Creatures.Count == 0)
         {
+
             int randomLane = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
             //--attampt spawn in lane---
             if (!AIResponse.Spawn(Random.Range(0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, randomLane))
@@ -24,12 +20,14 @@ public class Test : LogicBase
                 AttemptAttack(randomCreature);
             }
         }
-        else
+        else if (_Creatures.Count > 0)
         {
             //--get a random creature to move/attack with...
             CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
             AttemptAttack(randomCreature);
         }
+
+
         //IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse();
     }
@@ -53,7 +51,11 @@ public class Test : LogicBase
             if (!foundAttackTarget)
             {
                 //Can't attack...
-                AttemptMove(creature);
+                float wait = Random.Range(0, 25);
+                if (wait % 2 == 0)
+                {
+                    AttemptMove(creature);
+                }
             }
         }
     }

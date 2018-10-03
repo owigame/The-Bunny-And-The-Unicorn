@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Name: Test
   m_EditorClassIdentifier: 
   _Creatures: []
-  _PlayerNumber: 0
+  _PlayerNumber: 1
