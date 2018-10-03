@@ -49,10 +49,11 @@ public class AIResponseManager {
 		/* fail the Spawn */
 		// LogStack.Log ("Tokens: " + tokens, LogLevel.Debug);
 		// LogStack.Log ("Node Creature Count: " + (node.activeCreature != null ? 1 : 0), LogLevel.System);
-		if (!SpendToken () || lane > TournamentManager._instance.lanes.Count || node.activeCreature != null || spawnNodesTaken.Contains (node)) {
+		if (lane > TournamentManager._instance.lanes.Count || node.activeCreature != null || spawnNodesTaken.Contains (node)) {
 			// LogStack.Log ("Response | Spawn Failed Lane: " + lane, LogLevel.Stack);
 			return false;
 		} else {
+			if (!SpendToken ()) return false;
 			// LogStack.Log ("Response | Spawn Success Lane: " + lane, LogLevel.Stack);
 			spawnNodesTaken.Add (node);
 			ResponseChain.Add (response);
@@ -63,7 +64,8 @@ public class AIResponseManager {
 	public bool Move (CreatureBase creature, int range = 1) {
 		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.RightFacing, range);
 
-		if (SpendToken (range) && creature != null && nextNode != null && nextNode.activeCreature == null) {
+		if (creature != null && nextNode != null && nextNode.activeCreature == null) {
+			if (!SpendToken ()) return false;
 			// LogStack.Log ("Response | Move", LogLevel.Stack);
 			IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Move, nextNode);
 			ResponseChain.Add (response);
