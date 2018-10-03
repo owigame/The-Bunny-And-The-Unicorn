@@ -9,6 +9,7 @@ public class DanielG_Action : LogicBase
     private List<int> LI_ActiveTroops = new List<int>();
     public bool B_Init = false;
     public bool B_StartLeft = true;
+    public bool B_Bunnies = true;
 
     private List<int> LI_LaneAdvantage = new List<int>();
 
@@ -53,23 +54,23 @@ public class DanielG_Action : LogicBase
             if (creatureofFirstNode == null)
             {
                 LogStack.Log("Trying to spawn in slot... 0:" + iWeakLane, LogLevel.Debug);
-                if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
+                if (!AIResponse.Spawn((B_Bunnies)?Spawnable.Bunny:Spawnable.Unicorn, iWeakLane + 1))
                 {
                     // Failed                    
                 }
             }
-            else ShiftLane(iWeakLane);
-            //{
-            //    LogStack.Log("Failed... Trying to shift Lane", LogLevel.Debug);
-                
-            //    if (ShiftLane(iWeakLane)) // Failed - Space Occupied - Shift entire row...
-            //    {
-            //        if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
-            //        {
-            //            // Failed
-            //        }
-            //    }
-            //}
+            else /*ShiftLane(iWeakLane);*/
+            {
+                LogStack.Log("Failed... Trying to shift Lane", LogLevel.Debug);
+
+                if (ShiftLane(iWeakLane)) // Failed - Space Occupied - Shift entire row...
+                {
+                    if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
+                    {
+                        // Failed
+                    }
+                }
+            }
         }
 
         
