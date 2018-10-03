@@ -6,32 +6,25 @@ using Logging;
 [CreateAssetMenu(fileName = "Test", menuName = "AI/Test", order = 0)]
 public class Test : LogicBase
 {
-    bool firstRun = true;
     public override void OnTick(IBoardState[] data)
     {
-        if (firstRun)
-        {
-            _Creatures.Clear();
-            firstRun = false;
-        }
-
-        //--have at least three creatures in play..spawn on lanes with enemies first... --HOW?
-        
-       // if (_Creatures.Count == 0)
-      //  {
-            if (_Creatures.Count < 5)
+        int maxLoop = 99;
+            while (_Creatures.Count < 5 && maxLoop > 0)
             {
-
+                maxLoop --;
                 int randomLane = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
+                LogStack.Log("Random Lane: " + randomLane,LogLevel.Debug);
                 //--attampt spawn in lane---
                 if (!AIResponse.Spawn(Random.Range(0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, randomLane))
                  {
                      //--get a random creature to move/attack with... --HOW do I choose a type of creature?
-                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                    AttemptAttack(randomCreature);
+                    if (_Creatures.Count > 0){
+                        CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
+                        AttemptAttack(randomCreature);
+                    }
                 }   
             }
-            else
+            if (_Creatures.Count >= 5)
             {
                 CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
                 AttemptAttack(randomCreature);

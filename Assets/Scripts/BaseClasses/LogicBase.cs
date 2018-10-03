@@ -17,6 +17,7 @@ namespace AI {
         }
 
         public void init () {
+            _Creatures.Clear();
             if (this is Human) {
                 (this as Human).Start ();
             }
