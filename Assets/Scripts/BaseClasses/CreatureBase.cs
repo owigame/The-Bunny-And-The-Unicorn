@@ -26,7 +26,7 @@ public class CreatureBase : MonoBehaviour {
 	public Spawnable CreatureType { get { return creatureType; } }
 	public LaneNode ActiveLaneNode { get { return activeLaneNode; } }
 	//TODO: include rightfacing in LaneProgress
-	public int LaneProgress { get { return ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode); } }
+	public int LaneProgress { get { return owner._RightFacing ? ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode) : ActiveLaneNode.laneManager.allNodes.Count - ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode)-1; } }
 	public float Range { get { return range; } }
 
 	private void Awake () {
@@ -93,7 +93,7 @@ public class CreatureBase : MonoBehaviour {
 		dead = true;
 		activeLaneNode.activeCreature = null;
 		owner._Creatures.Remove (this);
-		lane.creatures.Remove(this);
+		lane.creatures.Remove (this);
 		animator.SetBool ("Die", true);
 		uiHealth.gameObject.SetActive (false);
 		if (TournamentManager.OnCreatureDead != null) TournamentManager.OnCreatureDead (this);
@@ -119,6 +119,7 @@ public class CreatureBase : MonoBehaviour {
 		activeLaneNode.activeCreature = this;
 
 		transform.position = activeLaneNode.transform.position;
+		laneProgress = LaneProgress;
 		Win ();
 	}
 
