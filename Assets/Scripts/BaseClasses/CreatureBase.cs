@@ -25,7 +25,8 @@ public class CreatureBase : MonoBehaviour {
 	public LogicBase Owner { get { return owner; } }
 	public Spawnable CreatureType { get { return creatureType; } }
 	public LaneNode ActiveLaneNode { get { return activeLaneNode; } }
-	public int LaneProgress { get { return laneProgress; } }
+	//TODO: include rightfacing in LaneProgress
+	public int LaneProgress { get { return ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode); } }
 	public float Range { get { return range; } }
 
 	private void Awake () {
@@ -41,10 +42,10 @@ public class CreatureBase : MonoBehaviour {
 			damageAmount = _damageAmount;
 			range = _type == Spawnable.Bunny ? TournamentManager._instance.bunnyRange : TournamentManager._instance.unicornRange;
 			init = true;
-			rightFacing = _owner == TournamentManager._instance.P1 ? true : false;
-			activeLaneNode = lane.GetFirstLaneNode (rightFacing);
+			activeLaneNode = lane.GetFirstLaneNode (owner);
 			activeLaneNode.activeCreature = this;
 			owner._Creatures.Add (this);
+			rightFacing = owner._RightFacing;
 			// Debug.Log ("Creature owned by " + owner);
 		}
 	}
@@ -92,6 +93,7 @@ public class CreatureBase : MonoBehaviour {
 		dead = true;
 		activeLaneNode.activeCreature = null;
 		owner._Creatures.Remove (this);
+		lane.creatures.Remove(this);
 		animator.SetBool ("Die", true);
 		uiHealth.gameObject.SetActive (false);
 		if (TournamentManager.OnCreatureDead != null) TournamentManager.OnCreatureDead (this);
