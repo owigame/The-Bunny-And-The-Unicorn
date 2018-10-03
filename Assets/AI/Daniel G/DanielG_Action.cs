@@ -12,7 +12,10 @@ public class DanielG_Action : LogicBase
 
     private List<int> LI_LaneAdvantage = new List<int>();
 
-    private int iDefTokenThreshold = 7;
+    [SerializeField]
+    private int iDefTokenThreshold = 3;
+    [SerializeField]
+    private int iAttackTokenThreshold = 7;
 
     private void OnDisable()
     {        
@@ -43,8 +46,8 @@ public class DanielG_Action : LogicBase
             //        }
             //    }
             //}
-
-            if (TournamentManager._instance.lanes[iWeakLane].GetFirstLaneNode(!B_StartLeft).activeCreature == null)
+            CreatureBase creatureofFirstNode = B_StartLeft ? TournamentManager._instance.lanes[iWeakLane].startNode.activeCreature : TournamentManager._instance.lanes[iWeakLane].endNode.activeCreature;
+            if (creatureofFirstNode == null)
             {
                 LogStack.Log("Trying to spawn in slot... 0:" + iWeakLane, LogLevel.Debug);
                 if (!AIResponse.Spawn(Spawnable.Bunny, iWeakLane + 1))
@@ -57,10 +60,10 @@ public class DanielG_Action : LogicBase
                 LogStack.Log("Failed... Trying to shift Lane", LogLevel.Debug);
                 if (ShiftLane(iWeakLane)) // Failed - Space Occupied - Shift entire row...
                 {
-                    if (!AIResponse.Spawn(Spawnable.Bunny, iWeakLane + 1))
+                    if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
                     {
                         // Failed
-                    }
+                    }                   
                 }
             }
         }
@@ -96,7 +99,7 @@ public class DanielG_Action : LogicBase
 
         if (TokenCheck() == false) return;
 
-        // Offense - Attacking.
+        // Offense - Attacking Melee.
         foreach (CreatureBase creature in _Creatures)
         {
             List<CreatureBase> searchTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange((int)creature.Range, creature.ActiveLaneNode, this);
@@ -108,18 +111,32 @@ public class DanielG_Action : LogicBase
             }
         }
 
-        // Offense - Moving.
         //if (TokenCheck() == false) return;
-        //int iLane = Random.Range(0, 2);
-        //List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
-
-        //if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= 3)
+        //foreach (CreatureBase creature in _Creatures)
         //{
-        //    if (!AIResponse.Move(AvailableLaneTroops[0], 1))
-        //    {
-        //        // Failed.
-        //    }
+        //    List<CreatureBase> RangedTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange(4, creature.ActiveLaneNode, this);
+        //    if (RangedTargetCreatures.Count > 0)
+        //        int moveSpaces = creature.ActiveLaneNode.laneManager.GetOpenNodes(creature.ActiveLaneNode, creature.RightFacing);
+
+        //    if (_creature.Owner != creature.Owner) AIResponse.Attack(creature);
+            
         //}
+
+        // Offense - Moving.
+        while (AIResponse.Tokens >= iAttackTokenThreshold)
+        {
+            if (TokenCheck() == false) return;
+            int iLane = Random.Range(0, 2);
+            List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
+
+            if (AvailableLaneTroops.Count > 0)
+            {
+                if (!AIResponse.Move(AvailableLaneTroops[0], 1))
+                {
+                    // Failed. TODO - Add outputs of fail to logstack.
+                }
+            }
+        }
 
         //IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse();

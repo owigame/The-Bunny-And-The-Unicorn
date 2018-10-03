@@ -14,4 +14,15 @@ MonoBehaviour:
   _Creatures:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _PlayerNumber: 1
   B_Init: 1
+  B_StartLeft: 1
+  iDefTokenThreshold: 4
+  iAttackTokenThreshold: 7
