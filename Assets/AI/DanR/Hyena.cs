@@ -31,7 +31,6 @@ public class Hyena : LogicBase
             }
             else if (LastSpawned == Spawnable.Bunny)
             {
-
                 if (!AIResponse.Spawn (Spawnable.Unicorn, lanetospawn))
                     MoveOrAttack (_Creatures[Random.Range (0, _Creatures.Count)]);
                 else
@@ -41,10 +40,7 @@ public class Hyena : LogicBase
             {
 
                 if (!AIResponse.Spawn (Spawnable.Unicorn, lanetospawn))
-                {
-
                     MoveOrAttack (_Creatures[Random.Range (0, _Creatures.Count)]);
-                }
                 else
                     LastSpawned = Spawnable.Unicorn;
             }
@@ -72,10 +68,7 @@ public class Hyena : LogicBase
             var CreatureTarget = creature.ActiveLaneNode.laneManager.SearchRange ((int) 0, creature.ActiveLaneNode);
 
             if (CreatureTarget != null)
-            {
-                //Found enemy creature in range
                 foundAttackTarget = true;
-            }
         }
 
         if (!foundAttackTarget)
@@ -89,8 +82,6 @@ public class Hyena : LogicBase
             AIResponse.Move (creature, moveSpaces);
         }
         else
-        {
             AIResponse.Attack (creature);
-        }
     }
 }
