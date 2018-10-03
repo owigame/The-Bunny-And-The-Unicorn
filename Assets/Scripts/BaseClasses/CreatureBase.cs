@@ -98,7 +98,7 @@ public class CreatureBase : MonoBehaviour {
 	}
 
 	public void Win () {
-		if ((activeLaneNode == lane.endNode && rightFacing) || (activeLaneNode == lane.startNode && !rightFacing)) {
+		if ((activeLaneNode == lane.endNode && rightFacing) || (activeLaneNode == lane.startNode && !rightFacing) && dead != true) {
 			//Made it to the end
 			LogStack.Log (gameObject.name + " made it to the end. 1 point to " + owner.name, LogLevel.Stack);
 			TournamentManager._instance.ScoreUpdate (this);
