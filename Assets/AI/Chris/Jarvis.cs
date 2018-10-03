@@ -7,45 +7,31 @@ public class Jarvis : LogicBase
 {
 
     LogicBase player;
-    public override void OnTick(IBoardState data)
+    public override void OnTick(IBoardState[] data)
     {
         int maxCycles = 99;
 
         while (AIResponse.Tokens > 0 && maxCycles > 0)
         {
-            if(_Creatures.Count == 0 || Random.Range(0,2) == 1)
+            int laneToSpawn = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
+            if(Random.Range(0,2) != 1)
             {
-                int laneToSpawn = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
-                if(Random.Range(0,2) != 1)
+                if (!AIResponse.Spawn(Spawnable.Unicorn, laneToSpawn))
                 {
-                    if (!AIResponse.Spawn(Spawnable.Unicorn, laneToSpawn))
-                    {
-                        CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                        MoveAtk(randomCreature);
-                    }
+                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
+                    MoveAtk(randomCreature);
                 }
-                else
-                {
-                    if (!AIResponse.Spawn(Spawnable.Bunny, laneToSpawn))
-                    {
-                        CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                        MoveAtk(randomCreature);
-                    }
-                }
-
             }
             else
-            if(_Creatures.Count >= 0)
             {
-                foreach(CreatureBase creat in _Creatures)
+                if (!AIResponse.Spawn(Spawnable.Bunny, laneToSpawn))
                 {
-                    if (Random.Range(0, 2) == 1)
-                        MoveAtk(creat);
-                        
+                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
+                    MoveAtk(randomCreature);
                 }
-
-
             }
+
+            maxCycles--;
         }
 
         //IResponse[] responses = AIResponse.QueryResponse();
