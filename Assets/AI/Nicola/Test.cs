@@ -7,6 +7,7 @@ public class Test : LogicBase
 {
     public override void OnTick(IBoardState data)
     {
+
         //--have at least three creatures in play..spawn on lanes with enemies first... --HOW?
         if (_Creatures.Count == 0)
         {

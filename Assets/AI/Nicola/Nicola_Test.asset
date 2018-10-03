@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7edee07ab2879a940a1484cf119c769d, type: 3}
-  m_Name: Test
+  m_Name: Nicola_Test
   m_EditorClassIdentifier: 
   _Creatures: []
-  _PlayerNumber: 1
+  _PlayerNumber: 0
