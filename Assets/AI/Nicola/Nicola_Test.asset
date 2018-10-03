@@ -11,5 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7edee07ab2879a940a1484cf119c769d, type: 3}
   m_Name: Nicola_Test
   m_EditorClassIdentifier: 
-  _Creatures: []
-  _PlayerNumber: 0
+  _Creatures:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _PlayerNumber: 1
