@@ -47,14 +47,15 @@ public class AIResponseManager {
 	public bool Spawn (Spawnable creature, int lane) {
 		LaneNode node = logicBase == TournamentManager._instance.P1 ? TournamentManager._instance.lanes[lane - 1].startNode : TournamentManager._instance.lanes[lane - 1].endNode;
 		IResponse response = new ActionResponse (creature == Spawnable.Bunny ? TournamentManager._instance.bunnyPrefab.GetComponent<CreatureBase> () : TournamentManager._instance.unicornPrefab.GetComponent<CreatureBase> (), lane, logicBase, ResponseActionType.Spawn, node);
-        /* fail the Spawn */
-        // LogStack.Log ("Tokens: " + tokens, LogLevel.Debug);
-        // LogStack.Log ("Node Creature Count: " + (node.activeCreature != null ? 1 : 0), LogLevel.System);
-        Func<bool> ActionValidation = () => lane > TournamentManager._instance.lanes.Count || node.activeCreature != null || spawnNodesTaken.Contains(node);
-        if (!SpendToken () || ActionValidation()) {
+
+		/* fail the Spawn */
+		// LogStack.Log ("Tokens: " + tokens, LogLevel.Debug);
+		// LogStack.Log ("Node Creature Count: " + (node.activeCreature != null ? 1 : 0), LogLevel.System);
+		if (lane > TournamentManager._instance.lanes.Count || node.activeCreature != null || spawnNodesTaken.Contains (node)) {
 			// LogStack.Log ("Response | Spawn Failed Lane: " + lane, LogLevel.Stack);
 			return false;
 		} else {
+			if (!SpendToken ()) return false;
 			// LogStack.Log ("Response | Spawn Success Lane: " + lane, LogLevel.Stack);
 			spawnNodesTaken.Add (node);
 			ResponseChain.Add (response);
@@ -65,9 +66,8 @@ public class AIResponseManager {
 	public bool Move (CreatureBase creature, int range = 1) {
 		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.RightFacing, range);
 
-        Func<bool> ActionValidation = () => creature != null && nextNode != null && nextNode.activeCreature == null;
-
-        if (SpendToken (range) && ActionValidation()) {
+		if (creature != null && nextNode != null && nextNode.activeCreature == null) {
+			if (!SpendToken ()) return false;
 			// LogStack.Log ("Response | Move", LogLevel.Stack);
 			IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Move, nextNode);
 			ResponseChain.Add (response);
