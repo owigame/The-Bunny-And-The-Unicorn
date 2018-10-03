@@ -2,6 +2,7 @@
 using AI;
 using System.Collections.Generic;
 using System;
+using System.Collections;
 
 [CreateAssetMenu(fileName = "ThreadBare", menuName = "AI/ThreadBare", order = 0)]
 public class ThreadBare : LogicBase
@@ -12,16 +13,27 @@ public class ThreadBare : LogicBase
         if (board.GetType() == typeof(LaneManager))
             boardState = board as LaneManager[];
 
-        for (int i = 0; i < AIResponse.Tokens; i++)
-        {
-            Auto_Nearest(boardState);
-        }
+        LogStack.Log("Run Auto Response Nearest for:"+ AIResponse.Tokens,Logging.LogLevel.Color);
+        //for (int i = 0; i < AIResponse.Tokens; i++)
+        //{
+        //    Auto_Nearest(boardState);
+        //}
+        TournamentManager._instance.StartCoroutine(WhileEnumaratior());
         //if (!AIResponse.Spawn(Spawnable.Unicorn,1))
         //{
 
         //}
         ////IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse();
+    }
+
+    IEnumerator WhileEnumaratior()
+    {
+        while (AIResponse.Tokens>0)
+        {
+            Auto_Nearest(boardState);
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public CreatureBase GetNearestEnemy(LaneManager[] Board)
@@ -75,10 +87,10 @@ public class ThreadBare : LogicBase
     }
     //returns your nearest creature and how far away it is
     // retuns null if no creature in the lane
-    public Tuple<CreatureBase,int> GetMyNearestCreature(CreatureBase creature,LaneManager[] Board)
+    public Tuple<CreatureBase,int> GetMyNearestCreature(CreatureBase OpponentCreature,LaneManager[] Board)
     {
-        if (creature == null) return null;
-        List<CreatureBase> creaturesStillInLane = creature.ActiveLaneNode.laneManager.SearchRange(creature.ActiveLaneNode.laneManager.GetNodeCount, creature.ActiveLaneNode, _PlayerNumber == 1 ? TournamentManager._instance.P2 : TournamentManager._instance.P1);
+        if (OpponentCreature == null) return null;
+        List<CreatureBase> creaturesStillInLane = OpponentCreature.ActiveLaneNode.laneManager.SearchRange(OpponentCreature.ActiveLaneNode.laneManager.GetNodeCount, OpponentCreature.ActiveLaneNode, _PlayerNumber == 1 ? TournamentManager._instance.P2 : TournamentManager._instance.P1);
         Func<int, bool> TestIfMine = (x) => creaturesStillInLane[x].Owner._PlayerNumber == this._PlayerNumber ? true : false;
         int testcount = 0;
         for (int i = 0; i < creaturesStillInLane.Count; i++)
@@ -94,7 +106,7 @@ public class ThreadBare : LogicBase
             }
         }
 
-        return Tuple.Create(creaturesStillInLane[testcount],creaturesStillInLane[testcount].LaneProgress- creature.LaneProgress);
+        return Tuple.Create(creaturesStillInLane[testcount],creaturesStillInLane[testcount].LaneProgress- OpponentCreature.LaneProgress);
     }
     // returns your nearest creature and how far away it is from the other xreature
     // retuns null if no creature in the lane
@@ -110,28 +122,28 @@ public class ThreadBare : LogicBase
         Tuple<CreatureBase, int> nearestAndRange = GetNearestCreatureToNearestEnemy(Board);
         if (nearestAndRange != null)
         {
-            LogStack.Log("I have a nearby unit", Logging.LogLevel.Debug);
+            LogStack.Log("I have a nearby unit", Logging.LogLevel.Color);
             if (InRange(nearestAndRange))
             {
                 if (!AIResponse.Attack(nearestAndRange.Item1))
                 {
-                    LogStack.Log("Attack Validation check failed", Logging.LogLevel.Debug);
-                }else LogStack.Log("Nearby Unit Attacking", Logging.LogLevel.Debug);
+                    LogStack.Log("Attack Validation check failed", Logging.LogLevel.Color);
+                }else LogStack.Log("Nearby Unit Attacking", Logging.LogLevel.Color);
             }
             else
             {
                 if (!AIResponse.Move(nearestAndRange.Item1))
                 {
-                    LogStack.Log("Move Validation check failed", Logging.LogLevel.Debug);
+                    LogStack.Log("Move Validation check failed", Logging.LogLevel.Color);
                 }
-                else LogStack.Log("Nearby Unit Moving", Logging.LogLevel.Debug);
+                else LogStack.Log("Nearby Unit Moving", Logging.LogLevel.Stack);
             }
         }
         else if (Opponent._Creatures.Count > 0)
         {
-            if (!AIResponse.Spawn(GetNearestEnemyNodesAway(Board) > 3 ? Spawnable.Unicorn : Spawnable.Bunny, GetNearestEnemyLane(Board) < 0 ? 1 : GetNearestEnemyLane(Board)))
+            if (!AIResponse.Spawn(GetNearestEnemyNodesAway(Board) > 3 ? Spawnable.Unicorn : Spawnable.Unicorn, GetNearestEnemyLane(Board) < 0 ? 1 : GetNearestEnemyLane(Board)))
             {
-                LogStack.Log("Spawn Validation check failed", Logging.LogLevel.Debug);
+                LogStack.Log("Spawn Validation check failed", Logging.LogLevel.Stack);
             }
         }
         else if (Opponent._Creatures.Count == 0)
