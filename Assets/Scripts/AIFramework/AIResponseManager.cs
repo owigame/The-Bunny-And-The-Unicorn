@@ -24,7 +24,7 @@ public class AIResponseManager {
 	// The code really should be compiled into a dll so this doesn't appear in the drop-down list [attribte hides it]
 	// Possible OOP rejuggling required
 	[System.ComponentModel.EditorBrowsable (System.ComponentModel.EditorBrowsableState.Never)]
-	public void onTick (IBoardState data) {
+	public void onTick (IBoardState[] data) {
 		tokens += TournamentManager._instance.tokensPerRound;
 		UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
 	}
