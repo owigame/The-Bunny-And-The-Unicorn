@@ -1,4 +1,4 @@
 ﻿using UnityEngine.Events;
 
-public class TickEvent : UnityEvent<IBoardState>{}
+public class TickEvent : UnityEvent<IBoardState[]>{}
 

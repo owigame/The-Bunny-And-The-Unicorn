@@ -5,7 +5,7 @@ using UnityEngine;
 
 [CreateAssetMenu (fileName = "Hal", menuName = "AI/Hal", order = 0)]
 public class Hal : LogicBase {
-    public override void OnTick (IBoardState data) {
+    public override void OnTick (IBoardState[] data) {
         AIResponse.onTick (null);
 
         //Spend all tokens

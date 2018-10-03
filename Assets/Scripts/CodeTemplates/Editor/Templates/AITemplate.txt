@@ -4,7 +4,7 @@ using AI;
 [CreateAssetMenu(fileName = "##NAME##", menuName = "AI/##NAME##", order = 0)]
 public class ##NAME## : LogicBase
 {
-    public override void OnTick(IBoardState data)
+    public override void OnTick(IBoardState[] data)
     {
 		if (!AIResponse.Spawn(Spawnable.Unicorn,1))
         {

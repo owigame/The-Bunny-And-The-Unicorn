@@ -7,7 +7,7 @@ namespace AI {
         public List<CreatureBase> _Creatures = new List<CreatureBase> ();
         public int _PlayerNumber = 0;
 
-        public abstract void OnTick (IBoardState data);
+        public abstract void OnTick (IBoardState[] Board);
         // public abstract void OnValidateFail(IBoardState data,IResponse[] chain);
 
         protected AIResponseManager AIResponse {
