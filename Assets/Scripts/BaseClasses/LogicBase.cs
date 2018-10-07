@@ -6,6 +6,7 @@ namespace AI {
         private AIResponseManager _AIResponder;
         public List<CreatureBase> _Creatures = new List<CreatureBase> ();
         public int _PlayerNumber = 0;
+        public bool _RightFacing = false;
 
         public abstract void OnTick (IBoardState[] Board);
         // public abstract void OnValidateFail(IBoardState data,IResponse[] chain);
@@ -22,6 +23,7 @@ namespace AI {
             }
 
             _PlayerNumber = TournamentManager._instance.P1 == this ? 1 : 2;
+            _RightFacing = _PlayerNumber == 1;
 
             _AIResponder = new AIResponseManager (this);
             TournamentManager._instance.OnTick.AddListener (_AIResponder.onTick);

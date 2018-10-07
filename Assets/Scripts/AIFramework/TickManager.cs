@@ -85,11 +85,11 @@ public class TickManager : MonoBehaviour {
     }
 
     IEnumerator PerformActions (IResponse[] ResponseChain) {
-        LogStack.Log ("--- PerformActions BEGIN", LogLevel.System);
+        // LogStack.Log ("--- PerformActions BEGIN", LogLevel.System);
         //Spawning
         foreach (IResponse response in ResponseChain) {
             if (response.responseActionType == ResponseActionType.Spawn) {
-                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 Spawn (response);
             }
         }
@@ -98,15 +98,15 @@ public class TickManager : MonoBehaviour {
         //Move
         foreach (IResponse response in ResponseChain) {
             if (response.creature.CreatureType == Spawnable.Bunny && response.responseActionType == ResponseActionType.Move) {
-                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Move (response.laneNode);
             } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Attack) {
                 yield return new WaitForSeconds (TournamentManager._instance.moveWait);
-                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Attack ();
                 LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
-                if ((nextNode == response.laneNode.laneManager.startNode && !response.creature.RightFacing) || (nextNode == response.laneNode.laneManager.endNode && response.creature.RightFacing)) {
-                    response.creature.Move(nextNode);
+                if (response.creature.LaneProgress + 1 == response.creature.ActiveLaneNode.laneManager.allNodes.Count - 1) { //One node before end
+                    response.creature.Move (nextNode);
                 }
             }
         }
@@ -115,11 +115,15 @@ public class TickManager : MonoBehaviour {
         //Attack
         foreach (IResponse response in ResponseChain) {
             if (response.creature.CreatureType == Spawnable.Bunny && response.responseActionType == ResponseActionType.Attack) {
-                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Attack ();
+                LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
+                if (response.creature.LaneProgress + 1 == response.creature.ActiveLaneNode.laneManager.allNodes.Count - 1) { //One node before end
+                    response.creature.Move (nextNode);
+                }
             } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Move) {
                 yield return new WaitForSeconds (TournamentManager._instance.attackWait);
-                LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
+                // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Move (response.laneNode);
             }
         }
@@ -127,7 +131,7 @@ public class TickManager : MonoBehaviour {
 
         tickState = TickState.FireTick;
         OnResponse (null);
-        LogStack.Log ("--- PerformActions END", LogLevel.System);
+        // LogStack.Log ("--- PerformActions END", LogLevel.System);
     }
 
     public void Spawn (IResponse response) {
