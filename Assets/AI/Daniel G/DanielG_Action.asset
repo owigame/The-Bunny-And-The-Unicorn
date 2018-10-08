@@ -18,4 +18,4 @@ MonoBehaviour:
   B_StartLeft: 1
   B_Bunnies: 1
   iDefTokenThreshold: 3
-  iAttackTokenThreshold: 7
+  iAttackTokenThreshold: 4
