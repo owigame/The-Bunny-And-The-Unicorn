@@ -116,10 +116,12 @@ public class CreatureBase : MonoBehaviour {
 		if (activeLaneNode.activeCreature == this) activeLaneNode.activeCreature = null;
 		LogStack.Log ("MOVING: Current Node - " + activeLaneNode.name, LogLevel.System);
 		activeLaneNode = nextNode;
-		LogStack.Log ("MOVING: New Node - " + activeLaneNode.name, LogLevel.System);
-		activeLaneNode.activeCreature = this;
+		if(nextNode != null){
+			LogStack.Log ("MOVING: New Node - " + activeLaneNode.name, LogLevel.System);
+			activeLaneNode.activeCreature = this;
 
-		transform.position = activeLaneNode.transform.position;
+			transform.position = activeLaneNode.transform.position;
+		}
 		laneProgress = LaneProgress;
 		Win ();
 	}
