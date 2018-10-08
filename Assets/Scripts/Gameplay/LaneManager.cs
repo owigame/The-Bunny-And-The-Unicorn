@@ -80,10 +80,10 @@ public class LaneManager : MonoBehaviour, IBoardState {
         //If the next block has a creature in it, fail the move
         LaneNode nextNode = null;
         bool nodeBlocked = false;
-        for (int i = 1; i < range; i++) {
+        for (int i = 1; i < range+1; i++) {
             nextNode = allNodes[Mathf.Clamp (allNodes.IndexOf (currentNode) + (rightFacing ? i : -i), 0, currentNode.laneManager.allNodes.Count - 1)];
             if (nextNode.activeCreature != null) {
-                nodeBlocked = false;
+                nodeBlocked = true;
             }
         }
 

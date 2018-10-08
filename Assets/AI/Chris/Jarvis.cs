@@ -13,29 +13,61 @@ public class Jarvis : LogicBase
 
         while (AIResponse.Tokens > 0 && maxCycles > 0)
         {
-            int laneToSpawn = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
-            if(Random.Range(0,2) != 1)
+            if (_Creatures.Count > 3)
             {
-                if (!AIResponse.Spawn(Spawnable.Unicorn, laneToSpawn))
+                foreach (CreatureBase creatur in _Creatures)
                 {
-                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                    MoveAtk(randomCreature);
+                    if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
+                        MoveAtk(creatur);
                 }
             }
-            else
+
+            int cnt = 0;
+            while(cnt < 2)
             {
-                if (!AIResponse.Spawn(Spawnable.Bunny, laneToSpawn))
+                if (TournamentManager._instance.lanes[cnt].GetFriendliesInLane(this).Count == 0)
                 {
-                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                    MoveAtk(randomCreature);
+                    DoSpawn(cnt + 1);
                 }
+
+                cnt++;
             }
+
+            DoSpawn(0, true);
+
+            CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
+
+            if(randomCreature != null)
+                MoveAtk(randomCreature);
 
             maxCycles--;
         }
 
         //IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse();
+    }
+
+    public void DoSpawn(int lane, bool randomlane = false)
+    {
+        if(randomlane)
+            lane = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
+
+        if (Random.Range(0, 3) != 1)
+        {
+            if (!AIResponse.Spawn(Spawnable.Unicorn, lane))
+            {
+                CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
+                MoveAtk(randomCreature);
+            }
+        }
+        else
+        {
+            if (!AIResponse.Spawn(Spawnable.Bunny, lane))
+            {
+                CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
+                MoveAtk(randomCreature);
+            }
+        }
     }
 
     public void MoveAtk(CreatureBase creat){
