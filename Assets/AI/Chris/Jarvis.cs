@@ -10,36 +10,56 @@ public class Jarvis : LogicBase
     public override void OnTick(IBoardState[] data)
     {
         int maxCycles = 99;
+        int tokens = AIResponse.Tokens;
+        bool saving = true;
 
-        while (AIResponse.Tokens > 0 && maxCycles > 0)
+        int cnt = 0;
+        while (cnt < 2)
+        for (int i = 0; i < 2; i++)
         {
-            LogStack.Log("Cycle count: " + (99 - maxCycles), Logging.LogLevel.Debug);
-            if (_Creatures.Count > 3)
+            if (TournamentManager._instance.lanes[i].GetEnemiesInLane(this).Count > 0)
             {
-                foreach (CreatureBase creatur in _Creatures)
-                {
-                    if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
-                        MoveAtk(creatur);
-                }
+                saving = false;
             }
 
-            int cnt = 0;
-            while (cnt < 2)
-                for (int i = 0; i < 2; i++)
-                {
-                    if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
-                    {
-                        DoSpawn(i);
-                    }
-                    cnt++;
-                }
-
-
-            DoSpawn(randomlane: true);
-
-            maxCycles--;
+            cnt++;
         }
 
+        if (saving)
+            if (tokens > 30)
+                saving = false;
+
+        if (!saving)
+        {
+            while (AIResponse.Tokens > 0 && maxCycles > 0)
+            {
+                LogStack.Log("Cycle count: " + (99 - maxCycles), Logging.LogLevel.Debug);
+                if (_Creatures.Count > 3)
+                {
+                    foreach (CreatureBase creatur in _Creatures)
+                    {
+                        if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
+                            MoveAtk(creatur);
+                    }
+                }
+
+                cnt = 0;
+                while (cnt < 2)
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
+                        {
+                            DoSpawn(i);
+                        }
+                        cnt++;
+                    }
+
+
+                DoSpawn(randomlane: true);
+
+                maxCycles--;
+            }
+        }
         //IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse();
     }
@@ -69,7 +89,7 @@ public class Jarvis : LogicBase
         else
         {
             LogStack.Log("Attempting spawn: Bunny", Logging.LogLevel.Debug);
-            if (!AIResponse.Spawn(Spawnable.Bunny, lane))
+            if (!AIResponse.Spawn(Spawnable.Bunny, lane + 1))
             {
                 LogStack.Log("Couldn't spawn Bunny in Lane " + lane, Logging.LogLevel.Debug);
                 if (_Creatures.Count > 0)
@@ -107,6 +127,9 @@ public class Jarvis : LogicBase
                 {
                     spaces = AIResponse.Tokens;
                 }
+
+                if (spaces > 10)
+                    spaces = 10;
 
                 AIResponse.Move(creat, spaces);
             }
