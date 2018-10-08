@@ -13,36 +13,36 @@ public class Kittyv2 : LogicBase
         // if (AIResponse.Tokens > 0)
         // {
 
-            //--Have at least one creature in each lane at all times...
-            foreach (LaneManager lane in TournamentManager._instance.lanes)
+        //--Have at least one creature in each lane at all times...
+        foreach (LaneManager lane in TournamentManager._instance.lanes)
+        {
+            int playerInLane = lane.GetFriendliesInLane (this).Count;
+            if (playerInLane <= 0)
             {
-                int playerInLane = lane.GetFriendliesInLane (this).Count;
-                if (playerInLane <= 0)
-                {
-                    AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, lane.LaneNumber);
-                }
+                AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, lane.LaneNumber);
             }
+        }
 
-            //--Get Enemy Count--
-            GetCount ();
+        //--Get Enemy Count--
+        GetCount ();
 
-            //--If there are Enemies, find the closest--
-            if (enemyCount > 0)
+        //--If there are Enemies, find the closest--
+        if (enemyCount > 0)
+        {
+            FindNearest ();
+            //--if neareast found, move towards and attack--
+            if (targetCreature != null)
             {
-                FindNearest ();
-                //--if neareast found, move towards and attack--
-                if (targetCreature != null)
-                {
-                    Debug.Log ("move to nearest");
-                    AttemptAttackMoveTarget (targetCreature);
-                }
+                Debug.Log ("move to nearest");
+                AttemptAttackMoveTarget (targetCreature);
             }
-            //--else random move or attack--
-            else
-            {
-                Debug.Log ("move random");
-                AttemptMoveAttack ();
-            }
+        }
+        //--else random move or attack--
+        else
+        {
+            Debug.Log ("move random");
+            AttemptMoveAttack ();
+        }
 
         // }
         AIResponse.FinalizeResponse ();
@@ -98,10 +98,7 @@ public class Kittyv2 : LogicBase
                     highestLaneProgress = creature.LaneProgress;
                     targetCreature = creature;
                 }
-                else
-                {
-                    targetCreature = null;
-                }
+                
             }
         }
     }
@@ -144,29 +141,34 @@ public class Kittyv2 : LogicBase
     void AttemptAttackMoveTarget (CreatureBase creature)
     {
         //Find friendly in same lane as _targetCreature
-        CreatureBase closestFriendly = creature.ActiveLaneNode.laneManager.GetFriendliesInLane (this) [0];
-        if (closestFriendly == null)
+        List<CreatureBase> friendlies = creature.ActiveLaneNode.laneManager.GetFriendliesInLane (this);
+        if (friendlies.Count > 0)
         {
-            //No friendly, do something else...
-            if (!AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, creature.ActiveLaneNode.laneManager.LaneNumber))
-            {
-                //
-            }
-        }
-        else
-        {
-            //--Attempt to attack...
-            int openNodes = targetCreature.ActiveLaneNode.laneManager.GetOpenNodes (closestFriendly.ActiveLaneNode, _RightFacing);
-            //--is enemy in attack range? Attack...
-            if (openNodes < closestFriendly.Range)
-            {
-                AIResponse.Attack (closestFriendly);
-            }
-            //--Else move...
-            else
-            {
-                AIResponse.Move (closestFriendly, openNodes);
-            }
+            CreatureBase closestFriendly = friendlies[0];
+            // if (closestFriendly == null)
+            // {
+            //     //No friendly, do something else...
+            //     if (!AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, creature.ActiveLaneNode.laneManager.LaneNumber))
+            //     {
+            //         //
+            //     }
+            // }
+            // else
+            // {
+                //--Attempt to attack...
+                int openNodes = closestFriendly.ActiveLaneNode.laneManager.GetOpenNodes (closestFriendly.ActiveLaneNode, _RightFacing);
+                LogStack.Log("$$$$ OpenNodes - " + closestFriendly.GetInstanceID() + ": " + openNodes, Logging.LogLevel.System);
+                //--is enemy in attack range? Attack...
+                if (openNodes < closestFriendly.Range)
+                {
+                    AIResponse.Attack (closestFriendly);
+                }
+                //--Else move...
+                else
+                {
+                    AIResponse.Move (closestFriendly, openNodes);
+                }
+            // }
         }
     }
 }
