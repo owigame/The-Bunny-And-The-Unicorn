@@ -22,6 +22,9 @@ public class Jarvis : LogicBase
                         MoveAtk(creatur);
                 }
             }
+
+            int cnt = 0;
+            while (cnt < 2)
             for (int i = 0; i < 2; i++)
             {
                 if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
@@ -32,11 +35,6 @@ public class Jarvis : LogicBase
             
 
             DoSpawn(randomlane:true);
-
-            CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-
-            if(randomCreature != null)
-                MoveAtk(randomCreature);
 
             maxCycles--;
         }
