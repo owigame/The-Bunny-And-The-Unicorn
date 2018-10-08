@@ -25,6 +25,16 @@ public class ThreadBare : LogicBase {
             boardState[i].GetFriendliesInLane (this);
             boardState[i].GetEnemiesInLane (this);
         }
+
+        for (int i = 1; i < 3; i++)
+        {
+            AIResponse.Spawn(Spawnable.Bunny, i);
+        }
+        for (int i = 0; i < 2; i++)
+        {
+          List<CreatureBase> cre =  boardState[i].GetFriendliesInLane(this);
+            AIResponse.Attack(cre[0]);
+        }
         //}
         ////IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse ();
