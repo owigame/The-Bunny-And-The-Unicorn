@@ -31,6 +31,7 @@ public class Jarvis : LogicBase
                 {
                     DoSpawn(i);
                 }
+                cnt++;
             }
             
 
@@ -46,23 +47,37 @@ public class Jarvis : LogicBase
     //Do spawn is zero indexed but uses spawing like it needsit
     public void DoSpawn(int lane = 0, bool randomlane = false)
     {
-        if(randomlane)
-            lane = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
+        if (randomlane)
+            lane = Random.Range(1, TournamentManager._instance.lanes.Count);
+
+        LogStack.Log("Do Spawn. Lane: " + lane + ", Is Random: " + randomlane.ToString(), Logging.LogLevel.Debug);
 
         if (Random.Range(0, 3) != 1)
         {
-            if (!AIResponse.Spawn(Spawnable.Unicorn, lane+1))
+            LogStack.Log("Attempting spawn: Unicorn", Logging.LogLevel.Debug);
+            if (!AIResponse.Spawn(Spawnable.Unicorn, lane + 1))
             {
-                CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                MoveAtk(randomCreature);
+                LogStack.Log("Couldn't spawn Unicorn in Lane " + lane, Logging.LogLevel.Debug);
+                if (_Creatures.Count > 0)
+                { 
+                    LogStack.Log("Choosing random creature to move or attack", Logging.LogLevel.Debug);
+                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count - 1)];
+                    MoveAtk(randomCreature);
+                }
             }
         }
         else
         {
-            if (!AIResponse.Spawn(Spawnable.Bunny, lane+1))
+            LogStack.Log("Attempting spawn: Bunny", Logging.LogLevel.Debug);
+            if (!AIResponse.Spawn(Spawnable.Bunny, lane))
             {
-                CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                MoveAtk(randomCreature);
+                LogStack.Log("Couldn't spawn Bunny in Lane " + lane, Logging.LogLevel.Debug);
+                if (_Creatures.Count > 0)
+                {
+                    LogStack.Log("Choosing random creature to move or attack", Logging.LogLevel.Debug);
+                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
+                    MoveAtk(randomCreature);
+                }
             }
         }
     }
