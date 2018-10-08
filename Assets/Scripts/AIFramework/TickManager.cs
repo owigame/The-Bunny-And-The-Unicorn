@@ -105,7 +105,7 @@ public class TickManager : MonoBehaviour {
                 // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Attack ();
                 LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
-                if (response.creature.LaneProgress + 1 == response.creature.ActiveLaneNode.laneManager.allNodes.Count - 1) { //One node before end
+                if (response.creature.LaneProgress + 1 >= response.creature.ActiveLaneNode.laneManager.allNodes.Count && nextNode.activeCreature == null) { //One node before end
                     response.creature.Move (nextNode);
                 }
             }
@@ -118,7 +118,7 @@ public class TickManager : MonoBehaviour {
                 // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Attack ();
                 LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
-                if (response.creature.LaneProgress + 1 == response.creature.ActiveLaneNode.laneManager.allNodes.Count - 1) { //One node before end
+                if (response.creature.LaneProgress + 1 >= response.creature.ActiveLaneNode.laneManager.allNodes.Count && nextNode.activeCreature == null) { //One node before end
                     response.creature.Move (nextNode);
                 }
             } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Move) {

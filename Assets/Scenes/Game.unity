@@ -1859,8 +1859,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c45f21dfdfeca3469e6520f200bc481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  P1: {fileID: 11400000, guid: 3d0a10b0ddac13f49bc45323371e50a8, type: 2}
-  P2: {fileID: 11400000, guid: 9ae60098e1a91d34bb54ef53b38fe4c4, type: 2}
+  P1: {fileID: 11400000, guid: 75ac0af40f8a485488518a9a6fc203be, type: 2}
+  P2: {fileID: 11400000, guid: 3d0a10b0ddac13f49bc45323371e50a8, type: 2}
   lanes:
   - {fileID: 370656674}
   - {fileID: 493088259}
@@ -1872,8 +1872,8 @@ MonoBehaviour:
   bunnyDamage: 3
   unicornDamage: 1
   tokensPerRound: 1
-  moveWait: 0.5
-  attackWait: 0.5
+  moveWait: 0.25
+  attackWait: 0.25
   dieWait: 0.1
   laneReadyWait: 0.1
   unicornPrefab: {fileID: 1812885407933568, guid: 3788f3ad37b572c448b94d4be985545d,
