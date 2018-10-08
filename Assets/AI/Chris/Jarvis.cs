@@ -15,15 +15,15 @@ public class Jarvis : LogicBase
 
         int cnt = 0;
         while (cnt < 2)
-        for (int i = 0; i < 2; i++)
-        {
-            if (TournamentManager._instance.lanes[i].GetEnemiesInLane(this).Count > 0)
+            for (int i = 0; i < 2; i++)
             {
-                saving = false;
-            }
+                if (TournamentManager._instance.lanes[i].GetEnemiesInLane(this).Count > 0)
+                {
+                    saving = false;
+                }
 
-            cnt++;
-        }
+                cnt++;
+            }
 
         if (saving)
             if (tokens > 30)
