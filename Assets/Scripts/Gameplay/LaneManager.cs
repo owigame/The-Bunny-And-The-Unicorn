@@ -70,6 +70,7 @@ public class LaneManager : MonoBehaviour, IBoardState {
             LaneNode nextNode = allNodes[Mathf.Clamp (allNodes.IndexOf (currentNode) + (rightFacing ? i : -i), 0, currentNode.laneManager.allNodes.Count - 1)];
             if (nextNode != null && nextNode.activeCreature == null) {
                 openNodes++;
+                currentNode = nextNode;
             }
         }
         return openNodes;
