@@ -74,7 +74,9 @@ public class AIResponseManager {
 		LogStack.Log ("creature.Owner._RightFacing: " + creature.Owner._RightFacing, LogLevel.System);
 
 		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.Owner._RightFacing, Mathf.Abs (range));
-		if (creature != null && nextNode != null && nextNode.activeCreature == null) {
+        LogStack.Log("nextNode: " + nextNode, LogLevel.System);
+
+        if (creature != null && nextNode != null && nextNode.activeCreature == null) {
 			LogStack.Log ("Next Node: " + nextNode.GetInstanceID (), LogLevel.System);
 			if (!SpendToken ()) return false;
 			// LogStack.Log ("Response | Move", LogLevel.Stack);
