@@ -76,11 +76,19 @@ public class LaneManager : MonoBehaviour, IBoardState {
     }
 
     public LaneNode GetNextLaneNode (LaneNode currentNode, bool rightFacing, int range, bool forced = false) {
+        //TODO: Something not right
         //If the next block has a creature in it, fail the move
-        LaneNode nextNode = allNodes[Mathf.Clamp (allNodes.IndexOf (currentNode) + (rightFacing ? range : -range), 0, currentNode.laneManager.allNodes.Count - 1)];
+        LaneNode nextNode = null;
+        bool nodeBlocked = false;
+        for (int i = 1; i < range+1; i++) {
+            nextNode = allNodes[Mathf.Clamp (allNodes.IndexOf (currentNode) + (rightFacing ? i : -i), 0, currentNode.laneManager.allNodes.Count - 1)];
+            if (nextNode.activeCreature != null) {
+                nodeBlocked = true;
+            }
+        }
 
-        if (nextNode != null && (!lanesTakenThisRound.Contains (nextNode) || forced)) {
-            LogStack.Log ("nextNode not null and available", LogLevel.System);
+        if (nextNode != null && (!lanesTakenThisRound.Contains (nextNode) || forced) && !nodeBlocked) {
+            // LogStack.Log (currentNode.activeCreature + " - " + currentNode.activeCreature.GetInstanceID () + " nextNode not null and available | from: " + allNodes.IndexOf (currentNode) + " to: " + allNodes.IndexOf (nextNode) + " | Progress: " + currentNode.activeCreature.LaneProgress, LogLevel.System);
             if (!forced) lanesTakenThisRound.Add (nextNode);
             return nextNode;
         } else {

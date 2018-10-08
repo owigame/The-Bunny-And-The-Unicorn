@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Logging;
+using UnityEngine;
 
 // Handels responses from the AI and makes sure the AI follows the basic rules defined
 public class AIResponseManager {
@@ -58,19 +59,34 @@ public class AIResponseManager {
 			if (!SpendToken ()) return false;
 			// LogStack.Log ("Response | Spawn Success Lane: " + lane, LogLevel.Stack);
 			spawnNodesTaken.Add (node);
-			ResponseChain.Add (response);
+			if (!ResponseChain.Contains (response)) {
+				ResponseChain.Add (response);
+			} else {
+				LogStack.Log ("##### Duplicate Spawn Response", LogLevel.System);
+				RefundToken ();
+			}
 			return true;
 		}
 	}
 
 	public bool Move (CreatureBase creature, int range = 1) {
-		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.Owner._RightFacing, range);
+		LogStack.Log ("creature.ActiveLaneNode: " + creature.ActiveLaneNode, LogLevel.System);
+		LogStack.Log ("creature.Owner._RightFacing: " + creature.Owner._RightFacing, LogLevel.System);
 
-		if (creature != null && nextNode != null && nextNode.activeCreature == null) {
+		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.Owner._RightFacing, Mathf.Abs (range));
+        LogStack.Log("nextNode: " + nextNode, LogLevel.System);
+
+        if (creature != null && nextNode != null && nextNode.activeCreature == null) {
+			LogStack.Log ("Next Node: " + nextNode.GetInstanceID (), LogLevel.System);
 			if (!SpendToken ()) return false;
 			// LogStack.Log ("Response | Move", LogLevel.Stack);
 			IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Move, nextNode);
-			ResponseChain.Add (response);
+			if (!ResponseChain.Contains (response)) {
+				ResponseChain.Add (response);
+			} else {
+				LogStack.Log ("##### Duplicate Move Response", LogLevel.System);
+				RefundToken ();
+			}
 			return true;
 		} else {
 			return false;
@@ -82,7 +98,12 @@ public class AIResponseManager {
 
 		// LogStack.Log ("Response | Attack", LogLevel.Stack);
 		IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Attack, creature.ActiveLaneNode);
-		ResponseChain.Add (response);
+		if (!ResponseChain.Contains (response)) {
+			ResponseChain.Add (response);
+		} else {
+			LogStack.Log ("##### Duplicate Attack Response", LogLevel.System);
+			RefundToken ();
+		}
 		return true;
 	}
 
@@ -93,6 +114,11 @@ public class AIResponseManager {
 			return true;
 		}
 		return false;
+	}
+
+	void RefundToken (int amount = 1) {
+		tokens += amount;
+		UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
 	}
 
 	public bool FinalizeResponse () {

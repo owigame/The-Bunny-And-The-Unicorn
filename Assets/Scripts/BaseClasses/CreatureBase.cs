@@ -26,7 +26,8 @@ public class CreatureBase : MonoBehaviour {
 	public Spawnable CreatureType { get { return creatureType; } }
 	public LaneNode ActiveLaneNode { get { return activeLaneNode; } }
 	//TODO: include rightfacing in LaneProgress
-	public int LaneProgress { get { return owner._RightFacing ? ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode) : ActiveLaneNode.laneManager.allNodes.Count - ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode)-1; } }
+	public int LaneProgress { get { return owner._RightFacing ? ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode) : ActiveLaneNode.laneManager.allNodes.Count - ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode) - 1; } }
+	public int LaneIndex {  get { return ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode); }  }
 	public float Range { get { return range; } }
 
 	private void Awake () {
