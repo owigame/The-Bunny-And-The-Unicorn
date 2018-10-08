@@ -124,26 +124,27 @@ public class DanielG_Action : LogicBase
         //        int moveSpaces = creature.ActiveLaneNode.laneManager.GetOpenNodes(creature.ActiveLaneNode, creature.RightFacing);
 
         //    if (_creature.Owner != creature.Owner) AIResponse.Attack(creature);
-            
+
         //}
 
         // Offense - Moving.
         //while (AIResponse.Tokens >= iAttackTokenThreshold)
         //{
-            //if (TokenCheck() == false) return;
-            //int iLane = Random.Range(0, 2);
-            //List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
+        //if (TokenCheck() == false) return;
+        //int iLane = Random.Range(0, 2);
+        //List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
 
-            //if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= iAttackTokenThreshold)
-            //{
-            //    if (!AIResponse.Move(AvailableLaneTroops[0], 1))
-            //    {
-            //        // Failed. TODO - Add outputs of fail to logstack.
-            //    }
-            //}
+        //if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= iAttackTokenThreshold)
+        //{
+        //    if (!AIResponse.Move(AvailableLaneTroops[0], 1))
+        //    {
+        //        // Failed. TODO - Add outputs of fail to logstack.
+        //    }
+        //}
         //}
 
         //IResponse[] responses = AIResponse.QueryResponse();
+        LogStack.Log("%%%%%%% Loop Count: " + iCount, LogLevel.System);
         AIResponse.FinalizeResponse();
     }
 
@@ -160,11 +161,14 @@ public class DanielG_Action : LogicBase
     private bool ShiftLane(int iLane)
     {
         List<CreatureBase> LaneCreatures = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
+        LogStack.Log("Shifting lane... creatures to shift = " + LaneCreatures.Count, LogLevel.Debug);
         //LaneCreatures.Reverse();
         foreach (CreatureBase _creature in LaneCreatures)
         {
+            LogStack.Log("Current Creature = " + _creature.name + " Current ID = " + _creature.GetInstanceID(), LogLevel.Debug);
             if (AIResponse.Move(_creature, 1))
             {
+                LogStack.Log("Current Creature = " + _creature.name+ " Current ID = " + _creature.GetInstanceID()+" | Can move", LogLevel.Debug);
                 if (TokenCheck() == false) return true;
             }
             else
