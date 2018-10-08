@@ -6,7 +6,6 @@ using UnityEngine;
 [CreateAssetMenu (fileName = "Hal", menuName = "AI/Hal", order = 0)]
 public class Hal : LogicBase {
     public override void OnTick (IBoardState[] data) {
-        AIResponse.onTick (null);
 
         //Spend all tokens
         //Spawn in each lane otherwise attack or move
@@ -45,7 +44,9 @@ public class Hal : LogicBase {
                 if (moveSpaces > AIResponse.Tokens){
                     moveSpaces = AIResponse.Tokens;
                 }
-                AIResponse.Move (creature, moveSpaces);
+                if (AIResponse.Move (creature, moveSpaces)){
+                    LogStack.Log("Hal Move " + creature.GetInstanceID() + " - " + moveSpaces + " spaces - " + creature.LaneProgress, LogLevel.System);
+                }
             }
         }
     }
