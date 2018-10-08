@@ -22,13 +22,10 @@ public class Jarvis : LogicBase
                         MoveAtk(creatur);
                 }
             }
-<<<<<<< HEAD
 
             int cnt = 0;
             while (cnt < 2)
-=======
             for (int i = 0; i < 2; i++)
->>>>>>> Andre
             {
                 if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
                 {
