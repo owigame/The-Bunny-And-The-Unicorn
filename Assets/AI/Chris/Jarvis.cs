@@ -13,7 +13,7 @@ public class Jarvis : LogicBase
 
         while (AIResponse.Tokens > 0 && maxCycles > 0)
         {
-            LogStack.Log("Cycle count: "+ (99 - maxCycles) ,Logging.LogLevel.Debug);
+            LogStack.Log("Cycle count: " + (99 - maxCycles), Logging.LogLevel.Debug);
             if (_Creatures.Count > 3)
             {
                 foreach (CreatureBase creatur in _Creatures)
@@ -25,17 +25,17 @@ public class Jarvis : LogicBase
 
             int cnt = 0;
             while (cnt < 2)
-            for (int i = 0; i < 2; i++)
-            {
-                if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
+                for (int i = 0; i < 2; i++)
                 {
-                    DoSpawn(i);
+                    if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
+                    {
+                        DoSpawn(i);
+                    }
+                    cnt++;
                 }
-                cnt++;
-            }
-            
 
-            DoSpawn(randomlane:true);
+
+            DoSpawn(randomlane: true);
 
             maxCycles--;
         }
@@ -59,7 +59,7 @@ public class Jarvis : LogicBase
             {
                 LogStack.Log("Couldn't spawn Unicorn in Lane " + lane, Logging.LogLevel.Debug);
                 if (_Creatures.Count > 0)
-                { 
+                {
                     LogStack.Log("Choosing random creature to move or attack", Logging.LogLevel.Debug);
                     CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count - 1)];
                     MoveAtk(randomCreature);
@@ -82,8 +82,9 @@ public class Jarvis : LogicBase
         }
     }
 
-    public void MoveAtk(CreatureBase creat){
-        
+    public void MoveAtk(CreatureBase creat)
+    {
+
         if (creat != null)
         {
             bool TargetInRange = false;
@@ -93,7 +94,7 @@ public class Jarvis : LogicBase
             foreach (CreatureBase creature in Targets)
             {
                 if (creature.Owner != creat.Owner)
-                { 
+                {
                     TargetInRange = true;
                     AIResponse.Attack(creat);
                 }
