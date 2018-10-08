@@ -13,6 +13,7 @@ public class Jarvis : LogicBase
 
         while (AIResponse.Tokens > 0 && maxCycles > 0)
         {
+            LogStack.Log("Cycle count: "+ (99 - maxCycles) ,Logging.LogLevel.Debug);
             if (_Creatures.Count > 3)
             {
                 foreach (CreatureBase creatur in _Creatures)
@@ -21,19 +22,16 @@ public class Jarvis : LogicBase
                         MoveAtk(creatur);
                 }
             }
-
-            int cnt = 0;
-            while(cnt < 2)
+            for (int i = 0; i < 2; i++)
             {
-                if (TournamentManager._instance.lanes[cnt].GetFriendliesInLane(this).Count == 0)
+                if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
                 {
-                    DoSpawn(cnt + 1);
+                    DoSpawn(i);
                 }
-
-                cnt++;
             }
+            
 
-            DoSpawn(0, true);
+            DoSpawn(randomlane:true);
 
             CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
 
@@ -47,14 +45,15 @@ public class Jarvis : LogicBase
         AIResponse.FinalizeResponse();
     }
 
-    public void DoSpawn(int lane, bool randomlane = false)
+    //Do spawn is zero indexed but uses spawing like it needsit
+    public void DoSpawn(int lane = 0, bool randomlane = false)
     {
         if(randomlane)
             lane = Random.Range(1, TournamentManager._instance.lanes.Count + 1);
 
         if (Random.Range(0, 3) != 1)
         {
-            if (!AIResponse.Spawn(Spawnable.Unicorn, lane))
+            if (!AIResponse.Spawn(Spawnable.Unicorn, lane+1))
             {
                 CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
                 MoveAtk(randomCreature);
@@ -62,7 +61,7 @@ public class Jarvis : LogicBase
         }
         else
         {
-            if (!AIResponse.Spawn(Spawnable.Bunny, lane))
+            if (!AIResponse.Spawn(Spawnable.Bunny, lane+1))
             {
                 CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
                 MoveAtk(randomCreature);
