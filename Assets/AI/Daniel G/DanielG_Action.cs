@@ -12,6 +12,7 @@ public class DanielG_Action : LogicBase
     public bool B_Bunnies = true;
 
     private List<int> LI_LaneAdvantage = new List<int>();
+    private List<bool> LI_LaneTypes = new List<bool>();
 
     [SerializeField]
     private int iDefTokenThreshold = 3;
@@ -31,7 +32,7 @@ public class DanielG_Action : LogicBase
         UpdateLaneAdvantage();
         // Defense.        
         //bool b_DefendedOnce = false;
-        while (AIResponse.Tokens > iDefTokenThreshold /*|| !b_DefendedOnce*/ && iCount < 99)
+        while (AIResponse.Tokens > iDefTokenThreshold /*|| !b_DefendedOnce*/ && iCount < 5)
         {
             iCount++;
             if (TokenCheck() == false) return;            
@@ -54,9 +55,10 @@ public class DanielG_Action : LogicBase
             if (creatureofFirstNode == null)
             {
                 LogStack.Log("Trying to spawn in slot... 0:" + iWeakLane, LogLevel.Debug);
-                if (!AIResponse.Spawn((B_Bunnies)?Spawnable.Bunny:Spawnable.Unicorn, iWeakLane + 1))
+                if (AIResponse.Spawn((LI_LaneTypes[iWeakLane])?Spawnable.Unicorn:Spawnable.Bunny, iWeakLane + 1))
                 {
-                    // Failed                    
+                    //SwapSpawningCreatureType (Alternates between bunnies and unicorns!)
+                    LI_LaneTypes[iWeakLane] = !LI_LaneTypes[iWeakLane];
                 }
             }
             else /*ShiftLane(iWeakLane);*/
@@ -152,8 +154,13 @@ public class DanielG_Action : LogicBase
     {
         LI_ActiveTroops.Clear();
         LI_LaneAdvantage.Clear();
-        for (int iCount = 0; iCount < TournamentManager._instance.lanes.Count; iCount++) LI_ActiveTroops.Add(0);
-        for (int iCount = 0; iCount < TournamentManager._instance.lanes.Count; iCount++) LI_LaneAdvantage.Add(0);
+        LI_LaneTypes.Clear();
+        for (int iCount = 0; iCount < TournamentManager._instance.lanes.Count; iCount++)
+        {
+            LI_ActiveTroops.Add(0);
+            LI_LaneAdvantage.Add(0);
+            LI_LaneTypes.Add(false);
+        }
         B_StartLeft = GetStartSide();
         B_Init = true;
     }
@@ -232,6 +239,4 @@ public class DanielG_Action : LogicBase
         }
         return iPos;
     }
-
-
 }
