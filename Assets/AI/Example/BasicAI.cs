@@ -8,7 +8,7 @@ public class BasicAI : LogicBase
     {
         if (!AIResponse.Spawn(Spawnable.Unicorn,1))
         {
-
+            AIResponse.Attack(_Creatures.Count >0? _Creatures[0]:null);
         }
         //IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse();

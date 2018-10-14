@@ -112,7 +112,8 @@ public class AIResponseManager {
 	}
 	
 	public bool Attack (CreatureBase creature) {
-		List<CreatureBase> inRange = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode, creature.Owner);
+        if (creature == null) return false;
+        List<CreatureBase> inRange = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode, creature.Owner);
 		if (inRange.GetEnemies (creature.Owner).Count > 0) {
 			if (!SpendToken ()) return false;
 
