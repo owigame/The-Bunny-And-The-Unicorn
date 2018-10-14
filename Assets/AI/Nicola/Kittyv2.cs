@@ -1,24 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using AI;
 using UnityEngine;
 
 [CreateAssetMenu (fileName = "Kittyv2", menuName = "AI/Kittyv2", order = 0)]
-public class Kittyv2 : LogicBase
-{
+public class Kittyv2 : LogicBase {
     int enemyCount, creatureCount;
     CreatureBase targetCreature, closestEnemy;
+    bool alternateTick = false;
 
-    public override void OnTick (IBoardState[] data)
-    {
+    struct AttackingPair {
+        CreatureBase creature1;
+        CreatureBase creature2;
+    }
+
+    List<AttackingPair> attackingPairs = new List<AttackingPair> ();
+
+    public override void OnTick (IBoardState[] data) {
+        alternateTick = !alternateTick;
         // if (AIResponse.Tokens > 0)
         // {
 
         //--Have at least one creature in each lane at all times...
-        foreach (LaneManager lane in TournamentManager._instance.lanes)
-        {
+        foreach (LaneManager lane in TournamentManager._instance.lanes) {
             int playerInLane = lane.GetFriendliesInLane (this).Count;
-            if (playerInLane <= 0)
-            {
+            if (playerInLane <= 0) {
                 AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, lane.LaneNumber);
             }
         }
@@ -27,19 +33,16 @@ public class Kittyv2 : LogicBase
         GetCount ();
 
         //--If there are Enemies, find the closest--
-        if (enemyCount > 0)
-        {
+        if (enemyCount > 0) {
             FindNearest ();
             //--if neareast found, move towards and attack--
-            if (targetCreature != null)
-            {
+            if (targetCreature != null) {
                 Debug.Log ("move to nearest");
                 AttemptAttackMoveTarget (targetCreature);
             }
         }
         //--else random move or attack--
-        else
-        {
+        else {
             Debug.Log ("move random");
             AttemptMoveAttack ();
         }
@@ -49,34 +52,28 @@ public class Kittyv2 : LogicBase
     }
 
     //--Get total enemies in play--
-    void GetCount ()
-    {
+    void GetCount () {
         //--reset count each round...
         enemyCount = 0;
         // creatureCount = 0;
 
-        foreach (LaneManager lane in TournamentManager._instance.lanes)
-        {
+        foreach (LaneManager lane in TournamentManager._instance.lanes) {
             enemyCount += lane.GetEnemiesInLane (this).Count;
             // creatureCount += lane.GetFriendliesInLane(this).Count;
         }
     }
 
     //--Find enemy nearest player--
-    void FindNearest ()
-    {
+    void FindNearest () {
         List<CreatureBase> closestCreatures = new List<CreatureBase> ();
 
         //--foreach lane
-        foreach (LaneManager lane in TournamentManager._instance.lanes)
-        {
+        foreach (LaneManager lane in TournamentManager._instance.lanes) {
             //--foreach creature in that lane
-            foreach (CreatureBase creature in lane.GetEnemiesInLane (this))
-            {
+            foreach (CreatureBase creature in lane.GetEnemiesInLane (this)) {
                 //--Get the nearest
                 int highestLaneProgress = 0;
-                if (creature.LaneProgress >= highestLaneProgress)
-                {
+                if (creature.LaneProgress >= highestLaneProgress) {
                     highestLaneProgress = creature.LaneProgress;
                     closestEnemy = creature;
                 }
@@ -87,49 +84,39 @@ public class Kittyv2 : LogicBase
         // Debug.Log("Closest Creature count: " + closestCreatures.Count);
 
         //--Find the nearest from the list
-        foreach (CreatureBase creature in closestCreatures)
-        {
+        foreach (CreatureBase creature in closestCreatures) {
             int highestLaneProgress = 0;
             // Debug.Log("creature lane progress: " + creature.LaneProgress);
-            if (creature != null)
-            {
-                if (creature.LaneProgress >= highestLaneProgress)
-                {
+            if (creature != null) {
+                if (creature.LaneProgress >= highestLaneProgress) {
                     highestLaneProgress = creature.LaneProgress;
                     targetCreature = creature;
                 }
-                
+
             }
         }
     }
 
     //--Random attack or move--
-    void AttemptMoveAttack ()
-    {
-        if (_Creatures.Count > 0)
-        {
+    void AttemptMoveAttack () {
+        if (_Creatures.Count > 0) {
             Debug.Log ("Attack or Move");
             CreatureBase toMove = _Creatures[Random.Range (0, _Creatures.Count)];
             // int distance = toMove.ActiveLaneNode.laneManager.GetOpenNodes(toMove.ActiveLaneNode, _RightFacing);
             // AIResponse.Move(toMove, distance);
 
-            if (toMove != null)
-            {
+            if (toMove != null) {
                 List<CreatureBase> searchTargetCreatures = toMove.ActiveLaneNode.laneManager.SearchRange ((int) toMove.Range, toMove.ActiveLaneNode, this);
                 bool foundAttackTarget = false;
-                foreach (CreatureBase _creature in searchTargetCreatures)
-                {
-                    if (_creature.Owner != toMove.Owner)
-                    { //Found enemy creature in range
+                foreach (CreatureBase _creature in searchTargetCreatures) {
+                    if (_creature.Owner != toMove.Owner) { //Found enemy creature in range
                         foundAttackTarget = true;
                         AIResponse.Attack (toMove);
                     }
                 }
-                if (!foundAttackTarget)
-                {
+                if (!foundAttackTarget) {
                     int moveSpaces = toMove.ActiveLaneNode.laneManager.GetOpenNodes (toMove.ActiveLaneNode, _RightFacing);
-                    if (moveSpaces > AIResponse.Tokens)
-                    {
+                    if (moveSpaces > AIResponse.Tokens) {
                         moveSpaces = AIResponse.Tokens;
                     }
                     AIResponse.Move (toMove, moveSpaces);
@@ -138,12 +125,10 @@ public class Kittyv2 : LogicBase
         }
     }
 
-    void AttemptAttackMoveTarget (CreatureBase creature)
-    {
+    void AttemptAttackMoveTarget (CreatureBase creature) {
         //Find friendly in same lane as _targetCreature
         List<CreatureBase> friendlies = creature.ActiveLaneNode.laneManager.GetFriendliesInLane (this);
-        if (friendlies.Count > 0)
-        {
+        if (friendlies.Count > 0) {
             CreatureBase closestFriendly = friendlies[0];
             // if (closestFriendly == null)
             // {
@@ -155,20 +140,35 @@ public class Kittyv2 : LogicBase
             // }
             // else
             // {
-                //--Attempt to attack...
-                int openNodes = closestFriendly.ActiveLaneNode.laneManager.GetOpenNodes (closestFriendly.ActiveLaneNode, _RightFacing);
-                LogStack.Log("$$$$ OpenNodes - " + closestFriendly.GetInstanceID() + ": " + openNodes, Logging.LogLevel.System);
-                //--is enemy in attack range? Attack...
-                if (openNodes < closestFriendly.Range)
-                {
-                    AIResponse.Attack (closestFriendly);
-                }
-                //--Else move...
-                else
-                {
-                    AIResponse.Move (closestFriendly, openNodes);
-                }
+            //--Attempt to attack...
+            int openNodes = closestFriendly.ActiveLaneNode.laneManager.GetOpenNodes (closestFriendly.ActiveLaneNode, _RightFacing);
+            LogStack.Log ("$$$$ OpenNodes - " + closestFriendly.GetInstanceID () + ": " + openNodes, Logging.LogLevel.System);
+            //--is enemy in attack range? Attack...
+            if (openNodes < closestFriendly.Range) {
+                AIResponse.Attack (closestFriendly);
+            }
+            //--Else move...
+            else {
+                AIResponse.Move (closestFriendly, openNodes);
+            }
             // }
         }
+    }
+
+    IEnumerator ManagePairs () {
+        /* 
+        Find imbalance of enemies vs friendlies
+        Initiate pair spawning - new AttackPair(Creature1, Creature2)
+        Wait for alternate tick for 2nd creature spawn
+
+        bool currentTick = alternateTick;
+        1. Spawn first creature
+        while (alternateTick == currentTick){
+            yield return null;
+        }
+        2. Spawn second creature
+        3. attackingPairs.Add(new AttackingPair{creature1 = _creature1, creature2 = _creature2})
+        */
+        yield return null;
     }
 }

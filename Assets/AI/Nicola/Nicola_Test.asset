@@ -8,7 +8,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee0196562bf04fe449db0696e2670727, type: 3}
-  m_Name: Hyena 1
+  m_Script: {fileID: 11500000, guid: 7edee07ab2879a940a1484cf119c769d, type: 3}
+  m_Name: Nicola_Test
   m_EditorClassIdentifier: 
-  _Creatures: []
+  _Creatures:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _PlayerNumber: 1
