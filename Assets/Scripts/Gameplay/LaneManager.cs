@@ -93,7 +93,7 @@ public class LaneManager : MonoBehaviour, IBoardState {
         bool nodeBlocked = false;
         for (int i = 1; i < range + 1; i++) {
             nextNode = allNodes[Mathf.Clamp (allNodes.IndexOf (currentNode) + (rightFacing ? i : -i), 0, currentNode.laneManager.allNodes.Count - 1)];
-            if (nextNode.activeCreature != null && !forced) {
+            if (nextNode.activeCreature != null) {
                 nodeBlocked = true;
             }
         }

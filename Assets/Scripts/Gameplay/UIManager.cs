@@ -13,20 +13,16 @@ public class UIManager : MonoBehaviour {
 	public Text player1TokenText;
 	public Text player2TokenText;
 	public Text winText;
-	public Text playe1Name;
-	public Text playe2Name;
 
 	public void Winner (string name) {
 		if (winText != null) {
-			winText.transform.parent.gameObject.SetActive (true);
+			winText.transform.parent.gameObject.SetActive(true);
 			winText.text = name + " wins!";
 		}
 	}
 
 	void Awake () {
 		_instance = this;
-		playe1Name.text = TournamentManager._instance.P1.name;
-		playe2Name.text = TournamentManager._instance.P2.name;
 	}
 
 	public void UpdateScore () {

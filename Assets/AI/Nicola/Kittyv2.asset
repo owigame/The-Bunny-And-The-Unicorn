@@ -8,7 +8,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee0196562bf04fe449db0696e2670727, type: 3}
-  m_Name: Hyena
+  m_Script: {fileID: 11500000, guid: b09cb2f9e95b8ab45ada59b445caa8a5, type: 3}
+  m_Name: Kittyv2
   m_EditorClassIdentifier: 
   _Creatures: []
+  _PlayerNumber: 0
+  _RightFacing: 0
