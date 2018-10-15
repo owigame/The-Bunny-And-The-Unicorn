@@ -16,10 +16,10 @@ public class ThreadBear :  ThreadBare
         {
             FormPattern(lanePattern1,i,boardState);
         }
-        for (int i = 0; i < 3; i++)
-        {
-            AIResponse.Attack(boardState[i].GetFriendliesInLane(this).Count>0? boardState[i].GetFriendliesInLane(this)[0]:null);
-        }
+        //for (int i = 0; i < 3; i++)
+        //{
+        //    AIResponse.Attack(boardState[i].GetFriendliesInLane(this).Count>0? boardState[i].GetFriendliesInLane(this)[0]:null);
+        //}
 
         Auto_Nearest(boardState);
 
