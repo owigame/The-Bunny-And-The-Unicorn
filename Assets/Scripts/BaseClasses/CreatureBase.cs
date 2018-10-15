@@ -26,10 +26,9 @@ public class CreatureBase : MonoBehaviour {
 	public Spawnable CreatureType { get { return creatureType; } }
 	public LaneNode ActiveLaneNode { get { return activeLaneNode; } }
 	//TODO: include rightfacing in LaneProgress
-
-	public int LaneIndex { get { return ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode); } }
+	public int LaneProgress { get { return owner._RightFacing ? ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode) : ActiveLaneNode.laneManager.allNodes.Count - ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode) - 1; } }
+	public int LaneIndex {  get { return ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode); }  }
 	public float Range { get { return range; } }
-	public float Health { get { return health; } }
 
 	private void Awake () {
 		animator = GetComponent<Animator> ();
@@ -99,7 +98,6 @@ public class CreatureBase : MonoBehaviour {
 		animator.SetBool ("Die", true);
 		uiHealth.gameObject.SetActive (false);
 		if (TournamentManager.OnCreatureDead != null) TournamentManager.OnCreatureDead (this);
-
 	}
 
 	public void Win () {
@@ -118,7 +116,7 @@ public class CreatureBase : MonoBehaviour {
 		if (activeLaneNode.activeCreature == this) activeLaneNode.activeCreature = null;
 		LogStack.Log ("MOVING: Current Node - " + activeLaneNode.name, LogLevel.System);
 		activeLaneNode = nextNode;
-		if (nextNode != null) {
+		if(nextNode != null){
 			LogStack.Log ("MOVING: New Node - " + activeLaneNode.name, LogLevel.System);
 			activeLaneNode.activeCreature = this;
 
@@ -134,18 +132,6 @@ public class CreatureBase : MonoBehaviour {
 			if (otherCreature.owner != owner) {
 				otherCreature.StopAttack ();
 			}
-		}
-	}
-
-	public int LaneProgress {
-		get {
-			int progress = 0;
-			if (owner._RightFacing) {
-				progress = ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode) + 1;
-			} else {
-				progress = ActiveLaneNode.laneManager.allNodes.Count - ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode);
-			}
-			return progress;
 		}
 	}
 
