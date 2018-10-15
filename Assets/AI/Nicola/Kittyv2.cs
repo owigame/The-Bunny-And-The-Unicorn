@@ -9,8 +9,8 @@ public class Kittyv2 : LogicBase
     int enemyCount, creatureCount;
     CreatureBase targetCreature, closestEnemy;
     public bool alternateTick = false;
-    bool runOnce = true;
-    // KittyHelper _helper;
+
+    protected bool pairsReady1, pairsReady2, pairsReady3;
 
     public struct AttackingPair
     {
@@ -20,18 +20,26 @@ public class Kittyv2 : LogicBase
 
     public List<AttackingPair> attackingPairs = new List<AttackingPair> ();
 
-    public void Init ()
-    {
-        // _helper = TournamentManager._instance.SpawnHelper(KittyHelper);
-    }
-
+IEnumerator SpawnOne(Kittyv2 kitta)
+{
+    yield return kitta.AIResponse.Spawn(Spawnable.Unicorn,1);
+}
     public override void OnTick (IBoardState[] data)
     {
-        // if (runOnce)
-        // {
-        //     runOnce = false;
-        //     Init ();
-        // }
+        //TournamentManager._instance.StartCoroutine(SpawnOne(this) );
+        if (_Start)
+        {
+            spawningPairs1 = false;
+            spawningPairs2 = false;
+            spawningPairs3 = false;
+            pairsReady1 = true;
+            pairsReady2 = true;
+            pairsReady3 = true;
+
+            // Debug.Break();
+            _Start = false;
+        }
+
         alternateTick = !alternateTick;
 
         if (AIResponse.Tokens >= 20)
@@ -69,15 +77,17 @@ public class Kittyv2 : LogicBase
                 }
             }
 
-            if (_moveAttack)
+            if (_moveAttack && _friendlyToMove != null)
             {
                 //--Move to enemy, attack, then move to end of Lane--    
-                // _enemyToAttack = _lane.GetEnemiesInLane (this) [0];
+                Debug.Log ("move the creature...");
                 int _openNodes = _friendlyToMove.ActiveLaneNode.laneManager.GetOpenNodes (_friendlyToMove.ActiveLaneNode, _RightFacing);
-                AIResponse.Move (_friendlyToMove, _openNodes);
-                AIResponse.Attack (_friendlyToMove);
-                _openNodes = _friendlyToMove.ActiveLaneNode.laneManager.GetOpenNodes (_friendlyToMove.ActiveLaneNode, _RightFacing);
-                AIResponse.Move (_friendlyToMove, _openNodes);
+                if (!AIResponse.Move (_friendlyToMove, _openNodes))
+                {
+                    AIResponse.Attack (_friendlyToMove);
+                }
+                // _openNodes = _friendlyToMove.ActiveLaneNode.laneManager.GetOpenNodes (_friendlyToMove.ActiveLaneNode, _RightFacing);
+                // AIResponse.Move (_friendlyToMove, _openNodes);
             }
         }
         else
@@ -87,21 +97,15 @@ public class Kittyv2 : LogicBase
             {
                 int playerInLane = lane.GetFriendliesInLane (this).Count;
                 int enemyInLane = lane.GetEnemiesInLane (this).Count;
-                if (playerInLane <= 0 || enemyInLane < playerInLane)
+                if (playerInLane <= 0 /*  || enemyInLane >= playerInLane */ )
                 {
                     // AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, lane.LaneNumber);
                     SpawnNewPair (lane);
                 }
-                else if (enemyInLane > playerInLane)
-                {
-                    //  ManagePairs(lane);
-                    // if (_helper != null){
-                    SpawnNewPair (lane);
-                    // } else {
-                    //     Debug.LogError("No Helper Spawned");
-                    //     Init();
-                    // }
-                }
+                // else if (enemyInLane >= playerInLane)
+                // {
+                //     SpawnNewPair (lane);
+                // }
             }
 
             //--Get Enemy Count--
@@ -125,6 +129,15 @@ public class Kittyv2 : LogicBase
                 AttemptMoveAttack ();
             }
         }
+        TournamentManager._instance.StartCoroutine(AllReady());
+    }
+
+    IEnumerator AllReady(){
+        while (pairsReady1 == false || pairsReady2 == false || pairsReady3 == false){
+            Debug.Log("Waiting for Ready");
+            yield return null;
+        }
+        Debug.Log("***** ALL READY *****");
         AIResponse.FinalizeResponse ();
     }
 
@@ -200,25 +213,28 @@ public class Kittyv2 : LogicBase
                         //Move Pair
                     }
                 }
-
-                List<CreatureBase> searchTargetCreatures = toMove.ActiveLaneNode.laneManager.SearchRange ((int) toMove.Range, toMove.ActiveLaneNode, this);
-                bool foundAttackTarget = false;
-                foreach (CreatureBase _creature in searchTargetCreatures)
+                if (!foundInPairs)
                 {
-                    if (_creature.Owner != toMove.Owner)
-                    { //Found enemy creature in range
-                        foundAttackTarget = true;
-                        AIResponse.Attack (toMove);
-                    }
-                }
-                if (!foundAttackTarget)
-                {
-                    int moveSpaces = toMove.ActiveLaneNode.laneManager.GetOpenNodes (toMove.ActiveLaneNode, _RightFacing);
-                    if (moveSpaces > AIResponse.Tokens)
+                    List<CreatureBase> searchTargetCreatures = toMove.ActiveLaneNode.laneManager.SearchRange ((int) toMove.Range, toMove.ActiveLaneNode, this);
+                    bool foundAttackTarget = false;
+                    foreach (CreatureBase _creature in searchTargetCreatures)
                     {
-                        moveSpaces = AIResponse.Tokens;
+                        if (_creature.Owner != toMove.Owner)
+                        {
+                            //Found enemy creature in range
+                            foundAttackTarget = true;
+                            AIResponse.Attack (toMove);
+                        }
                     }
-                    AIResponse.Move (toMove, moveSpaces);
+                    if (!foundAttackTarget)
+                    {
+                        int moveSpaces = toMove.ActiveLaneNode.laneManager.GetOpenNodes (toMove.ActiveLaneNode, _RightFacing);
+                        if (moveSpaces > AIResponse.Tokens)
+                        {
+                            moveSpaces = AIResponse.Tokens;
+                        }
+                        AIResponse.Move (toMove, moveSpaces);
+                    }
                 }
             }
         }
@@ -251,21 +267,35 @@ public class Kittyv2 : LogicBase
     bool currentTick;
     bool spawnTwo = false;
     public Kittyv2 owner;
-    bool spawningPairs = false;
+    bool spawningPairs1 = false;
+    bool spawningPairs2 = false;
+    bool spawningPairs3 = false;
 
     IEnumerator managedPairs;
 
     public void SpawnNewPair (LaneManager _lane)
     {
-        if (!spawningPairs){
-            spawningPairs = true;
-        managedPairs = ManagePairs(_lane);
-        Debug.Log("SPAWNNEWPAIR() " + TournamentManager._instance);
-        TournamentManager._instance.StartCoroutine (managedPairs);
+        if ((!spawningPairs1 && _lane.LaneNumber == 1) || (!spawningPairs2 && _lane.LaneNumber == 2) || (!spawningPairs3 && _lane.LaneNumber == 3))
+        {
+            // managedPairs = ManagePairs (_lane);
+            Debug.Log ("SPAWNNEWPAIR() " + TournamentManager._instance);
+            TournamentManager._instance.StartCoroutine (ManagePairs (_lane,this));
+            if (_lane.LaneNumber == 1){
+                spawningPairs1 = true;
+                pairsReady1 = false;
+            }
+            if (_lane.LaneNumber == 2){
+                spawningPairs2 = true;
+                pairsReady2 = false;
+            }
+            if (_lane.LaneNumber == 3){
+                spawningPairs3 = true;
+                pairsReady3 = false;
+            }
         }
     }
 
-    IEnumerator ManagePairs (LaneManager _lane)
+    IEnumerator ManagePairs (LaneManager _lane,Kittyv2 thebase)
     {
 
         // LaneManager _lane = null;
@@ -292,35 +322,72 @@ public class Kittyv2 : LogicBase
         CreatureBase _creature1 = null, _creature2 = null;
 
         //--Spawn First Creature on first tick--
+        Debug.Log("PAIRS LANE " + _lane.LaneNumber + " Pre-Spawn");
 
-        if (!SpawnOne (Spawnable.Bunny, _lane.LaneNumber))
+        if (!thebase.AIResponse.Spawn (Spawnable.Bunny, _lane.LaneNumber))
         {
-            TournamentManager._instance.StartCoroutine (WaitForTickChange ());
+            Debug.Log("PAIRS LANE " + _lane.LaneNumber + " Failed Spawn");
+             if (_lane.LaneNumber == 1)  thebase.pairsReady1 = true;
+             if (_lane.LaneNumber == 2)  thebase.pairsReady2 = true;
+             if (_lane.LaneNumber == 3)  thebase.pairsReady3 = true;
+
+            if (_lane.LaneNumber == 1) spawningPairs1 = false;
+            if (_lane.LaneNumber == 2) spawningPairs2 = false;
+            if (_lane.LaneNumber == 3) spawningPairs3 = false;
+
+            TournamentManager._instance.StartCoroutine (WaitForTickChange (_lane.LaneNumber));
             while (!tickChanged)
             {
+                Debug.Log("Waiting for tick change | 1:" + pairsReady1 + " 2:" + pairsReady2 + " 3:" + pairsReady3 +
+                    " Current lane == "+ _lane.LaneNumber +" Pairs Readyone == "+ pairsReady1 );
                 yield return null;
             }
             tickChanged = false;
-            TournamentManager._instance.StartCoroutine (ManagePairs (_lane));
+
+
+            // SpawnNewPair (_lane);
         }
+        else
+        {
+            Debug.Log("PAIRS LANE " + _lane.LaneNumber + " Spawned");
+            if (_lane.LaneNumber == 1) thebase.pairsReady1 = true;
+            if (_lane.LaneNumber == 2) thebase.pairsReady2 = true;
+            if (_lane.LaneNumber == 3) thebase.pairsReady3 = true;
 
-        TournamentManager._instance.StartCoroutine (WaitForTickChange ());
-        _creature1 = _lane.GetFirstLaneNode(this).activeCreature;
-        AIResponse.Move (_creature1, _lane.LaneNumber);
+            TournamentManager._instance.StartCoroutine (WaitForTickChange (_lane.LaneNumber));
+            _creature1 = _lane.GetFirstLaneNode (this).activeCreature;
+            if (_creature1 != null)
+            {
+                Debug.Log("PAIRS LANE " + _lane.LaneNumber + " Got Creature1");
+                thebase.AIResponse.Move (_creature1, _lane.LaneNumber);
 
-        TournamentManager._instance.StartCoroutine (SpawnTwo (_lane.LaneNumber));
+                TournamentManager._instance.StartCoroutine (SpawnTwo (_lane.LaneNumber,this));
 
-        while (spawnTwo == false){
-            yield return null;
+                while (spawnTwo == false)
+                {
+                    yield return null;
+                }
+
+                _creature2 = _lane.GetFirstLaneNode (this).activeCreature;
+
+                //--Add to list of pairs--
+                attackingPairs.Add (new Kittyv2.AttackingPair { creature1 = _creature1, creature2 = _creature2 });
+
+                if (_lane.LaneNumber == 1) spawningPairs1 = false;
+                if (_lane.LaneNumber == 2) spawningPairs2 = false;
+                if (_lane.LaneNumber == 3) spawningPairs3 = false;
+                yield return null;
+            }
+            else
+            {
+                Debug.Log("PAIRS LANE " + _lane.LaneNumber + " Could Not Find Creature1");
+
+                if (_lane.LaneNumber == 1) spawningPairs1 = false;
+                if (_lane.LaneNumber == 2) spawningPairs2 = false;
+                if (_lane.LaneNumber == 3) spawningPairs3 = false;
+                // SpawnNewPair (_lane);
+            }
         }
-
-        _creature2 = _lane.GetFirstLaneNode(this).activeCreature;
-
-
-        //--Add to list of pairs--
-        attackingPairs.Add (new Kittyv2.AttackingPair { creature1 = _creature1, creature2 = _creature2 });
-        spawningPairs = false;
-        yield return null;
     }
 
     bool SpawnOne (Spawnable type, int lane)
@@ -335,33 +402,42 @@ public class Kittyv2 : LogicBase
         }
     }
 
-    IEnumerator SpawnTwo (int laneNumber)
+    IEnumerator SpawnTwo (int laneNumber,Kittyv2 thebase)
     {
         //--Spawn Second Creature on second tick--
-        if (!AIResponse.Spawn (Spawnable.Unicorn, laneNumber))
+        if (!thebase.AIResponse.Spawn (Spawnable.Unicorn, laneNumber))
         {
-            TournamentManager._instance.StartCoroutine (WaitForTickChange ());
+            TournamentManager._instance.StartCoroutine (WaitForTickChange (laneNumber));
             while (!tickChanged)
             {
                 yield return null;
             }
             tickChanged = false;
-            TournamentManager._instance.StartCoroutine (SpawnTwo (laneNumber));
-        } else {
-            TournamentManager._instance.StartCoroutine (WaitForTickChange ());
+            TournamentManager._instance.StartCoroutine (SpawnTwo (laneNumber,thebase));
+        }
+        else
+        {
+            if (laneNumber == 1) pairsReady1 = true;
+            if (laneNumber == 2) pairsReady2 = true;
+            if (laneNumber == 3) pairsReady3 = true;
+            TournamentManager._instance.StartCoroutine (WaitForTickChange (laneNumber));
             spawnTwo = true;
         }
     }
 
-    IEnumerator WaitForTickChange ()
+    IEnumerator WaitForTickChange (int laneNumber)
     {
         currentTick = alternateTick;
         while (alternateTick == currentTick)
         {
+            Debug.Log("WaitForTickChange()");
             yield return null;
         }
         tickChanged = true;
         currentTick = alternateTick;
+        // if (laneNumber == 1) pairsReady1 = false;
+        // if (laneNumber == 2) pairsReady2 = false;
+        // if (laneNumber == 3) pairsReady3 = false;
     }
 
 }

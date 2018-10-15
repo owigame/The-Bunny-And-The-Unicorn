@@ -7,6 +7,10 @@ using UnityEngine;
 public class TournamentManager : MonoBehaviour {
     #region  Singleton management
     public static TournamentManager _instance;
+    public delegate void StartEvent();
+    public static StartEvent OnStart;
+
+
     private void Awake () {
         if (_instance == null) {
             _instance = this;
@@ -69,6 +73,10 @@ public class TournamentManager : MonoBehaviour {
 
     // Setup the two Ai players 
     private void Start () {
+
+        if (OnStart != null){
+            OnStart();
+        }
 
         //Set Lane listeners
         foreach (LaneManager lane in lanes) {
