@@ -66,11 +66,21 @@ public class LaneManager : MonoBehaviour, IBoardState {
 
     public int GetOpenNodes (LaneNode currentNode, bool rightFacing) {
         int openNodes = 0;
-        for (int i = 0; i < currentNode.laneManager.allNodes.Count; i++) {
+        // if (rightFacing) {
+        //     for (int i = 1; i < currentNode.laneManager.allNodes.Count; i++) {
+        //         LaneNode nextNode = allNodes[allNodes.IndexOf (currentNode) + i];
+        //         if (nextNode.activeCreature == null) {
+        //             openNodes ++;
+        //         }
+        //     }
+        // }
+
+        for (int i = 1; i < currentNode.laneManager.allNodes.Count; i++) {
             LaneNode nextNode = allNodes[Mathf.Clamp (allNodes.IndexOf (currentNode) + (rightFacing ? i : -i), 0, currentNode.laneManager.allNodes.Count - 1)];
             if (nextNode != null && nextNode.activeCreature == null) {
                 openNodes++;
-                currentNode = nextNode;
+            } else if (nextNode.activeCreature != null) {
+                break;
             }
         }
         return openNodes;
@@ -81,9 +91,9 @@ public class LaneManager : MonoBehaviour, IBoardState {
         //If the next block has a creature in it, fail the move
         LaneNode nextNode = null;
         bool nodeBlocked = false;
-        for (int i = 1; i < range+1; i++) {
+        for (int i = 1; i < range + 1; i++) {
             nextNode = allNodes[Mathf.Clamp (allNodes.IndexOf (currentNode) + (rightFacing ? i : -i), 0, currentNode.laneManager.allNodes.Count - 1)];
-            if (nextNode.activeCreature != null) {
+            if (nextNode.activeCreature != null && !forced) {
                 nodeBlocked = true;
             }
         }

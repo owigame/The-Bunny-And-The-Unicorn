@@ -74,7 +74,7 @@ public class TickManager : MonoBehaviour {
                 // if (ResponsesRecieved == 2) {
                 // ResponsesRecieved = 0;
                 tickState = TickState.AwaitingResponses;
-                TournamentManager._instance.OnTick.Invoke (FindObjectsOfType<LaneManager> ());
+                TournamentManager._instance.OnTick.Invoke (TournamentManager._instance.lanes.ToArray());
                 P1 = new IResponse[0];
                 P2 = new IResponse[0];
                 // }
@@ -105,7 +105,7 @@ public class TickManager : MonoBehaviour {
                 // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Attack ();
                 LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
-                if (response.creature.LaneProgress + 1 == response.creature.ActiveLaneNode.laneManager.allNodes.Count - 1) { //One node before end
+                if (response.creature.LaneProgress + 1 >= response.creature.ActiveLaneNode.laneManager.allNodes.Count && nextNode.activeCreature == null) { //One node before end
                     response.creature.Move (nextNode);
                 }
             }
@@ -118,7 +118,7 @@ public class TickManager : MonoBehaviour {
                 // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Attack ();
                 LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
-                if (response.creature.LaneProgress + 1 == response.creature.ActiveLaneNode.laneManager.allNodes.Count - 1) { //One node before end
+                if (response.creature.LaneProgress + 1 >= response.creature.ActiveLaneNode.laneManager.allNodes.Count && nextNode.activeCreature == null) { //One node before end
                     response.creature.Move (nextNode);
                 }
             } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Move) {
