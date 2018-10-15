@@ -5,10 +5,10 @@ namespace AI.DanR
 {
     [CreateAssetMenu(fileName = "Hyena", menuName = "AI/Hyena", order = 0)]
     public class Hyena : LogicBase
-    {  
+    {
         private Spawnable _lastSpawned;
-        private int _lanetospawn;
-
+        private int _lanetospawn = 1;
+        private bool set = false;
 
         private List<CreatureBase> friendliesWithEnemiesInRange;
 
@@ -22,6 +22,7 @@ namespace AI.DanR
 
                 while (AIResponse.Tokens > 0 && maxCycles > 0)
                 {
+                    Initialize();
                     SpawnEnemy();
 
                     List<CreatureBase> friendliesInLane1, friendliesInLane2, friendliesInLane3;
@@ -33,11 +34,18 @@ namespace AI.DanR
                     FriendliesThatcanAttack(friendliesInLane1, friendliesInLane2, friendliesInLane3);
 
 
+                    //TEMP
+                    List<CreatureBase> friendlies = _Creatures;
+                    MoveOrAttack(friendlies);
+
+
                     // Find if friendly is close to the end
 
 
                     // If no Target in range && freindly not close to end : pick a lane with the least amount of enemies to move in.
+
                     // If Target in range && friendly not close to end : Attack the closest enemy in the lane with the most enemies.
+
                     // If friend close to end && no target in range : Move forward
 
                     maxCycles--;
@@ -45,6 +53,16 @@ namespace AI.DanR
             }
 
             AIResponse.FinalizeResponse();
+        }
+
+        private void Initialize()
+        {
+            if (!set)
+            {
+                _lanetospawn = 1;
+                set = true;
+            }
+            
         }
 
         private void FindAllFriendliesInLane(out List<CreatureBase> friendliesInLane1, out List<CreatureBase> friendliesInLane2, out List<CreatureBase> friendliesInLane3)
@@ -102,6 +120,7 @@ namespace AI.DanR
 
         private void SpawnEnemy()
         {
+           
             // Round robin spawning
             if (_lanetospawn > 3)
                 _lanetospawn = 1;
@@ -123,6 +142,37 @@ namespace AI.DanR
             }
 
             _lanetospawn++;
+        }
+
+        CreatureBase closestCreature;
+
+        public void MoveOrAttack(List<CreatureBase> friendlyCreatures)
+        {
+            if(friendliesWithEnemiesInRange != null && friendliesWithEnemiesInRange.Count > 0)
+            {
+                AIResponse.Attack(friendliesWithEnemiesInRange[0]);
+            }
+            else
+            {
+                foreach(CreatureBase creature in friendlyCreatures)
+                {
+                    if(closestCreature == null)
+                    {
+                        closestCreature = creature;
+                    }
+                    if(creature.LaneProgress > closestCreature.LaneProgress && closestCreature != null)
+                    {
+                        closestCreature = creature;
+                    }                   
+                }
+               
+                if(closestCreature != null)
+                {
+                    Debug.Log(closestCreature);
+                    AIResponse.Move(closestCreature);
+                }
+                
+            }
         }
     }
 
