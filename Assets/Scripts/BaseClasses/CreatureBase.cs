@@ -25,8 +25,11 @@ public class CreatureBase : MonoBehaviour {
 	public LogicBase Owner { get { return owner; } }
 	public Spawnable CreatureType { get { return creatureType; } }
 	public LaneNode ActiveLaneNode { get { return activeLaneNode; } }
-	public int LaneProgress { get { return laneProgress; } }
+	//TODO: include rightfacing in LaneProgress
+
+	public int LaneIndex { get { return ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode); } }
 	public float Range { get { return range; } }
+	public float Health { get { return health; } }
 
 	private void Awake () {
 		animator = GetComponent<Animator> ();
@@ -41,10 +44,10 @@ public class CreatureBase : MonoBehaviour {
 			damageAmount = _damageAmount;
 			range = _type == Spawnable.Bunny ? TournamentManager._instance.bunnyRange : TournamentManager._instance.unicornRange;
 			init = true;
-			rightFacing = _owner == TournamentManager._instance.P1 ? true : false;
-			activeLaneNode = lane.GetFirstLaneNode (rightFacing);
+			activeLaneNode = lane.GetFirstLaneNode (owner);
 			activeLaneNode.activeCreature = this;
 			owner._Creatures.Add (this);
+			rightFacing = owner._RightFacing;
 			// Debug.Log ("Creature owned by " + owner);
 		}
 	}
@@ -92,9 +95,11 @@ public class CreatureBase : MonoBehaviour {
 		dead = true;
 		activeLaneNode.activeCreature = null;
 		owner._Creatures.Remove (this);
+		lane.creatures.Remove (this);
 		animator.SetBool ("Die", true);
 		uiHealth.gameObject.SetActive (false);
 		if (TournamentManager.OnCreatureDead != null) TournamentManager.OnCreatureDead (this);
+
 	}
 
 	public void Win () {
@@ -113,10 +118,13 @@ public class CreatureBase : MonoBehaviour {
 		if (activeLaneNode.activeCreature == this) activeLaneNode.activeCreature = null;
 		LogStack.Log ("MOVING: Current Node - " + activeLaneNode.name, LogLevel.System);
 		activeLaneNode = nextNode;
-		LogStack.Log ("MOVING: New Node - " + activeLaneNode.name, LogLevel.System);
-		activeLaneNode.activeCreature = this;
+		if (nextNode != null) {
+			LogStack.Log ("MOVING: New Node - " + activeLaneNode.name, LogLevel.System);
+			activeLaneNode.activeCreature = this;
 
-		transform.position = activeLaneNode.transform.position;
+			transform.position = activeLaneNode.transform.position;
+		}
+		laneProgress = LaneProgress;
 		Win ();
 	}
 
@@ -126,6 +134,18 @@ public class CreatureBase : MonoBehaviour {
 			if (otherCreature.owner != owner) {
 				otherCreature.StopAttack ();
 			}
+		}
+	}
+
+	public int LaneProgress {
+		get {
+			int progress = 0;
+			if (owner._RightFacing) {
+				progress = ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode) + 1;
+			} else {
+				progress = ActiveLaneNode.laneManager.allNodes.Count - ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode);
+			}
+			return progress;
 		}
 	}
 
