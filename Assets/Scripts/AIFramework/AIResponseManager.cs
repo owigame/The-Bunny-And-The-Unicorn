@@ -104,14 +104,15 @@ public class AIResponseManager {
 	public bool Attack (CreatureBase creature, int AmountOfTimes = 1) {
 		bool allTrue = true;
 		for (int i = 0; i < AmountOfTimes; i++) {
-			if (!Attack(creature)){
+			if (!Attack (creature)) {
 				allTrue = false;
 			}
 		}
 		return allTrue;
 	}
-	
+
 	public bool Attack (CreatureBase creature) {
+		if (creature == null) return false;
 		List<CreatureBase> inRange = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode, creature.Owner);
 		if (inRange.GetEnemies (creature.Owner).Count > 0) {
 			if (!SpendToken ()) return false;
