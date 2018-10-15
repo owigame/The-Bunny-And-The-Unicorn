@@ -117,7 +117,14 @@ public class DanielG_Action : LogicBase
             foreach (CreatureBase _creature in searchTargetCreatures)
             {
                 //if (TokenCheck() == false) return;
-                if (_creature.Owner != this) AIResponse.Attack(creature);               
+                if (_creature.Owner != this)
+                {
+                    if (creature.CreatureType == Spawnable.Unicorn && _creature.Health > 1)
+                    {
+                        AIResponse.Attack(creature);
+                    }
+                    AIResponse.Attack(creature);
+                }
             }
         }
 
@@ -131,10 +138,11 @@ public class DanielG_Action : LogicBase
         //    if (_creature.Owner != creature.Owner) AIResponse.Attack(creature);
 
         //}
-
+        iCount = 0;
         // Offense - Moving.
-        while (AIResponse.Tokens >= iAttackTokenThreshold)
+        while (AIResponse.Tokens >= iAttackTokenThreshold && iCount < 5)
         {
+            iCount++;
             if (TokenCheck() == false) return;
             int iLane = Random.Range(0, 2);
             List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
