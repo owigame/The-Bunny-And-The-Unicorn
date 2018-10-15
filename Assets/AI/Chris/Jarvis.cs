@@ -31,37 +31,34 @@ public class Jarvis : LogicBase
 
         if (!saving)
         {
-            if (AIResponse.Tokens > 2)
+            while (AIResponse.Tokens > 0 && maxCycles > 0)
             {
-                while (AIResponse.Tokens > 0 && maxCycles > 0)
+                if (_Creatures.Count > 5)
                 {
-                    LogStack.Log("Cycle count: " + (99 - maxCycles), Logging.LogLevel.Debug);
-                    if (_Creatures.Count > 3)
+                    foreach (CreatureBase creatur in _Creatures)
                     {
-                        foreach (CreatureBase creatur in _Creatures)
+                        if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
+                            MoveAtk(creatur);
+                    }
+                }
+
+                cnt = 0;
+                while (cnt < 2)
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
                         {
-                            if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
-                                MoveAtk(creatur);
+                            DoSpawn(i);
                         }
+                        cnt++;
                     }
 
-                    cnt = 0;
-                    while (cnt < 2)
-                        for (int i = 0; i < 2; i++)
-                        {
-                            if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
-                            {
-                                DoSpawn(i);
-                            }
-                            cnt++;
-                        }
 
+                DoSpawn(randomlane: true);
 
-                    DoSpawn(randomlane: true);
-
-                    maxCycles--;
-                }
+                maxCycles--;
             }
+            
         }
         //IResponse[] responses = AIResponse.QueryResponse();
         AIResponse.FinalizeResponse();
