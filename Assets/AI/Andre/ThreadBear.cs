@@ -37,7 +37,8 @@ public class ThreadBear :  ThreadBare
                 else nearest = boardState[i].GetFriendliesInLane(this)[0];
             }
         }
-        AIResponse.Move(nearest);
+        if (AIResponse.Tokens>1)
+            AIResponse.Move(nearest);
 
         AIResponse.FinalizeResponse();
     }
