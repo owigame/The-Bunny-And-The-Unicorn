@@ -2,6 +2,7 @@
 using UnityEngine;
 using AI;
 using System.Collections.Generic;
+using System;
 
 [CreateAssetMenu(fileName = "ThreadBear", menuName = "AI/ThreadBear", order = 0)]
 public class ThreadBear :  ThreadBare
@@ -64,5 +65,29 @@ public class ThreadBear :  ThreadBare
             if (lanePattern.PatternDefinition.Length <= i || lanePattern.PatternDefinition[i] != lanePattern.PatternDefinition[i])
                 AIResponse.Spawn(lanePattern1.PatternDefinition[i], lane);
         }
+    }
+}
+[CreateAssetMenu(fileName = "Pattern_", menuName = "LaneControl/LanePattern", order = 0)]
+
+public class LanePattern : ScriptableObject, IEquatable<LanePattern>
+{
+    public Spawnable[] PatternDefinition;
+    public LanePattern(Spawnable[] CreatureType)
+    {
+        PatternDefinition = CreatureType;
+    }
+    public LanePattern(CreatureBase[] CreatureType)
+    {
+        List<Spawnable> CreatureSpawnable = new List<Spawnable>();
+        foreach (var item in CreatureType)
+        {
+            CreatureSpawnable.Add(item.CreatureType);
+        }
+        PatternDefinition = CreatureSpawnable.ToArray();
+    }
+    public bool Equals(LanePattern other)
+    {
+        if (other.PatternDefinition != PatternDefinition) return false;
+        else return true;
     }
 }
