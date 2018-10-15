@@ -2,6 +2,7 @@
 using UnityEngine;
 using AI;
 using System.Collections.Generic;
+using System;
 
 [CreateAssetMenu(fileName = "ThreadBear", menuName = "AI/ThreadBear", order = 0)]
 public class ThreadBear :  ThreadBare
@@ -49,7 +50,7 @@ public class ThreadBear :  ThreadBare
         CreatureBase[] FriendlyCreatures = TheLane.GetFriendliesInLane(this).ToArray();
         if (FriendlyCreatures.Length == 0)
         {
-            foreach (var spawntype in pattern.PatternDefinition)
+            foreach (Spawnable spawntype in pattern.PatternDefinition)
             {
                 AIResponse.Spawn(spawntype, lane);
             }
@@ -57,9 +58,36 @@ public class ThreadBear :  ThreadBare
         }
         LanePattern lanePattern = new LanePattern(FriendlyCreatures);
         if (lanePattern1.Equals(lanePattern)) return;
+
+
         for (int i = 0; i < lanePattern1.PatternDefinition.Length; i++)
         {
-            if (lanePattern.PatternDefinition.Length <= i) AIResponse.Spawn(lanePattern1.PatternDefinition[i], lane);
+            if (lanePattern.PatternDefinition.Length <= i || lanePattern.PatternDefinition[i] != lanePattern.PatternDefinition[i])
+                AIResponse.Spawn(lanePattern1.PatternDefinition[i], lane);
         }
+    }
+}
+[CreateAssetMenu(fileName = "Pattern_", menuName = "LaneControl/LanePattern", order = 0)]
+
+public class LanePattern : ScriptableObject, IEquatable<LanePattern>
+{
+    public Spawnable[] PatternDefinition;
+    public LanePattern(Spawnable[] CreatureType)
+    {
+        PatternDefinition = CreatureType;
+    }
+    public LanePattern(CreatureBase[] CreatureType)
+    {
+        List<Spawnable> CreatureSpawnable = new List<Spawnable>();
+        foreach (var item in CreatureType)
+        {
+            CreatureSpawnable.Add(item.CreatureType);
+        }
+        PatternDefinition = CreatureSpawnable.ToArray();
+    }
+    public bool Equals(LanePattern other)
+    {
+        if (other.PatternDefinition != PatternDefinition) return false;
+        else return true;
     }
 }

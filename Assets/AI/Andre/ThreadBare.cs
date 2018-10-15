@@ -63,26 +63,3 @@ public class ThreadBare : LogicBase {
 
 }
 
-[CreateAssetMenu (fileName = "Pattern_", menuName = "LaneControl/LanePattern", order = 0)]
-
-public class LanePattern : ScriptableObject, IEquatable<LanePattern> {
-    public Spawnable[] PatternDefinition;
-    public LanePattern(Spawnable[]  CreatureType)
-    {
-        PatternDefinition = CreatureType; 
-    }
-    public LanePattern(CreatureBase[] CreatureType)
-    {
-        List<Spawnable> CreatureSpawnable = new List<Spawnable>();
-        foreach (var item in CreatureType)
-        {
-            CreatureSpawnable.Add(item.CreatureType);
-        }
-        PatternDefinition = CreatureSpawnable.ToArray();
-    }
-    public bool Equals(LanePattern other)
-    {
-        if (other.PatternDefinition != PatternDefinition) return false;
-        else return true;
-    }
-}
