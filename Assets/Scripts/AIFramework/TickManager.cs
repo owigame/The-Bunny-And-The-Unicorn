@@ -74,7 +74,7 @@ public class TickManager : MonoBehaviour {
                 // if (ResponsesRecieved == 2) {
                 // ResponsesRecieved = 0;
                 tickState = TickState.AwaitingResponses;
-                TournamentManager._instance.OnTick.Invoke (FindObjectsOfType<LaneManager> ());
+                TournamentManager._instance.OnTick.Invoke (TournamentManager._instance.lanes.ToArray());
                 P1 = new IResponse[0];
                 P2 = new IResponse[0];
                 // }

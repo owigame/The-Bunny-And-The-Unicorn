@@ -18,6 +18,9 @@ public class DanielG_Action : LogicBase
     private int iDefTokenThreshold = 3;
     [SerializeField]
     private int iAttackTokenThreshold = 7;
+    [SerializeField]
+    private int iOffenseiveThreshold = 9;
+    private int iFriendlyCount = 0;
 
     private void OnDisable()
     {        
@@ -130,20 +133,20 @@ public class DanielG_Action : LogicBase
         //}
 
         // Offense - Moving.
-        //while (AIResponse.Tokens >= iAttackTokenThreshold)
-        //{
-        //if (TokenCheck() == false) return;
-        //int iLane = Random.Range(0, 2);
-        //List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
+        while (AIResponse.Tokens >= iAttackTokenThreshold)
+        {
+            if (TokenCheck() == false) return;
+            int iLane = Random.Range(0, 2);
+            List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
 
-        //if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= iAttackTokenThreshold)
-        //{
-        //    if (!AIResponse.Move(AvailableLaneTroops[0], 1))
-        //    {
-        //        // Failed. TODO - Add outputs of fail to logstack.
-        //    }
-        //}
-        //}
+            if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= iAttackTokenThreshold)
+            {
+                if (!AIResponse.Move(AvailableLaneTroops[0], 1))
+                {
+                    // Failed. TODO - Add outputs of fail to logstack.
+                }
+            }
+        }
 
         //IResponse[] responses = AIResponse.QueryResponse();
         LogStack.Log("%%%%%%% Loop Count: " + iCount, LogLevel.System);
@@ -155,11 +158,13 @@ public class DanielG_Action : LogicBase
         LI_ActiveTroops.Clear();
         LI_LaneAdvantage.Clear();
         LI_LaneTypes.Clear();
+        iFriendlyCount = 0;
         for (int iCount = 0; iCount < TournamentManager._instance.lanes.Count; iCount++)
         {
             LI_ActiveTroops.Add(0);
             LI_LaneAdvantage.Add(0);
             LI_LaneTypes.Add(false);
+            iFriendlyCount += TournamentManager._instance.lanes[iCount].GetFriendliesInLane(this).Count;
         }
         B_StartLeft = GetStartSide();
         B_Init = true;
@@ -169,7 +174,7 @@ public class DanielG_Action : LogicBase
     {
         List<CreatureBase> LaneCreatures = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
         LogStack.Log("Shifting lane... creatures to shift = " + LaneCreatures.Count, LogLevel.Debug);
-        //LaneCreatures.Reverse();
+        if (iFriendlyCount >= iOffenseiveThreshold) LaneCreatures.Reverse();
         foreach (CreatureBase _creature in LaneCreatures)
         {
             LogStack.Log("Current Creature = " + _creature.name + " Current ID = " + _creature.GetInstanceID(), LogLevel.Debug);
@@ -216,6 +221,7 @@ public class DanielG_Action : LogicBase
             LI_LaneAdvantage[i] = activeLane.GetFriendliesInLane(this).Count - activeLane.GetEnemiesInLane(this).Count;
             LogStack.Log("Friendlies = " + activeLane.GetFriendliesInLane(this).Count.ToString(), LogLevel.Debug);
             LogStack.Log("Enemies = " + activeLane.GetEnemiesInLane(this).Count.ToString(), LogLevel.Debug);
+            iFriendlyCount += TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count;
 
             LogStack.Log(LI_LaneAdvantage[i].ToString(), LogLevel.Debug);
         }
