@@ -148,7 +148,11 @@ public class AIResponseManager {
 
 	void AwardToken (CreatureBase creature) {
 		if (logicBase != creature.Owner) {
-			tokens++;
+			if (creature.CreatureType == Spawnable.Bunny) {
+				tokens += 1;
+			} else if (creature.CreatureType == Spawnable.Unicorn) {
+				tokens += 2;
+			}
 		}
 	}
 
