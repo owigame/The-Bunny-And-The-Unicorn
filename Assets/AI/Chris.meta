@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/AI/Chris.meta
 guid: 22db6dfa73d364bae88c66ec790bc208
+=======
+guid: 082f348eaca6cf24a8cb5bfbe636f0c5
+>>>>>>> master:Assets/AI/Andre.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

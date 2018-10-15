@@ -130,20 +130,20 @@ public class DanielG_Action : LogicBase
         //}
 
         // Offense - Moving.
-        while (AIResponse.Tokens >= iAttackTokenThreshold)
-        {
-            if (TokenCheck() == false) return;
-            int iLane = Random.Range(0, 2);
-            List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
+        //while (AIResponse.Tokens >= iAttackTokenThreshold)
+        //{
+        //if (TokenCheck() == false) return;
+        //int iLane = Random.Range(0, 2);
+        //List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
 
-            if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= iAttackTokenThreshold)
-            {
-                if (!AIResponse.Move(AvailableLaneTroops[0], 1))
-                {
-                    // Failed. TODO - Add outputs of fail to logstack.
-                }
-            }
-        }
+        //if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= iAttackTokenThreshold)
+        //{
+        //    if (!AIResponse.Move(AvailableLaneTroops[0], 1))
+        //    {
+        //        // Failed. TODO - Add outputs of fail to logstack.
+        //    }
+        //}
+        //}
 
         //IResponse[] responses = AIResponse.QueryResponse();
         LogStack.Log("%%%%%%% Loop Count: " + iCount, LogLevel.System);
