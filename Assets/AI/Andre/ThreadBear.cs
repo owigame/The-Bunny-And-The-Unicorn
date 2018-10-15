@@ -49,7 +49,7 @@ public class ThreadBear :  ThreadBare
         CreatureBase[] FriendlyCreatures = TheLane.GetFriendliesInLane(this).ToArray();
         if (FriendlyCreatures.Length == 0)
         {
-            foreach (var spawntype in pattern.PatternDefinition)
+            foreach (Spawnable spawntype in pattern.PatternDefinition)
             {
                 AIResponse.Spawn(spawntype, lane);
             }
@@ -57,9 +57,12 @@ public class ThreadBear :  ThreadBare
         }
         LanePattern lanePattern = new LanePattern(FriendlyCreatures);
         if (lanePattern1.Equals(lanePattern)) return;
+
+
         for (int i = 0; i < lanePattern1.PatternDefinition.Length; i++)
         {
-            if (lanePattern.PatternDefinition.Length <= i) AIResponse.Spawn(lanePattern1.PatternDefinition[i], lane);
+            if (lanePattern.PatternDefinition.Length <= i || lanePattern.PatternDefinition[i] != lanePattern.PatternDefinition[i])
+                AIResponse.Spawn(lanePattern1.PatternDefinition[i], lane);
         }
     }
 }
