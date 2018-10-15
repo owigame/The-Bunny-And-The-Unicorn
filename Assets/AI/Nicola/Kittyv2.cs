@@ -12,11 +12,6 @@ public class Kittyv2 : LogicBase
 
     protected bool pairsReady1, pairsReady2, pairsReady3;
 
-    public struct AttackingPair
-    {
-        public CreatureBase creature1;
-        public CreatureBase creature2;
-    }
 
     public List<AttackingPair> attackingPairs = new List<AttackingPair> ();
 
@@ -371,7 +366,7 @@ IEnumerator SpawnOne(Kittyv2 kitta)
                 _creature2 = _lane.GetFirstLaneNode (this).activeCreature;
 
                 //--Add to list of pairs--
-                attackingPairs.Add (new Kittyv2.AttackingPair { creature1 = _creature1, creature2 = _creature2 });
+                attackingPairs.Add (new AttackingPair { creature1 = _creature1, creature2 = _creature2 });
 
                 if (_lane.LaneNumber == 1) spawningPairs1 = false;
                 if (_lane.LaneNumber == 2) spawningPairs2 = false;
@@ -441,3 +436,10 @@ IEnumerator SpawnOne(Kittyv2 kitta)
     }
 
 }
+
+[System.Serializable]
+    public struct AttackingPair
+    {
+        public CreatureBase creature1;
+        public CreatureBase creature2;
+    }

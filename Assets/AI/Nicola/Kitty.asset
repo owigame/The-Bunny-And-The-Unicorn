@@ -11,9 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09cb2f9e95b8ab45ada59b445caa8a5, type: 3}
   m_Name: Kitty
   m_EditorClassIdentifier: 
-  _Creatures:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  _Creatures: []
   _PlayerNumber: 1
   _RightFacing: 1
+  _Start: 0
+  alternateTick: 0
+  owner: {fileID: 0}
