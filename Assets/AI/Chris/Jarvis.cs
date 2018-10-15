@@ -31,33 +31,36 @@ public class Jarvis : LogicBase
 
         if (!saving)
         {
-            while (AIResponse.Tokens > 0 && maxCycles > 0)
+            if (AIResponse.Tokens > 2)
             {
-                LogStack.Log("Cycle count: " + (99 - maxCycles), Logging.LogLevel.Debug);
-                if (_Creatures.Count > 3)
+                while (AIResponse.Tokens > 0 && maxCycles > 0)
                 {
-                    foreach (CreatureBase creatur in _Creatures)
+                    LogStack.Log("Cycle count: " + (99 - maxCycles), Logging.LogLevel.Debug);
+                    if (_Creatures.Count > 3)
                     {
-                        if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
-                            MoveAtk(creatur);
-                    }
-                }
-
-                cnt = 0;
-                while (cnt < 2)
-                    for (int i = 0; i < 2; i++)
-                    {
-                        if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
+                        foreach (CreatureBase creatur in _Creatures)
                         {
-                            DoSpawn(i);
+                            if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
+                                MoveAtk(creatur);
                         }
-                        cnt++;
                     }
 
+                    cnt = 0;
+                    while (cnt < 2)
+                        for (int i = 0; i < 2; i++)
+                        {
+                            if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
+                            {
+                                DoSpawn(i);
+                            }
+                            cnt++;
+                        }
 
-                DoSpawn(randomlane: true);
 
-                maxCycles--;
+                    DoSpawn(randomlane: true);
+
+                    maxCycles--;
+                }
             }
         }
         //IResponse[] responses = AIResponse.QueryResponse();
