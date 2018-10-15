@@ -1,6 +1,7 @@
 ﻿
 using UnityEngine;
 using AI;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "ThreadBear", menuName = "AI/ThreadBear", order = 0)]
 public class ThreadBear :  ThreadBare
@@ -18,7 +19,25 @@ public class ThreadBear :  ThreadBare
         {
             AIResponse.Attack(boardState[i].GetFriendliesInLane(this).Count>0? boardState[i].GetFriendliesInLane(this)[0]:null);
         }
+
         Auto_Nearest(boardState);
+
+        CreatureBase nearest = null;
+        for (int i = 0; i < 2; i++)
+        {
+            if (boardState[i].GetFriendliesInLane(this).Count != 0 )
+            {
+                if (nearest != null)
+                {
+                    if (boardState[i].GetFriendliesInLane(this)[0].LaneProgress > nearest.LaneProgress)
+                    {
+                        nearest = boardState[i].GetFriendliesInLane(this)[0];
+                    }
+                }
+                else nearest = boardState[i].GetFriendliesInLane(this)[0];
+            }
+        }
+        AIResponse.Move(nearest);
 
         AIResponse.FinalizeResponse();
     }

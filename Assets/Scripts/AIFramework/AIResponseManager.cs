@@ -73,6 +73,7 @@ public class AIResponseManager {
 	}
 
 	public bool Move (CreatureBase creature, int range = 1) {
+        if (creature == null) return false;
 		LogStack.Log ("creature.ActiveLaneNode: " + creature.ActiveLaneNode, LogLevel.System);
 		LogStack.Log ("creature.Owner._RightFacing: " + creature.Owner._RightFacing, LogLevel.System);
 
