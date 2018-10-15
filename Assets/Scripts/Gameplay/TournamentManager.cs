@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Logging;
 using UnityEngine;
@@ -105,6 +106,11 @@ public class TournamentManager : MonoBehaviour {
             }
         }
         UIManager._instance.UpdateScore ();
+    }
+
+    public MonoBehaviour SpawnHelper(Type helper){
+        GameObject helperGO = new GameObject();
+        return helperGO.AddComponent(helper) as MonoBehaviour;
     }
 
 }
