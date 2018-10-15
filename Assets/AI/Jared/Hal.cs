@@ -17,8 +17,10 @@ public class Hal : LogicBase {
                 int randomLane = Random.Range (1, TournamentManager._instance.lanes.Count + 1);
                 // LogStack.Log ("Random Spawn Lane " + randomLane, LogLevel.System);
                 if (!AIResponse.Spawn (Random.Range (0, 2) == 0 ? Spawnable.Bunny : Spawnable.Unicorn, randomLane)) {
-                    CreatureBase randomCreature = _Creatures[Random.Range (0, _Creatures.Count)];
-                    AttemptMoveAttack (randomCreature);
+                    if (_Creatures.Count > 0){
+                        CreatureBase randomCreature = _Creatures[Random.Range (0, _Creatures.Count)];
+                        AttemptMoveAttack (randomCreature);
+                    }
                 }
             } else if (_Creatures.Count > 0) {
                 CreatureBase randomCreature = _Creatures[Random.Range (0, _Creatures.Count)];
