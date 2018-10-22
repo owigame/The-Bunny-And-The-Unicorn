@@ -62,8 +62,14 @@ public class ThreadBear :  ThreadBare
 
         for (int i = 0; i < lanePattern1.PatternDefinition.Length; i++)
         {
-            if (lanePattern.PatternDefinition.Length <= i || lanePattern.PatternDefinition[i] != lanePattern.PatternDefinition[i])
-                AIResponse.Spawn(lanePattern1.PatternDefinition[i], lane);
+            if (lanePattern.PatternDefinition.Length <= i || lanePattern1.PatternDefinition[i] != lanePattern.PatternDefinition[i])
+                if (!AIResponse.Spawn(lanePattern1.PatternDefinition[i], lane))
+                {
+                    Debug.Log("~~~~ Failed Spawn in Pattern");
+                } else
+                {
+                    Debug.Log("~~~~ Success Spawn in Pattern");
+                }
         }
     }
 }
