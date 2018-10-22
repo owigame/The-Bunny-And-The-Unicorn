@@ -120,9 +120,9 @@ public class Kittyv2 : LogicBase
                         {
                             if (!pair.MovePair (AIResponse))
                             {
-                                pair.AttackAsPair (AIResponse);
+                               AttemptMoveAttack ();
                             }
-                            pair.AttackAsPair (AIResponse);
+                            AttemptMoveAttack ();
                             break;
                         }
                     }
@@ -378,14 +378,14 @@ public class AttackingPair
             return false;
         if (creatures[0] != null)
         {
-            if (!responseManager.Attack (creatures[0], creatures[0].CreatureType == Spawnable.Bunny ? 1 : 3))
+            if (!responseManager.Attack (creatures[0], 1))
             {
                 if (creatures[1] != null)
-                    return responseManager.Attack (creatures[1], creatures[1].CreatureType == Spawnable.Bunny ? 1 : 3);
+                    return responseManager.Attack (creatures[1], 1);
             }
         }
         else if (creatures[1] != null)
-            return responseManager.Attack (creatures[1], creatures[1].CreatureType == Spawnable.Bunny ? 1 : 3);
+            return responseManager.Attack (creatures[1], 1);
 
         return false;
     }
