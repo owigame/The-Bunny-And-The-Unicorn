@@ -6,6 +6,8 @@ using UnityEngine;
 [CreateAssetMenu (fileName = "Kittyv2", menuName = "AI/Kittyv2", order = 0)]
 public class Kittyv2 : LogicBase
 {
+    LaneManager[] boardState;
+
     int enemyCount, creatureCount;
     CreatureBase targetCreature, closestEnemy;
     public bool alternateTick = false;
@@ -15,12 +17,13 @@ public class Kittyv2 : LogicBase
 
     public List<AttackingPair> attackingPairs = new List<AttackingPair> ();
 
-IEnumerator SpawnOne(Kittyv2 kitta)
-{
-    yield return kitta.AIResponse.Spawn(Spawnable.Unicorn,1);
-}
+    IEnumerator SpawnOne(Kittyv2 kitta)
+    {
+        yield return kitta.AIResponse.Spawn(Spawnable.Unicorn,1);
+    }
     public override void OnTick (IBoardState[] data)
     {
+        boardState = (LaneManager[]) data;
         #region dont use
         ////TournamentManager._instance.StartCoroutine(SpawnOne(this) );
         //if (_Start)
@@ -52,10 +55,11 @@ IEnumerator SpawnOne(Kittyv2 kitta)
 
         if (AIResponse.Tokens >= 20)
         {
-            LaneManager _lane;
+            LaneManager _lane = null;
             CreatureBase _friendlyToMove = null;
             int previousEnemies = 0;
             bool _moveAttack = true;
+
 
             //--check each lane--
             foreach (LaneManager lane in TournamentManager._instance.lanes)
@@ -85,15 +89,24 @@ IEnumerator SpawnOne(Kittyv2 kitta)
                 }
             }
 
+           // CreatureBase _enemies[] = _lane.GetEnemiesInLane(this);
+
             if (_moveAttack && _friendlyToMove != null)
             {
-                //--Move to enemy, attack, then move to end of Lane--    
+                //attemp movetowards and attack each enemy in lane, then move to end of lane---
                 Debug.Log ("move the creature...");
-                int _openNodes = _friendlyToMove.ActiveLaneNode.laneManager.GetOpenNodes (_friendlyToMove.ActiveLaneNode, _RightFacing);
-                if (!AIResponse.Move (_friendlyToMove, _openNodes))
+                foreach (CreatureBase _enemy in _lane.GetEnemiesInLane(this))
                 {
-                    AIResponse.Attack (_friendlyToMove);
-                }
+                    //--Move to enemy, attack, then move to end of Lane--    
+                    int _openNodes = _friendlyToMove.ActiveLaneNode.laneManager.GetOpenNodes (_friendlyToMove.ActiveLaneNode, _RightFacing);
+                    if (!AIResponse.Move (_friendlyToMove, _openNodes))
+                    {
+                        AIResponse.Attack (_friendlyToMove);
+                    }
+                        AIResponse.Attack (_friendlyToMove);
+
+                } 
+                    
                 // _openNodes = _friendlyToMove.ActiveLaneNode.laneManager.GetOpenNodes (_friendlyToMove.ActiveLaneNode, _RightFacing);
                 // AIResponse.Move (_friendlyToMove, _openNodes);
             }
