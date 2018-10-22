@@ -1,178 +1,132 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AI.DanR
 {
-    [CreateAssetMenu(fileName = "Hyena", menuName = "AI/Hyena", order = 0)]
+    [CreateAssetMenu (fileName = "Hyena", menuName = "AI/Hyena", order = 0)]
     public class Hyena : LogicBase
     {
         private Spawnable _lastSpawned;
         private int _lanetospawn = 1;
         private bool set = false;
 
-        private List<CreatureBase> friendliesWithEnemiesInRange;
-
-        public override void OnTick(IBoardState[] data)
-        {
-            if (!AIResponse.Spawn(Spawnable.Unicorn, 1))
-            {
-                AIResponse.onTick(null);
-
-                var maxCycles = 99;
-
-                while (AIResponse.Tokens > 0 && maxCycles > 0)
-                {
-                    Initialize();
-                    SpawnEnemy();
-
-                    List<CreatureBase> friendliesInLane1, friendliesInLane2, friendliesInLane3;
-
-                    FindAllFriendliesInLane(out friendliesInLane1, out friendliesInLane2, out friendliesInLane3);
-
-                    FindAllEnemiesInlanes();
-
-                    FriendliesThatcanAttack(friendliesInLane1, friendliesInLane2, friendliesInLane3);
-
-
-                    //TEMP
-                    List<CreatureBase> friendlies = _Creatures;
-                    MoveOrAttack(friendlies);
-
-
-                    // Find if friendly is close to the end
-
-
-                    // If no Target in range && freindly not close to end : pick a lane with the least amount of enemies to move in.
-
-                    // If Target in range && friendly not close to end : Attack the closest enemy in the lane with the most enemies.
-
-                    // If friend close to end && no target in range : Move forward
-
-                    maxCycles--;
-                }
-            }
-
-            AIResponse.FinalizeResponse();
-        }
-
-        private void Initialize()
+        private void Initialize ()
         {
             if (!set)
             {
                 _lanetospawn = 1;
                 set = true;
             }
-            
         }
 
-        private void FindAllFriendliesInLane(out List<CreatureBase> friendliesInLane1, out List<CreatureBase> friendliesInLane2, out List<CreatureBase> friendliesInLane3)
+        public override void OnTick (IBoardState[] data)
         {
-            // Find Friendlies in lane for all lanes and store each as its own list : RETURN A LIST
-            friendliesInLane1 = TournamentManager._instance.lanes[0].GetFriendliesInLane(this);
-            friendliesInLane2 = TournamentManager._instance.lanes[1].GetFriendliesInLane(this);
-            friendliesInLane3 = TournamentManager._instance.lanes[2].GetFriendliesInLane(this);
-        }
-
-        private void FindAllEnemiesInlanes()
-        {
-            // Find Enemies in lane for all lanes and store each as its own list : RETURN A LIST
-            var enemiesInLane1 = TournamentManager._instance.lanes[0].GetEnemiesInLane(this);
-            var enemiesInLane2 = TournamentManager._instance.lanes[1].GetEnemiesInLane(this);
-            var enemiesInLane3 = TournamentManager._instance.lanes[2].GetEnemiesInLane(this);
-        }
-
-        private void FriendliesThatcanAttack(List<CreatureBase> friendliesInLane1, List<CreatureBase> friendliesInLane2, List<CreatureBase> friendliesInLane3)
-        {
-            // Find  enemies in attacking range : RETURN A LIST
-            if (friendliesInLane1.Count > 0)
+            if (!AIResponse.Spawn (Spawnable.Unicorn, 1))
             {
-                foreach (CreatureBase creature in friendliesInLane1)
+                AIResponse.onTick (null);
+
+                var maxCycles = 99;
+
+                while (AIResponse.Tokens > 0 && maxCycles > 0)
                 {
-                    if (creature != null && creature.ActiveLaneNode.laneManager.SearchRange((int)creature.Range, creature.ActiveLaneNode, this).Count > 0)
-                    {
-                        friendliesWithEnemiesInRange.Add(creature);
-                    }
+                    Initialize ();
+
+                    SpawnEnemy ();
+
+                    List<CreatureBase> lane1Frienlies = FindAllFriendlies (TournamentManager._instance.lanes[0]);
+                    List<CreatureBase> lane2Frienlies = FindAllFriendlies (TournamentManager._instance.lanes[1]);
+                    List<CreatureBase> lane3Frienlies = FindAllFriendlies (TournamentManager._instance.lanes[2]);
+
+                    CheckIfClosestenemyIsInAttackingrange (FindFrendlyWithClosestEnemies (lane1Frienlies, lane2Frienlies, lane3Frienlies));
+
+                    maxCycles--;
                 }
             }
 
-            if (friendliesInLane2.Count > 0)
-            {
-                foreach (CreatureBase creature in friendliesInLane2)
-                {
-                    if (creature != null && creature.ActiveLaneNode.laneManager.SearchRange((int)creature.Range, creature.ActiveLaneNode, this).Count > 0)
-                    {
-                        friendliesWithEnemiesInRange.Add(creature);
-                    }
-                }
-            }
-
-            if (friendliesInLane3.Count > 0)
-            {
-                foreach (CreatureBase creature in friendliesInLane3)
-                {
-                    if (creature != null && creature.ActiveLaneNode.laneManager.SearchRange((int)creature.Range, creature.ActiveLaneNode, this).Count > 0)
-                    {
-                        friendliesWithEnemiesInRange.Add(creature);
-                    }
-                }
-            }
+            AIResponse.FinalizeResponse ();
         }
 
-        private void SpawnEnemy()
+        private void SpawnEnemy ()
         {
-           
+
             // Round robin spawning
             if (_lanetospawn > 3)
                 _lanetospawn = 1;
 
             if (_lastSpawned == Spawnable.Unicorn)
             {
-                if (!AIResponse.Spawn(Spawnable.Bunny, _lanetospawn))
+                if (!AIResponse.Spawn (Spawnable.Bunny, _lanetospawn))
                     _lastSpawned = Spawnable.Bunny;
             }
             else if (_lastSpawned == Spawnable.Bunny)
             {
-                if (!AIResponse.Spawn(Spawnable.Unicorn, _lanetospawn))
+                if (!AIResponse.Spawn (Spawnable.Unicorn, _lanetospawn))
                     _lastSpawned = Spawnable.Unicorn;
             }
             else
             {
-                if (!AIResponse.Spawn(Spawnable.Bunny, _lanetospawn))
+                if (!AIResponse.Spawn (Spawnable.Bunny, _lanetospawn))
                     _lastSpawned = Spawnable.Bunny;
             }
 
             _lanetospawn++;
         }
 
-        CreatureBase closestCreature;
-
-        public void MoveOrAttack(List<CreatureBase> friendlyCreatures)
+        private List<CreatureBase> FindAllFriendlies (LaneManager lane)
         {
-            if(friendliesWithEnemiesInRange != null && friendliesWithEnemiesInRange.Count > 0)
+            return lane.GetFriendliesInLane (this);
+        }
+
+        private CreatureBase FindFrendlyWithClosestEnemies (List<CreatureBase> lane1Frienlies, List<CreatureBase> lane2Frienlies, List<CreatureBase> lane3Frienlies)
+        {
+            int nearestDistance = 100;
+            CreatureBase allyWithEnemyClostest = null;
+
+            foreach (CreatureBase creature in lane1Frienlies)
             {
-                AIResponse.Attack(friendliesWithEnemiesInRange[0]);
+                if (GetNearestEnemyNodesAwayFrom (creature) < nearestDistance)
+                {
+                    nearestDistance = GetNearestEnemyNodesAwayFrom (creature);
+                    allyWithEnemyClostest = creature;
+                }
             }
-            else
+
+            foreach (CreatureBase creature in lane2Frienlies)
             {
-                foreach(CreatureBase creature in friendlyCreatures)
+                if (GetNearestEnemyNodesAwayFrom (creature) < nearestDistance)
                 {
-                    if(closestCreature == null)
-                    {
-                        closestCreature = creature;
-                    }
-                    if(creature.LaneProgress > closestCreature.LaneProgress && closestCreature != null)
-                    {
-                        closestCreature = creature;
-                    }                   
+                    nearestDistance = GetNearestEnemyNodesAwayFrom (creature);
+                    allyWithEnemyClostest = creature;
                 }
-               
-                if(closestCreature != null)
-                {
-                    Debug.Log(closestCreature);
-                    AIResponse.Move(closestCreature);
-                }
-                
             }
+
+            foreach (CreatureBase creature in lane3Frienlies)
+            {
+                if (GetNearestEnemyNodesAwayFrom (creature) < nearestDistance)
+                {
+                    nearestDistance = GetNearestEnemyNodesAwayFrom (creature);
+                    allyWithEnemyClostest = creature;
+                }
+            }
+
+            return allyWithEnemyClostest;
+        }
+
+        private void CheckIfClosestenemyIsInAttackingrange (CreatureBase AllyWithClosestEnemy)
+        {
+            if (AllyWithClosestEnemy == null) return;
+
+            if (GetNearestEnemyNodesAwayFrom (AllyWithClosestEnemy) <= AllyWithClosestEnemy.Range)
+            {
+                Debug.Log ("Attack");
+
+                if (!AIResponse.Attack (AllyWithClosestEnemy))
+                {
+                    AIResponse.Move (AllyWithClosestEnemy);
+                }
+
+            }
+
         }
     }
 
