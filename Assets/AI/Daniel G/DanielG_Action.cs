@@ -21,6 +21,7 @@ public class DanielG_Action : LogicBase
     [SerializeField]
     private int iOffenseiveThreshold = 9;
     private int iFriendlyCount = 0;
+    private List<CreatureBase> AttackedThisTurn = new List<CreatureBase>();
 
     private void OnDisable()
     {        
@@ -31,11 +32,12 @@ public class DanielG_Action : LogicBase
     public override void OnTick(IBoardState[] data)
     {
         if (!B_Init) Init();
-        int iCount = 0;
+        AttackedThisTurn.Clear();
+
+        // ####### --- Defense --- #######        
         UpdateLaneAdvantage();
-        // Defense.        
-        //bool b_DefendedOnce = false;
-        while (AIResponse.Tokens > iDefTokenThreshold /*|| !b_DefendedOnce*/ && iCount < 5)
+        int iCount = 0;
+        while (AIResponse.Tokens > iDefTokenThreshold && iCount < 5)
         {
             iCount++;
             if (TokenCheck() == false) return;            
@@ -43,90 +45,31 @@ public class DanielG_Action : LogicBase
             int iWeakLane = GetDefendingLane();
             LogStack.Log("Weak Lane = " + iWeakLane.ToString(), LogLevel.Debug);
 
-            //if (!AIResponse.Spawn(Spawnable.Bunny, iWeakLane + 1))
-            //{
-            //    LogStack.Log("Failed... Trying to shift Lane", LogLevel.Debug);
-            //    if (ShiftLane(iWeakLane)) // Failed - Space Occupied - Shift entire row...
-            //    {
-            //        if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
-            //        {
-            //            // Failed
-            //        }
-            //    }
-            //}
             CreatureBase creatureofFirstNode = B_StartLeft ? TournamentManager._instance.lanes[iWeakLane].startNode.activeCreature : TournamentManager._instance.lanes[iWeakLane].endNode.activeCreature;
             if (creatureofFirstNode == null)
             {
                 LogStack.Log("Trying to spawn in slot... 0:" + iWeakLane, LogLevel.Debug);
                 if (AIResponse.Spawn((LI_LaneTypes[iWeakLane])?Spawnable.Unicorn:Spawnable.Bunny, iWeakLane + 1))
                 {
-                    //SwapSpawningCreatureType (Alternates between bunnies and unicorns!)
+                    //Swaps spawning creature type (Alternates between bunnies and unicorns!)
                     LI_LaneTypes[iWeakLane] = !LI_LaneTypes[iWeakLane];
                 }
             }
-            else /*ShiftLane(iWeakLane);*/
-            {
-                LogStack.Log("Failed... Trying to shift Lane", LogLevel.Debug);
-
-                if (ShiftLane(iWeakLane)) // Failed - Space Occupied - Shift entire row...
-                {
-                    if (!AIResponse.Spawn(Spawnable.Unicorn, iWeakLane + 1))
-                    {
-                        // Failed
-                    }
-                }
-            }
+            else ShiftLane(iWeakLane);
         }
-
-        
-        //int iCount = 0;
-        //foreach (LaneManager ActiveLane in TournamentManager._instance.lanes)
-        //{
-        //    if (TokenCheck() == false) return;
-
-        //    LogStack.Log("New Lane, iCount = " + iCount, LogLevel.Debug);
-        //    if (Mathf.Ceil(ActiveLane.creatures.Count/2f) > LI_ActiveTroops[iCount])
-        //    {
-        //        if (ActiveLane.GetFirstLaneNode(!B_StartLeft).activeCreature == null)
-        //        {
-        //            if (ShiftLane(iCount))
-        //            {
-        //                if (!AIResponse.Spawn(Spawnable.Unicorn, iCount + 1))
-        //                {
-        //                    // Failed
-        //                }
-        //                else LI_ActiveTroops[iCount]++;
-        //            }
-        //        }
-        //        else if (!AIResponse.Spawn(Spawnable.Unicorn,iCount + 1))
-        //        {
-        //            // Failed - Space Occupied - Shift entire row... TODO                    
-        //        }
-        //        else LI_ActiveTroops[iCount]++;
-        //    }
-        //    iCount++;
-        //}
-
         if (TokenCheck() == false) return;
 
-        // Offense - Attacking Melee.
-        foreach (CreatureBase creature in _Creatures)
-        {
-            List<CreatureBase> searchTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange((int)creature.Range, creature.ActiveLaneNode, this);
+        // ####### --- Offense (A) --- ####### 
+        // ------- Stage One - Bunnies -------
+        List<CreatureBase> StageTroops = GetTroops(Spawnable.Bunny, true); // Front Bunnies.
+        AttackWithTroops(StageTroops);
+        StageTroops.Clear(); // Reset for Second Stage
 
-            foreach (CreatureBase _creature in searchTargetCreatures)
-            {
-                //if (TokenCheck() == false) return;
-                if (_creature.Owner != this)
-                {
-                    if (creature.CreatureType == Spawnable.Unicorn && _creature.Health > 1)
-                    {
-                        AIResponse.Attack(creature);
-                    }
-                    AIResponse.Attack(creature);
-                }
-            }
-        }
+        // ------- Stage Two - Unicorns ------- 
+        StageTroops = GetTroops(Spawnable.Unicorn); // All Unicorns.
+        AttackWithTroops(StageTroops);
+        StageTroops.Clear();
+
 
         //if (TokenCheck() == false) return;
         //foreach (CreatureBase creature in _Creatures)
@@ -136,10 +79,10 @@ public class DanielG_Action : LogicBase
         //        int moveSpaces = creature.ActiveLaneNode.laneManager.GetOpenNodes(creature.ActiveLaneNode, creature.RightFacing);
 
         //    if (_creature.Owner != creature.Owner) AIResponse.Attack(creature);
-
         //}
+
         iCount = 0;
-        // Offense - Moving.
+        // ####### --- Offense (M) --- #######
         while (AIResponse.Tokens >= iAttackTokenThreshold && iCount < 5)
         {
             iCount++;
@@ -156,8 +99,6 @@ public class DanielG_Action : LogicBase
             }
         }
 
-        //IResponse[] responses = AIResponse.QueryResponse();
-        LogStack.Log("%%%%%%% Loop Count: " + iCount, LogLevel.System);
         AIResponse.FinalizeResponse();
     }
 
@@ -188,14 +129,10 @@ public class DanielG_Action : LogicBase
             LogStack.Log("Current Creature = " + _creature.name + " Current ID = " + _creature.GetInstanceID(), LogLevel.Debug);
             if (AIResponse.Move(_creature, 1))
             {
-                LogStack.Log("Current Creature = " + _creature.name+ " Current ID = " + _creature.GetInstanceID()+" | Can move", LogLevel.Debug);
+                LogStack.Log("Current Creature = " + _creature.name + " Current ID = " + _creature.GetInstanceID() + " | Can move", LogLevel.Debug);
                 if (TokenCheck() == false) return true;
             }
-            else
-            {
-                // Failed.
-                return false;
-            }
+            else return false;
         }
         return true;
     }
@@ -216,26 +153,18 @@ public class DanielG_Action : LogicBase
         else return false;           
     }
 
-    private void UpdateActiveTroops()
-    {
-
-    }
-
     private void UpdateLaneAdvantage()
     {
         for (int i = 0; i < 3; i++)
         {
             LaneManager activeLane = TournamentManager._instance.lanes[i];
             LI_LaneAdvantage[i] = activeLane.GetFriendliesInLane(this).Count - activeLane.GetEnemiesInLane(this).Count;
-            LogStack.Log("Friendlies = " + activeLane.GetFriendliesInLane(this).Count.ToString(), LogLevel.Debug);
-            LogStack.Log("Enemies = " + activeLane.GetEnemiesInLane(this).Count.ToString(), LogLevel.Debug);
             iFriendlyCount += TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count;
-
-            LogStack.Log(LI_LaneAdvantage[i].ToString(), LogLevel.Debug);
+            LogStack.Log("LaneAdvantage[" + i + "] = " + LI_LaneAdvantage[i].ToString(), LogLevel.Debug);
         }
     }
 
-    private int GetDefendingLane() // Fetch the lane with the strongest advantage to the attacker.
+    private int GetDefendingLane() // Fetch the lane with the strongest troop advantage to the attacker.
     {
         int iMin = 99;
         int iCount = 0;
@@ -252,5 +181,48 @@ public class DanielG_Action : LogicBase
             iCount++;
         }
         return iPos;
+    }
+
+    private void AttackWithTroops(List<CreatureBase> Troops)
+    {
+        foreach (CreatureBase troop in Troops)
+        {
+            List<CreatureBase> searchTargetCreatures = troop.ActiveLaneNode.laneManager.SearchRange((int)troop.Range, troop.ActiveLaneNode, this);
+            foreach (CreatureBase _creature in searchTargetCreatures)
+            {
+                if (_creature.Owner != this && !AttackedThisTurn.Contains(_creature))
+                {
+                    AttackedThisTurn.Add(_creature);
+                    if (troop.CreatureType == Spawnable.Unicorn) // Unicorn Attacks
+                    {                        
+                        for (int i = 0; i < _creature.Health; i++) AIResponse.Attack(troop);
+                    }
+                    else AIResponse.Attack(troop); // Bunny Attacks
+                }
+            }
+        }
+    }
+
+    private List<CreatureBase> GetTroops(bool bFront = false)
+    {
+        List<CreatureBase> Troops = new List<CreatureBase>();
+        foreach (LaneManager lane in TournamentManager._instance.lanes)
+        {
+            List<CreatureBase> LaneTroops = lane.GetFriendliesInLane(this);
+            if (LaneTroops.Count > 0)
+            {
+                if (bFront) Troops.Add(LaneTroops[0]);
+                else foreach (CreatureBase creature in LaneTroops) Troops.Add(creature);
+            }
+        }
+        return Troops;
+    }
+
+    private List<CreatureBase> GetTroops(Spawnable type, bool bFront = false)
+    {
+        List<CreatureBase> Troops = GetTroops(bFront);    
+        List<CreatureBase> TroopsOfType = new List<CreatureBase>();
+        foreach (CreatureBase creature in Troops) if (creature.CreatureType == type) TroopsOfType.Add(creature);
+        return TroopsOfType;
     }
 }
