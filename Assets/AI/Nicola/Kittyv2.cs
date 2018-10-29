@@ -139,6 +139,7 @@ public class Kittyv2 : LogicBase
                 // AIResponse.Move (_friendlyToMove, _openNodes);
             }
         }
+        #endregion
         else
         {
 
@@ -163,7 +164,6 @@ public class Kittyv2 : LogicBase
                 AttemptMoveAttack ();
             }
         }
-        #endregion
         AIResponse.FinalizeResponse ();
 
     }
