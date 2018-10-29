@@ -22,7 +22,7 @@ public class TickManager : MonoBehaviour {
     #endregion
 
     public TickState tickState;
-    private IResponse[] P1, P2;
+   [SerializeField] private IResponse[] P1, P2;
     int ResponsesRecieved = 0;
 
     public void OnResponse (IResponse[] ResponseChain) {

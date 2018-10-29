@@ -49,7 +49,7 @@ public class AIResponseManager {
 	/// </summary>
 	/// <param name="spawnable">the creature</param>
 	public bool Spawn (Spawnable creature, int lane) {
-		LaneNode node = logicBase == TournamentManager._instance.P1 ? TournamentManager._instance.lanes[lane - 1].startNode : TournamentManager._instance.lanes[lane - 1].endNode;
+		LaneNode node = TournamentManager._instance.lanes[lane - 1].GetFirstLaneNode(logicBase);
 		IResponse response = new ActionResponse (creature == Spawnable.Bunny ? TournamentManager._instance.bunnyPrefab.GetComponent<CreatureBase> () : TournamentManager._instance.unicornPrefab.GetComponent<CreatureBase> (), lane, logicBase, ResponseActionType.Spawn, node);
 
 		/* fail the Spawn */
