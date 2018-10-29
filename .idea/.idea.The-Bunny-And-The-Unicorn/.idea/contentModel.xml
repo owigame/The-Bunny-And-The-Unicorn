@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Daniel\.Rider2018.1\system\resharper-host\Local\Transient\ReSharperHost\v12\SolutionCaches\_The-Bunny-And-The-Unicorn.-1096515856.00" t="ExcludeRecursive" />
-    <e p="E:\UnityProjects\The-Bunny-And-The-Unicorn" t="IncludeRecursive">
+    <e p="$USER_HOME$/.Rider2018.2/system/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.2/system/resharper-host/local/Transient/ReSharperHost/v182/SolutionCaches/_The-Bunny-And-The-Unicorn.927368615.00" t="ExcludeRecursive" />
+    <e p="$PROJECT_DIR$" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
         <e p="AI" t="Include">
+          <e p="Andre" t="Include">
+            <e p="ThreadBare.cs" t="Include" />
+          </e>
+          <e p="Chris" t="Include">
+            <e p="Jarvis.cs" t="Include" />
+          </e>
           <e p="DanR" t="Include">
             <e p="Hyena.cs" t="Include" />
+          </e>
+          <e p="Daniel G" t="Include">
+            <e p="DanielG_Action.cs" t="Include" />
           </e>
           <e p="Example" t="Include">
             <e p="BasicAI.cs" t="Include" />
@@ -19,8 +29,11 @@
           </e>
           <e p="Jared" t="Include">
             <e p="AI_Jared.cs" t="Include" />
-            <e p="basic.cs" t="Include" />
             <e p="Hal.cs" t="Include" />
+            <e p="basic.cs" t="Include" />
+          </e>
+          <e p="Nicola" t="Include">
+            <e p="Kittyv2.cs" t="Include" />
           </e>
         </e>
         <e p="AIFramework.cd" t="Include" />
@@ -37,8 +50,8 @@
         </e>
         <e p="Scripts" t="Include">
           <e p="AIFramework" t="Include">
-            <e p="ActionResponse.cs" t="Include" />
             <e p="AIResponseManager.cs" t="Include" />
+            <e p="ActionResponse.cs" t="Include" />
             <e p="TickManager.cs" t="Include" />
           </e>
           <e p="BaseClasses" t="Include">
@@ -82,14 +95,15 @@
           </e>
           <e p="Logging" t="Include">
             <e p="LogDemo.cs" t="Include" />
+            <e p="LogLevel.cs" t="Include" />
+            <e p="LogStack.cs" t="Include" />
             <e p="Loggers" t="Include">
+              <e p="ColorLogger.cs" t="Include" />
               <e p="ConsoleLogger.cs" t="Include" />
               <e p="StackLogger.cs" t="Include" />
               <e p="SystemLogger.cs" t="Include" />
             </e>
             <e p="Logging.cs" t="Include" />
-            <e p="LogLevel.cs" t="Include" />
-            <e p="LogStack.cs" t="Include" />
           </e>
           <e p="UI" t="Include">
             <e p="CameraShake.cs" t="Include" />
@@ -98,15 +112,18 @@
             <e p="UIHumanInput.cs" t="Include" />
             <e p="UILane.cs" t="Include" />
           </e>
+          <e p="Utilities" t="Include">
+            <e p="Utilities.cs" t="Include" />
+          </e>
         </e>
       </e>
       <e p="Library" t="ExcludeRecursive" />
-      <e p="obj" t="ExcludeRecursive" />
-      <e p="packages" t="ExcludeRecursive" />
       <e p="Temp" t="ExcludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
       </e>
       <e p="The-Bunny-And-The-Unicorn.sln" t="IncludeFlat" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
     </e>
   </component>
 </project>
