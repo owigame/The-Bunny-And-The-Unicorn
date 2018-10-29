@@ -19,13 +19,24 @@ public class DanielG_Action : LogicBase
     [SerializeField]
     private int iAttackTokenThreshold = 7;
     [SerializeField]
-    private int iOffenseiveThreshold = 9;
+    private int iOffensiveThreshold = 9;
+    [SerializeField]
+    private int iPointPushThreshold = 5;
     private int iFriendlyCount = 0;
+
+    private int iResponseLane = -1; // Stores the lane pos being used by the advanced response system.
+    private CreatureBase responseCreature = new CreatureBase();
+    private int iSavingTokens = 0;
+    private int iUnicornAttacks = 0;
     private List<CreatureBase> AttackedThisTurn = new List<CreatureBase>();
+    private enum EResponseState { Basic, Emergency, PointPush, BunnyRush }
+    private EResponseState responseState = EResponseState.Basic;
 
     private void OnDisable()
     {        
         _Creatures.Clear();
+        iSavingTokens = 0;
+        responseState = EResponseState.Basic;
         B_Init = false;
     }
 
@@ -33,29 +44,45 @@ public class DanielG_Action : LogicBase
     {
         if (!B_Init) Init();
         AttackedThisTurn.Clear();
-
-        // ####### --- Defense --- #######        
         UpdateLaneAdvantage();
+        iUnicornAttacks = 0;
+        responseState = EResponseState.Basic;
+        // ####### --- Advanced Response System --- #######
+        EmergencyCheck();
+        if (responseState == EResponseState.Emergency)
+        {
+            SpawnTroop(iResponseLane);
+            responseState = EResponseState.Basic;
+        }
+        else // Ensures emergencies are priorities over point pushing and bunny rushing.
+        {
+            // WHY THE PROBLEM HERE?
+            //PointPushCheck();
+
+            //responseState = EResponseState.Basic;
+            if (responseState == EResponseState.PointPush)
+            {
+                LogStack.Log("%%%%%%%%%%%%%%%%%%%%%% Point Push Triggered - iSavingTokens =" + iSavingTokens, LogLevel.Debug);
+                if (AIResponse.Tokens >= iSavingTokens) PointPush();
+            }
+            else // Ensures point pushes are priorities over bunny rushing.
+            {
+                BunnyThreatCheck();
+                if (responseState == EResponseState.BunnyRush && AIResponse.Tokens >= iSavingTokens) BunnyRush();
+            }
+        }
+        LogStack.Log("%%%%%%%%%%%%%%%%%%%%%% Advanced Responses Complete - iSavingTokens =" + iSavingTokens, LogLevel.Debug);
+
+        // ####### --- Defense --- #######                
         int iCount = 0;
-        while (AIResponse.Tokens > iDefTokenThreshold && iCount < 5)
+        int iCurrentThreshold = iDefTokenThreshold + iSavingTokens;
+        while ((AIResponse.Tokens > iCurrentThreshold) && iCount < 5)
         {
             iCount++;
-            if (TokenCheck() == false) return;            
-            //b_DefendedOnce = true;        
+            if (TokenCheck() == false) return;
             int iWeakLane = GetDefendingLane();
             LogStack.Log("Weak Lane = " + iWeakLane.ToString(), LogLevel.Debug);
-
-            CreatureBase creatureofFirstNode = B_StartLeft ? TournamentManager._instance.lanes[iWeakLane].startNode.activeCreature : TournamentManager._instance.lanes[iWeakLane].endNode.activeCreature;
-            if (creatureofFirstNode == null)
-            {
-                LogStack.Log("Trying to spawn in slot... 0:" + iWeakLane, LogLevel.Debug);
-                if (AIResponse.Spawn((LI_LaneTypes[iWeakLane])?Spawnable.Unicorn:Spawnable.Bunny, iWeakLane + 1))
-                {
-                    //Swaps spawning creature type (Alternates between bunnies and unicorns!)
-                    LI_LaneTypes[iWeakLane] = !LI_LaneTypes[iWeakLane];
-                }
-            }
-            else ShiftLane(iWeakLane);
+            SpawnTroop(iWeakLane);
         }
         if (TokenCheck() == false) return;
 
@@ -87,7 +114,7 @@ public class DanielG_Action : LogicBase
         {
             iCount++;
             if (TokenCheck() == false) return;
-            int iLane = Random.Range(0, 2);
+            int iLane = Random.Range(1, 3);
             List<CreatureBase> AvailableLaneTroops = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
 
             if (AvailableLaneTroops.Count > 0 && AIResponse.Tokens >= iAttackTokenThreshold)
@@ -119,11 +146,26 @@ public class DanielG_Action : LogicBase
         B_Init = true;
     }
 
+    private void SpawnTroop(int iLane)
+    {
+        CreatureBase creatureofFirstNode = B_StartLeft ? TournamentManager._instance.lanes[iLane].startNode.activeCreature : TournamentManager._instance.lanes[iLane].endNode.activeCreature;
+        if (creatureofFirstNode == null)
+        {
+            LogStack.Log("Trying to spawn in slot... 0:" + iLane, LogLevel.Debug);
+            if (AIResponse.Spawn((LI_LaneTypes[iLane]) ? Spawnable.Unicorn : Spawnable.Bunny, iLane + 1))
+            {
+                //Swaps spawning creature type (Alternates between bunnies and unicorns!)
+                LI_LaneTypes[iLane] = !LI_LaneTypes[iLane];
+            }
+        }
+        else ShiftLane(iLane);
+    }
+
     private bool ShiftLane(int iLane)
     {
         List<CreatureBase> LaneCreatures = TournamentManager._instance.lanes[iLane].GetFriendliesInLane(this);
         LogStack.Log("Shifting lane... creatures to shift = " + LaneCreatures.Count, LogLevel.Debug);
-        if (iFriendlyCount >= iOffenseiveThreshold) LaneCreatures.Reverse();
+        if (iFriendlyCount >= iOffensiveThreshold) LaneCreatures.Reverse();
         foreach (CreatureBase _creature in LaneCreatures)
         {
             LogStack.Log("Current Creature = " + _creature.name + " Current ID = " + _creature.GetInstanceID(), LogLevel.Debug);
@@ -132,7 +174,7 @@ public class DanielG_Action : LogicBase
                 LogStack.Log("Current Creature = " + _creature.name + " Current ID = " + _creature.GetInstanceID() + " | Can move", LogLevel.Debug);
                 if (TokenCheck() == false) return true;
             }
-            else return false;
+            else if (iFriendlyCount > iOffensiveThreshold) return false; // Ensures front troops push for end.
         }
         return true;
     }
@@ -183,6 +225,81 @@ public class DanielG_Action : LogicBase
         return iPos;
     }
 
+    private void EmergencyCheck()
+    {
+        int iBiggestThreat = -1;
+        int iCount = 0;
+        foreach (LaneManager lane in TournamentManager._instance.lanes)
+        {
+            if (lane.GetFriendliesInLane(this).Count == 0)
+            {
+                if (lane.GetEnemiesInLane(this).Count > iBiggestThreat)
+                {
+                    iResponseLane = iCount;
+                    iBiggestThreat = lane.GetEnemiesInLane(this).Count;
+                }
+            }
+            iCount++;
+        }
+        if (iBiggestThreat != -1) responseState = EResponseState.Emergency;
+    }
+
+    private void PointPushCheck()
+    {
+        List<CreatureBase> PotentialPushers = GetTroops(true);
+        int iMinDistance = iPointPushThreshold;
+        foreach (CreatureBase troop in PotentialPushers)
+        {
+            int EndDist = LaneEndDistance(troop);
+            if (EndDist < iMinDistance)
+            {
+                iMinDistance = EndDist;
+                responseCreature = troop;
+            }
+        }
+        if (iMinDistance == iPointPushThreshold)
+        {
+            LogStack.Log("%%%%%%%%%%%%%%%%%%%%%% iMinDistance = iPointPushThreshold", LogLevel.Debug);
+            iSavingTokens = 0;
+            return;
+        }
+        iSavingTokens = iMinDistance;
+        responseState = EResponseState.PointPush;
+    }
+
+    private int LaneEndDistance (CreatureBase troop)
+    {
+        LaneNode currentNode = troop.ActiveLaneNode;
+        LaneNode endNode = B_StartLeft ? currentNode.laneManager.startNode : currentNode.laneManager.endNode;
+        int iCount = 0;
+        while (currentNode != null && currentNode != endNode && iCount < 20)
+        {
+            iCount++;
+            currentNode = currentNode.laneManager.GetNextLaneNode(currentNode, B_StartLeft, 1);
+        }
+        LogStack.Log("%%%%%%%%%%%%%%%%%%%%%% Troop - " + troop.name + " , distance to end = " + iCount, LogLevel.Debug);
+        return iCount;
+    }
+
+    private void PointPush()
+    {
+        LogStack.Log("%%%%%%%%%%%%%%%%%%%%%% POINT PUSH! %%%%%%%%%%%%%% - iSavingTokens = " + iSavingTokens, LogLevel.Debug);
+        for (int i = 0; i < iSavingTokens; i++)
+        {
+            AIResponse.Move(responseCreature);
+        }
+    }
+
+    private void BunnyThreatCheck()
+    {
+        // TODO
+    }
+
+    private void BunnyRush()
+    {
+        // TODO
+    }
+
     private void AttackWithTroops(List<CreatureBase> Troops)
     {
         foreach (CreatureBase troop in Troops)
@@ -194,8 +311,20 @@ public class DanielG_Action : LogicBase
                 {
                     AttackedThisTurn.Add(_creature);
                     if (troop.CreatureType == Spawnable.Unicorn) // Unicorn Attacks
-                    {                        
-                        for (int i = 0; i < _creature.Health; i++) AIResponse.Attack(troop);
+                    {
+                        if (_creature.Health == 1) AIResponse.Attack(troop);
+                        else
+                        {
+                            int iCount = 0;
+                            int iSpareTokens = AIResponse.Tokens - (iOffensiveThreshold + iSavingTokens);
+                            if (iSpareTokens < 0) iSpareTokens = 0;
+                            while (iCount < _creature.Health && iUnicornAttacks < 2 + iSpareTokens)
+                            {
+                                //LogStack.Log("%%%%%%%%%%%%%%%%%%% Unicorn attack #" + iCount, LogLevel.Debug);
+                                iCount++; iUnicornAttacks++;
+                                AIResponse.Attack(troop);
+                            }
+                        }
                     }
                     else AIResponse.Attack(troop); // Bunny Attacks
                 }
