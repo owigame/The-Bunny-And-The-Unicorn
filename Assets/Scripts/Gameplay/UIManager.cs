@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour {
 	public Text winText;
 	public Text playe1Name;
 	public Text playe2Name;
+	public Text roundCountText;
+	int roundCount = 0;
 
 	public void Winner (string name) {
 		if (winText != null) {
@@ -27,6 +29,15 @@ public class UIManager : MonoBehaviour {
 		_instance = this;
 		playe1Name.text = TournamentManager._instance.P1.name;
 		playe2Name.text = TournamentManager._instance.P2.name;
+	}
+
+	private void Start () {
+		TournamentManager._instance.OnTick.AddListener (OnTick);
+	}
+
+	public void OnTick (IBoardState[] data) {
+		roundCount++;
+		if (roundCountText != null) roundCountText.text = roundCount.ToString();
 	}
 
 	public void UpdateScore () {

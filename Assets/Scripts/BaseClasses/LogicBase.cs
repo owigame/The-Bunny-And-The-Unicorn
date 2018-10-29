@@ -13,7 +13,7 @@ namespace AI {
         public abstract void OnTick (IBoardState[] Board);
         // public abstract void OnValidateFail(IBoardState data,IResponse[] chain);
 
-        protected AIResponseManager AIResponse {
+        public AIResponseManager AIResponse {
             get {
                 return _AIResponder;
             }

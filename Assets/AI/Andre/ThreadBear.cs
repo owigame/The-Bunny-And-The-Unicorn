@@ -6,10 +6,11 @@ using UnityEngine;
 [CreateAssetMenu (fileName = "ThreadBear", menuName = "AI/ThreadBear", order = 0)]
 public class ThreadBear : ThreadBare {
     public LanePattern LanePattern;
+    public int Threshhold = 3;
     public override void OnTick (IBoardState[] data) {
         boardState = (LaneManager[]) data;
 
-        for (int i = 1; i < 3; i++) {
+        for (int i = 1; i < (TournamentManager._instance.tokensPerRound==1?3:6); i++) {
             FormPattern (LanePattern, i, boardState);
         }
         //for (int i = 0; i < 3; i++)
@@ -29,8 +30,15 @@ public class ThreadBear : ThreadBare {
                 } else nearest = boardState[i].GetFriendliesInLane (this) [0];
             }
         }
-        if (AIResponse.Tokens > 1)
-            AIResponse.Move (nearest, AIResponse.Tokens);
+
+        if (AIResponse.Tokens > Threshhold)
+            AIResponse.Move (nearest, AIResponse.Tokens - Threshhold);
+        else
+            AIResponse.Move (nearest, 1);
+
+        for (int i = 0; i < AIResponse.Tokens; i++) {
+            Auto_Nearest (boardState);
+        }
 
         AIResponse.FinalizeResponse ();
     }

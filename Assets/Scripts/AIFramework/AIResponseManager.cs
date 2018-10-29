@@ -73,23 +73,59 @@ public class AIResponseManager {
 	}
 
 	public bool Move (CreatureBase creature, int range = 1) {
-        if (creature == null) return false;
+		if (creature == null || creature.isDead) return false;
+		range = Mathf.Clamp (range, 0, tokens);
+
 		LogStack.Log ("creature.ActiveLaneNode: " + creature.ActiveLaneNode, LogLevel.System);
 		LogStack.Log ("creature.Owner._RightFacing: " + creature.Owner._RightFacing, LogLevel.System);
 
-		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.Owner._RightFacing, Mathf.Abs (range));
-		LogStack.Log ("nextNode: " + nextNode, LogLevel.System);
+		LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.Owner._RightFacing, creature.ActiveLaneNode.laneManager.GetMaxNodes (creature.ActiveLaneNode, creature.Owner._RightFacing, Mathf.Abs (range))); 
+		// LaneNode nextNode = creature.ActiveLaneNode.laneManager.GetNextLaneNode (creature.ActiveLaneNode, creature.Owner._RightFacing, Mathf.Abs (range)); LogStack.Log ("nextNode: " + nextNode, LogLevel.System);
 
-		if (creature != null && nextNode != null && nextNode.activeCreature == null) {
-			LogStack.Log ("Next Node: " + nextNode.GetInstanceID (), LogLevel.System);
-			if (SpendToken (range)) {
+			if (creature != null && nextNode != null && nextNode.activeCreature == null) {
+				LogStack.Log ("Next Node: " + nextNode.GetInstanceID (), LogLevel.System);
+				if (SpendToken (range)) {
 
-				LogStack.Log ("Response | Move " + range, LogLevel.Stack);
-				IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Move, nextNode);
+					LogStack.Log ("Response | Move " + range, LogLevel.Stack);
+					IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Move, nextNode);
+					if (!ResponseChain.Contains (response)) {
+						ResponseChain.Add (response);
+					} else {
+						LogStack.Log ("##### Duplicate Move Response", LogLevel.System);
+						RefundToken ();
+						return false;
+					}
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		public bool Attack (CreatureBase creature, int AmountOfTimes = 1) {
+			bool allTrue = true;
+			for (int i = 0; i < AmountOfTimes; i++) {
+				if (!Attack (creature)) {
+					allTrue = false;
+				}
+			}
+			return allTrue;
+		}
+
+		public bool Attack (CreatureBase creature) {
+			if (creature == null) return false;
+			List<CreatureBase> inRange = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode, creature.Owner);
+			if (inRange.GetEnemies (creature.Owner).Count > 0 && inRange.GetEnemies (creature.Owner) [0].Health > 0) {
+				if (!SpendToken ()) return false;
+
+				// LogStack.Log ("Response | Attack", LogLevel.Stack);
+				IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Attack, creature.ActiveLaneNode);
 				if (!ResponseChain.Contains (response)) {
 					ResponseChain.Add (response);
 				} else {
-					LogStack.Log ("##### Duplicate Move Response", LogLevel.System);
+					LogStack.Log ("##### Duplicate Attack Response", LogLevel.System);
 					RefundToken ();
 					return false;
 				}
@@ -97,80 +133,46 @@ public class AIResponseManager {
 			} else {
 				return false;
 			}
-		} else {
+		}
+
+		bool SpendToken (int amount = 1) {
+			if (tokens - amount >= 0) {
+				tokens -= amount;
+				UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
+				return true;
+			}
 			return false;
 		}
-	}
 
-	public bool Attack (CreatureBase creature, int AmountOfTimes = 1) {
-		bool allTrue = true;
-		for (int i = 0; i < AmountOfTimes; i++) {
-			if (!Attack (creature)) {
-				allTrue = false;
-			}
-		}
-		return allTrue;
-	}
-
-	public bool Attack (CreatureBase creature) {
-		if (creature == null) return false;
-		List<CreatureBase> inRange = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode, creature.Owner);
-		if (inRange.GetEnemies (creature.Owner).Count > 0) {
-			if (!SpendToken ()) return false;
-
-			// LogStack.Log ("Response | Attack", LogLevel.Stack);
-			IResponse response = new ActionResponse (creature, 0, logicBase, ResponseActionType.Attack, creature.ActiveLaneNode);
-			if (!ResponseChain.Contains (response)) {
-				ResponseChain.Add (response);
-			} else {
-				LogStack.Log ("##### Duplicate Attack Response", LogLevel.System);
-				RefundToken ();
-				return false;
-			}
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	bool SpendToken (int amount = 1) {
-		if (tokens - amount >= 0) {
-			tokens -= amount;
+		public void RefundToken (int amount = 1) {
+			tokens += amount;
 			UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
-			return true;
 		}
-		return false;
-	}
 
-	void RefundToken (int amount = 1) {
-		tokens += amount;
-		UIManager._instance.UpdateToken (logicBase == TournamentManager._instance.P1, tokens);
-	}
-
-	void AwardToken (CreatureBase creature) {
-		if (logicBase != creature.Owner) {
-			if (creature.CreatureType == Spawnable.Bunny) {
-				tokens += 1;
-			} else if (creature.CreatureType == Spawnable.Unicorn) {
-				tokens += 2;
+		void AwardToken (CreatureBase creature) {
+			if (logicBase != creature.Owner) {
+				if (creature.CreatureType == Spawnable.Bunny) {
+					tokens += 1;
+				} else if (creature.CreatureType == Spawnable.Unicorn) {
+					tokens += 2;
+				}
 			}
 		}
-	}
 
-	public bool FinalizeResponse () {
-		/* fail the finalize */
-		//if(false)
-		//{
-		//	return false;
-		//}else{
-		Response.Invoke (ResponseChain.ToArray ());
-		ResponseChain.Clear ();
-		spawnNodesTaken.Clear ();
-		return true;
-		//}
-	}
-	public IResponse[] QueryResponse () {
-		return ResponseChain.ToArray ();
-	}
+		public bool FinalizeResponse () {
+			/* fail the finalize */
+			//if(false)
+			//{
+			//	return false;
+			//}else{
+			Response.Invoke (ResponseChain.ToArray ());
+			ResponseChain.Clear ();
+			spawnNodesTaken.Clear ();
+			return true;
+			//}
+		}
+		public IResponse[] QueryResponse () {
+			return ResponseChain.ToArray ();
+		}
 
-}
+	}

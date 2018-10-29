@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36235890729dce64480790f787b2c141, type: 3}
-  m_Name: ThreadBear
+  m_Name: ThreadBear 1
   m_EditorClassIdentifier: 
   _Creatures:
   - {fileID: 0}
@@ -18,4 +18,6 @@ MonoBehaviour:
   - {fileID: 0}
   _PlayerNumber: 1
   _RightFacing: 1
-  lanePattern1: {fileID: 11400000, guid: d3a7f41ae53b25449a10b53c62d9f7ff, type: 2}
+  _Start: 1
+  LanePattern: {fileID: 11400000, guid: 1c291ff682817584781c2c1e6f9ccd82, type: 2}
+  Threshhold: 0

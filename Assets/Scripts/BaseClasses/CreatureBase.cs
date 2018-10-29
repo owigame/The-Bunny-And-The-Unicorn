@@ -30,6 +30,7 @@ public class CreatureBase : MonoBehaviour {
 	public int LaneIndex { get { return ActiveLaneNode.laneManager.allNodes.IndexOf (ActiveLaneNode); } }
 	public float Range { get { return range; } }
 	public float Health { get { return health; } }
+	bool shouldDie = false;
 
 	private void Awake () {
 		animator = GetComponent<Animator> ();
@@ -54,10 +55,13 @@ public class CreatureBase : MonoBehaviour {
 
 	public void onTick (IBoardState[] data) {
 		animator.SetBool ("Attack", false);
+		if (shouldDie) {
+			Die ();
+		}
 	}
 
 	public void Attack () {
-		if (!dead) {
+		if (health > 0) {
 			LogStack.Log (this.name + " attacking", LogLevel.Stack);
 			animator.SetBool ("Attack", true);
 			animator.SetTrigger ("AttackInit");
@@ -87,7 +91,8 @@ public class CreatureBase : MonoBehaviour {
 		uiHealth.SetHealth (health);
 
 		if (health <= 0) {
-			Die ();
+			Die();
+			// shouldDie = true;
 		}
 	}
 

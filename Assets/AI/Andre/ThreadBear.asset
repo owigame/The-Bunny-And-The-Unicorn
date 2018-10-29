@@ -16,6 +16,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  _PlayerNumber: 1
-  _RightFacing: 1
-  lanePattern1: {fileID: 11400000, guid: d3a7f41ae53b25449a10b53c62d9f7ff, type: 2}
+  - {fileID: 0}
+  _PlayerNumber: 2
+  _RightFacing: 0
+  _Start: 1
+  LanePattern: {fileID: 11400000, guid: 1c291ff682817584781c2c1e6f9ccd82, type: 2}
+  Threshhold: 3

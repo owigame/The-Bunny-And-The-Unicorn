@@ -74,7 +74,7 @@ public class TickManager : MonoBehaviour {
                 // if (ResponsesRecieved == 2) {
                 // ResponsesRecieved = 0;
                 tickState = TickState.AwaitingResponses;
-                TournamentManager._instance.OnTick.Invoke (TournamentManager._instance.lanes.ToArray());
+                TournamentManager._instance.OnTick.Invoke (TournamentManager._instance.lanes.ToArray ());
                 P1 = new IResponse[0];
                 P2 = new IResponse[0];
                 // }
@@ -99,14 +99,29 @@ public class TickManager : MonoBehaviour {
         foreach (IResponse response in ResponseChain) {
             if (response.creature.CreatureType == Spawnable.Bunny && response.responseActionType == ResponseActionType.Move) {
                 // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
-                response.creature.Move (response.laneNode);
+                if (!response.creature.isDead) {
+                    if (response.laneNode.activeCreature == null) {
+                        response.creature.Move (response.laneNode);
+                    } else {
+                        LaneNode nodeBack = response.laneNode.laneManager.PreviousNode (response.laneNode, response.creature.Owner);
+                        response.creature.Move (nodeBack);
+                        response.creature.Owner.AIResponse.RefundToken ();
+                        response.creature.Owner.AIResponse.RefundToken (response.laneNode.laneManager.GetNodeDistance (nodeBack, response.laneNode));
+                    }
+                } else {
+                    response.creature.Owner.AIResponse.RefundToken (response.laneNode.laneManager.GetNodeDistance (response.creature.ActiveLaneNode, response.laneNode));
+                }
             } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Attack) {
                 yield return new WaitForSeconds (TournamentManager._instance.moveWait);
                 // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
                 response.creature.Attack ();
                 LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
                 if (response.creature.LaneProgress + 1 >= response.creature.ActiveLaneNode.laneManager.allNodes.Count && nextNode.activeCreature == null) { //One node before end
-                    response.creature.Move (nextNode);
+                    if (!response.creature.isDead) {
+                        response.creature.Move (nextNode);
+                    } else {
+                        response.creature.Owner.AIResponse.RefundToken ();
+                    }
                 }
             }
         }
@@ -119,12 +134,28 @@ public class TickManager : MonoBehaviour {
                 response.creature.Attack ();
                 LaneNode nextNode = response.laneNode.laneManager.GetNextLaneNode (response.laneNode, response.creature.RightFacing, 1, true);
                 if (response.creature.LaneProgress + 1 >= response.creature.ActiveLaneNode.laneManager.allNodes.Count && nextNode.activeCreature == null) { //One node before end
-                    response.creature.Move (nextNode);
+                    if (!response.creature.isDead) {
+                        if (nextNode.activeCreature == null) {
+                            response.creature.Move (nextNode);
+                        } else {
+                            LaneNode nodeBack = nextNode.laneManager.PreviousNode (nextNode, response.creature.Owner);
+                            response.creature.Move (nodeBack);
+                            response.creature.Owner.AIResponse.RefundToken ();
+                            response.creature.Owner.AIResponse.RefundToken (nextNode.laneManager.GetNodeDistance (nodeBack, nextNode));
+                        }
+                    } else {
+                        response.creature.Owner.AIResponse.RefundToken (response.laneNode.laneManager.GetNodeDistance (response.creature.ActiveLaneNode, nextNode));
+                    }
                 }
             } else if (response.creature.CreatureType == Spawnable.Unicorn && response.responseActionType == ResponseActionType.Move) {
                 yield return new WaitForSeconds (TournamentManager._instance.attackWait);
                 // LogStack.Log ("Response: " + response.player + " | " + response.responseActionType + " in lane " + response.Lane, LogLevel.System);
-                response.creature.Move (response.laneNode);
+                if (!response.creature.isDead) {
+                    response.creature.Move (response.laneNode);
+                } else {
+                    response.creature.Owner.AIResponse.RefundToken ();
+                }
+
             }
         }
         yield return new WaitForSeconds (TournamentManager._instance.attackWait);
