@@ -2,13 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ba4b5a61-6764-4d64-9255-6909d0eeb2a1" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Bunny-And-The-Unicorn/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Bunny-And-The-Unicorn/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Bunny-And-The-Unicorn/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Bunny-And-The-Unicorn/.idea/indexLayout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Andre/Patterns.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Andre/Patterns/Bunya.asset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Andre/Patterns/Variety.asset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Andre/Patterns/Variety.asset.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Andre/ThreadBear.asset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Andre/ThreadBear.asset.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Andre/ThreadBear.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Andre/ThreadBear.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_ActionV4.asset.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Bunny-And-The-Unicorn/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Bunny-And-The-Unicorn/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/AI/DanR/Hyena.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/DanR/Hyena.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Editor/JetBrains/JetBrains.Rider.Unity.Editor.Plugin.Repacked.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Editor/JetBrains/JetBrains.Rider.Unity.Editor.Plugin.Repacked.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Andre/ThreadBare.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Andre/ThreadBare.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Chris/Jarvis.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Chris/Jarvis.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_Action.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_ActionV3.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_Action.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Andre/Patterns/Bunya.asset.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_Action.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_Action.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_Action2 1.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_ActionV4.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_Action2 1.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Daniel G/DanielG_ActionV3.asset.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Jared/Hal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Jared/Hal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Nicola/Kitty.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Nicola/Kitty.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Nicola/Kittyv2.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Nicola/Kittyv2.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Game.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AIFramework/AIResponseManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AIFramework/AIResponseManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/BaseClasses/LogicBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/BaseClasses/LogicBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Gameplay/TournamentManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Gameplay/TournamentManager.cs" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,7 +37,7 @@
     <session id="-1851150132">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.6" value="1" />
           <entry key="project.open.time.7" value="1" />
           <entry key="project.open.time.9" value="1" />
@@ -44,8 +61,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Assets/AI/DanR/Hyena.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="653">
-              <caret line="309" column="32" selection-start-line="309" selection-start-column="32" selection-end-line="309" selection-end-column="32" />
+            <state relative-caret-position="446">
+              <caret line="174" column="39" lean-forward="true" selection-start-line="174" selection-start-column="39" selection-end-line="174" selection-end-column="39" />
               <folding>
                 <marker date="1540803560941" expanded="true" signature="0:117" ph="/* This code runs extreamly slow in the method FindFrendlyWithClosestEnemies need an alternative thos this method ... */" />
                 <marker date="1540803560941" expanded="false" signature="126:172" ph="..." />
@@ -144,6 +161,15 @@
     </navigator>
     <panes>
       <pane id="SolutionExplorer">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Project" type="784c90a0:SolutionExplorerRootNode" />
+              <item name="The-Bunny-And-The-Unicorn" type="24d0babc:SolutionExplorerModelNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
         <option name="show-all-files" value="false" />
       </pane>
       <pane id="FileSystemExplorer" />
@@ -225,12 +251,12 @@
       <workItem from="1538120069322" duration="661000" />
       <workItem from="1540792973374" duration="766000" />
       <workItem from="1540796472887" duration="18000" />
-      <workItem from="1540803376615" duration="784000" />
+      <workItem from="1540803376615" duration="1212000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2229000" />
+    <option name="totallyTimeSpent" value="2657000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -242,8 +268,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="30" width="1920" height="1050" extended-state="7" />
-    <editor active="true" />
+    <frame x="0" y="30" width="1920" height="1050" extended-state="6" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12473348" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -308,8 +333,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Assets/AI/DanR/Hyena.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="653">
-          <caret line="309" column="32" selection-start-line="309" selection-start-column="32" selection-end-line="309" selection-end-column="32" />
+        <state relative-caret-position="446">
+          <caret line="174" column="39" lean-forward="true" selection-start-line="174" selection-start-column="39" selection-end-line="174" selection-end-column="39" />
           <folding>
             <marker date="1540803560941" expanded="true" signature="0:117" ph="/* This code runs extreamly slow in the method FindFrendlyWithClosestEnemies need an alternative thos this method ... */" />
             <marker date="1540803560941" expanded="false" signature="126:172" ph="..." />

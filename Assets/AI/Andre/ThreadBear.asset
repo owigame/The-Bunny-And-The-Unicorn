@@ -8,14 +8,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b383c7a24d528544b0d62cae87f067b, type: 3}
-  m_Name: DanielG_Action
+  m_Script: {fileID: 11500000, guid: 36235890729dce64480790f787b2c141, type: 3}
+  m_Name: ThreadBear
   m_EditorClassIdentifier: 
-  _Creatures: []
+  _Creatures:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _PlayerNumber: 1
   _RightFacing: 1
-  B_Init: 0
-  B_StartLeft: 1
-  B_Bunnies: 1
-  iDefTokenThreshold: 3
-  iAttackTokenThreshold: 7
+  lanePattern1: {fileID: 11400000, guid: d3a7f41ae53b25449a10b53c62d9f7ff, type: 2}

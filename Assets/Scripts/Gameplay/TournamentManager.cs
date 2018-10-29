@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Logging;
 using UnityEngine;
@@ -6,6 +7,10 @@ using UnityEngine;
 public class TournamentManager : MonoBehaviour {
     #region  Singleton management
     public static TournamentManager _instance;
+    public delegate void StartEvent();
+    public static StartEvent OnStart;
+
+
     private void Awake () {
         if (_instance == null) {
             _instance = this;
@@ -69,6 +74,10 @@ public class TournamentManager : MonoBehaviour {
     // Setup the two Ai players 
     private void Start () {
 
+        if (OnStart != null){
+            OnStart();
+        }
+
         //Set Lane listeners
         foreach (LaneManager lane in lanes) {
             lane.OnLaneReady.AddListener (LaneReady);
@@ -105,6 +114,11 @@ public class TournamentManager : MonoBehaviour {
             }
         }
         UIManager._instance.UpdateScore ();
+    }
+
+    public MonoBehaviour SpawnHelper(Type helper){
+        GameObject helperGO = new GameObject();
+        return helperGO.AddComponent(helper) as MonoBehaviour;
     }
 
 }
