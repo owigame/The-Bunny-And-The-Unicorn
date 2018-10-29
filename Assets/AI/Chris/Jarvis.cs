@@ -42,8 +42,7 @@ public class Jarvis : LogicBase
         {
             while (AIResponse.Tokens > 0 && maxCycles > 0)
             {
-                LogStack.Log("Cycle count: " + (99 - maxCycles), Logging.LogLevel.Debug);
-                if (_Creatures.Count > 3)
+                if (_Creatures.Count > 5)
                 {
                     CreatureBase emptylanecreat = null;
                     CreatureBase creatureCanAttack = null;
@@ -84,6 +83,7 @@ public class Jarvis : LogicBase
 
                 maxCycles--;
             }
+            
         }
         //IResponse[] responses = AIResponse.QueryResponse();
 
