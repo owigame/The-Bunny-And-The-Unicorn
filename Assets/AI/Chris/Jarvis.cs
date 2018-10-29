@@ -12,18 +12,27 @@ public class Jarvis : LogicBase
         int maxCycles = 99;
         int tokens = AIResponse.Tokens;
         bool saving = true;
+        bool fresh = true;
 
         int cnt = 0;
-        while (cnt < 2)
-            for (int i = 0; i < 2; i++)
-            {
-                if (TournamentManager._instance.lanes[i].GetEnemiesInLane(this).Count > 0)
+
+        if(fresh)
+            while (cnt < 2)
+                for (int i = 0; i < 2; i++)
                 {
-                    saving = false;
+                    if (TournamentManager._instance.lanes[i].GetEnemiesInLane(this).Count > 0) 
+                    {
+                        saving = false;
+                        fresh = false;
+                    }
+
+                    cnt++;
                 }
 
-                cnt++;
-            }
+
+        if (!fresh)
+            if (tokens >= 3)
+                saving = false;
 
         if (saving)
             if (tokens > 30)
@@ -36,11 +45,27 @@ public class Jarvis : LogicBase
                 LogStack.Log("Cycle count: " + (99 - maxCycles), Logging.LogLevel.Debug);
                 if (_Creatures.Count > 3)
                 {
+                    CreatureBase emptylanecreat = null;
+                    CreatureBase creatureCanAttack = null;
+
                     foreach (CreatureBase creatur in _Creatures)
                     {
+                        if (creatur.ActiveLaneNode.laneManager.GetEnemiesInLane(this).Count == 0)
+                        {
+                            emptylanecreat = creatur;
+                        }
+                        else
                         if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
-                            MoveAtk(creatur);
+                            creatureCanAttack = creatur;
+                    } 
+
+                    if(emptylanecreat != null)
+                    {
+                        MoveAtk(emptylanecreat);
                     }
+
+                    if (creatureCanAttack != null)
+                        MoveAtk(creatureCanAttack);
                 }
 
                 cnt = 0;
@@ -61,6 +86,10 @@ public class Jarvis : LogicBase
             }
         }
         //IResponse[] responses = AIResponse.QueryResponse();
+
+        if (tokens <= 3)
+            saving = true;
+
         AIResponse.FinalizeResponse();
     }
 
