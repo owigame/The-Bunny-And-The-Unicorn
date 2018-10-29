@@ -181,80 +181,78 @@ namespace AI.DanR
 
         private void Initialize()
         {
-            if (_hasBeenInitialized) return;
+            if (!_Start) return;
 
             _lanetospawn = 1;
-            _hasBeenInitialized = true;
+            _Start = false;
+            friendlyBases = new List<CreatureBase>();
         }
 
-        
+
+        List<CreatureBase> friendlyBases = new List<CreatureBase>();
+
         public override void OnTick(IBoardState[] data)
         {
-            if (!AIResponse.Spawn(Spawnable.Unicorn, 1))
+            AIResponse.onTick(null);
+
+            var maxCycles = 99;
+            Initialize();
+
+            while (AIResponse.Tokens > 0 && maxCycles > 0)
             {
-                AIResponse.onTick(null);
+                
 
-                var maxCycles = 99;
+                SpawnEnemy();
 
-                while (AIResponse.Tokens > 0 && maxCycles > 0)
+
+                CreatureBase FarthestLane1Ally = null;
+                CreatureBase FarthestLane2Ally = null;
+                CreatureBase FarthestLane3Ally = null;
+
+                if (TournamentManager._instance.lanes[0].GetFriendliesInLane(this).Count > 0)
                 {
-                    Initialize();
-
-                    SpawnEnemy();
-
-                    var lane1Frienlies = FindAllFriendlies(TournamentManager._instance.lanes[0]);
-                    var lane2Frienlies = FindAllFriendlies(TournamentManager._instance.lanes[1]);
-                    var lane3Frienlies = FindAllFriendlies(TournamentManager._instance.lanes[2]);
-
-
-                    var farthsetAlong = 0;
-                    CreatureBase furthestCreature = null;
-
-                    if (_lanetospawn == 1)
-                    {
-                        foreach (var frienly in lane1Frienlies)
-                        {
-                            if (frienly.LaneProgress >= farthsetAlong || furthestCreature == null)
-                            {
-                                farthsetAlong = frienly.LaneProgress;
-                                furthestCreature = frienly;
-                            }
-                        }
-
-                        CheckIfClosestenemyIsInAttackingrange(furthestCreature);
-                    }
-                    else if(_lanetospawn == 2)
-                    {
-                        foreach (var frienly in lane2Frienlies)
-                        {
-                            if (frienly.LaneProgress >= farthsetAlong || furthestCreature == null)
-                            {
-                                farthsetAlong = frienly.LaneProgress;
-                                furthestCreature = frienly;
-                            }
-                        }
-
-                        CheckIfClosestenemyIsInAttackingrange(furthestCreature);
-                    }
-                    else 
-                    {
-                        foreach (var frienly in lane3Frienlies)
-                        {
-                            if (frienly.LaneProgress >= farthsetAlong || furthestCreature == null)
-                            {
-                                farthsetAlong = frienly.LaneProgress;
-                                furthestCreature = frienly;
-                            }
-                        }
-
-                        CheckIfClosestenemyIsInAttackingrange(furthestCreature);
-                    }
-
-
-
-                    maxCycles--;
+                    FarthestLane1Ally = TournamentManager._instance.lanes[0].GetFriendliesInLane(this)[0];
+                    if (FarthestLane1Ally != null && !friendlyBases.Contains(FarthestLane1Ally))
+                        friendlyBases.Add(FarthestLane1Ally);
                 }
+
+                if (TournamentManager._instance.lanes[1].GetFriendliesInLane(this).Count > 0)
+                {
+                    FarthestLane2Ally = TournamentManager._instance.lanes[1].GetFriendliesInLane(this)[0];
+                    if (FarthestLane1Ally != null && !friendlyBases.Contains(FarthestLane2Ally))
+                        friendlyBases.Add(FarthestLane2Ally);
+                }
+
+                if (TournamentManager._instance.lanes[2].GetFriendliesInLane(this).Count > 0)
+                {
+                    FarthestLane3Ally = TournamentManager._instance.lanes[2].GetFriendliesInLane(this)[0];
+                    if (FarthestLane1Ally != null && !friendlyBases.Contains(FarthestLane3Ally))
+                        friendlyBases.Add(FarthestLane3Ally);
+                }
+
+
+                var farthsetAlong = 0;
+                CreatureBase withMostProgress = null;
+
+
+                foreach (var creatureBase in friendlyBases)
+                {
+                    if (creatureBase != null && creatureBase.LaneProgress > farthsetAlong || withMostProgress.isDead)
+                    {
+                        farthsetAlong = creatureBase.LaneProgress;
+
+                        withMostProgress = creatureBase;
+                    }
+                }
+                Debug.Log("Further: " + (withMostProgress != null ? withMostProgress.GetInstanceID().ToString() : " NULL"));
+
+
+                CheckIfClosestenemyIsInAttackingrange(withMostProgress);
+
+
+                maxCycles--;
             }
+
 
             AIResponse.FinalizeResponse();
         }
@@ -267,18 +265,13 @@ namespace AI.DanR
 
             if (_lastSpawned == Spawnable.Unicorn)
             {
-                if (!AIResponse.Spawn(Spawnable.Bunny, _lanetospawn))
+                if (AIResponse.Spawn(Spawnable.Bunny, _lanetospawn))
                     _lastSpawned = Spawnable.Bunny;
             }
             else if (_lastSpawned == Spawnable.Bunny)
             {
-                if (!AIResponse.Spawn(Spawnable.Unicorn, _lanetospawn))
+                if (AIResponse.Spawn(Spawnable.Unicorn, _lanetospawn))
                     _lastSpawned = Spawnable.Unicorn;
-            }
-            else
-            {
-                if (!AIResponse.Spawn(Spawnable.Bunny, _lanetospawn))
-                    _lastSpawned = Spawnable.Bunny;
             }
 
             _lanetospawn++;
@@ -300,21 +293,21 @@ namespace AI.DanR
                 (int) allyWithMostProgress.Range,
                 allyWithMostProgress.ActiveLaneNode, this);
 
-            var foundAttackTarget = false;
+            var hasTraget = false;
 
-            foreach (CreatureBase _creature in searchTargetCreatures)
+            foreach (CreatureBase creature in searchTargetCreatures)
             {
-                if (_creature.Owner != allyWithMostProgress.Owner)
+                if (creature.Owner != allyWithMostProgress.Owner)
                 {
                     //Found enemy creature in range
-                    foundAttackTarget = true;
+                    hasTraget = true;
                     AIResponse.Attack(allyWithMostProgress);
                 }
             }
 
 
-            if (foundAttackTarget) return;
-            
+            if (hasTraget) return;
+
             int moveSpaces =
                 allyWithMostProgress.ActiveLaneNode.laneManager.GetOpenNodes(allyWithMostProgress.ActiveLaneNode,
                     _RightFacing);
