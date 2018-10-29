@@ -41,8 +41,6 @@ namespace AI.DanR
 
                 while (AIResponse.Tokens > 0 && maxCycles > 0)
                 {
-
-
                     SpawnEnemy();
 
 
@@ -60,14 +58,14 @@ namespace AI.DanR
                     if (TournamentManager._instance.lanes[1].GetFriendliesInLane(this).Count > 0)
                     {
                         FarthestLane2Ally = TournamentManager._instance.lanes[1].GetFriendliesInLane(this)[0];
-                        if (FarthestLane1Ally != null && !friendlyBases.Contains(FarthestLane2Ally))
+                        if (FarthestLane2Ally != null && !friendlyBases.Contains(FarthestLane2Ally))
                             friendlyBases.Add(FarthestLane2Ally);
                     }
 
                     if (TournamentManager._instance.lanes[2].GetFriendliesInLane(this).Count > 0)
                     {
                         FarthestLane3Ally = TournamentManager._instance.lanes[2].GetFriendliesInLane(this)[0];
-                        if (FarthestLane1Ally != null && !friendlyBases.Contains(FarthestLane3Ally))
+                        if (FarthestLane3Ally != null && !friendlyBases.Contains(FarthestLane3Ally))
                             friendlyBases.Add(FarthestLane3Ally);
                     }
 
@@ -91,7 +89,28 @@ namespace AI.DanR
                               (withMostProgress != null ? withMostProgress.GetInstanceID().ToString() : " NULL"));
 
 
-                    CheckIfClosestenemyIsInAttackingrange(withMostProgress);
+                    CreatureBase canFinish = null;
+
+                    foreach (var creature in _Creatures)
+                    {
+                        int remaining = creature.LaneProgress - 10;
+
+                        if (remaining <= 10)
+                        {
+                            canFinish = creature;
+                        }
+                    }
+
+
+                    if (CheckIfCreatureCanFinish(canFinish))
+                    {
+                        Debug.Log("Finish");
+                    }
+                    else
+                    {
+                        CheckIfClosestenemyIsInAttackingrange(withMostProgress);
+                    }
+                    
 
 
                     maxCycles--;
@@ -121,9 +140,22 @@ namespace AI.DanR
                 _lanetospawn++;
             }
 
-            private List<CreatureBase> FindAllFriendlies(LaneManager lane)
+
+            private bool CheckIfCreatureCanFinish(CreatureBase creature)
             {
-                return lane.GetFriendliesInLane(this);
+                if (creature == null) return false;
+
+                int remaining = creature.LaneProgress - 10;
+
+                if (remaining > AIResponse.Tokens)
+                {
+                    if (AIResponse.Move(creature, remaining))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             private CreatureBase _hitEnemy;
