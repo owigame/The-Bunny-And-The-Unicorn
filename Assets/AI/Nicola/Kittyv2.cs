@@ -3,6 +3,19 @@ using System.Collections.Generic;
 using AI;
 using UnityEngine;
 
+/*
+    -------LOGIC--------
+
+    Spawn, Attack, and Move in pairs of a bunny and a unicorn.
+    Have one pair on each lane at all times.
+
+    Progress in lanes:
+        - Look for lane with most progressed enemies.
+        - Look for open lane.
+        - Look for lane with least amount of enemies.
+
+ */
+
 [CreateAssetMenu (fileName = "Kittyv2", menuName = "AI/Kittyv2", order = 0)]
 public class Kittyv2 : LogicBase
 {
