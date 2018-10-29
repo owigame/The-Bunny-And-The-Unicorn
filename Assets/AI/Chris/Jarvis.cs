@@ -36,13 +36,17 @@ public class Jarvis : LogicBase
 
         if (saving)
             if (tokens > 30)
+            {
                 saving = false;
+                fresh = false;
+            }
+                
 
         if (!saving)
         {
             while (AIResponse.Tokens > 0 && maxCycles > 0)
             {
-                if (_Creatures.Count > 5)
+                if (_Creatures.Count > 7)
                 {
                     CreatureBase emptylanecreat = null;
                     CreatureBase creatureCanAttack = null;
