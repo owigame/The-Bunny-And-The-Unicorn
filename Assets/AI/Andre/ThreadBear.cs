@@ -5,12 +5,12 @@ using UnityEngine;
 
 [CreateAssetMenu (fileName = "ThreadBear", menuName = "AI/ThreadBear", order = 0)]
 public class ThreadBear : ThreadBare {
-    public LanePattern lanePattern1;
+    public LanePattern LanePattern;
     public override void OnTick (IBoardState[] data) {
         boardState = (LaneManager[]) data;
 
         for (int i = 1; i < 3; i++) {
-            FormPattern (lanePattern1, i, boardState);
+            FormPattern (LanePattern, i, boardState);
         }
         //for (int i = 0; i < 3; i++)
         //{
@@ -34,6 +34,7 @@ public class ThreadBear : ThreadBare {
 
         AIResponse.FinalizeResponse ();
     }
+
     protected void FormPattern (LanePattern pattern, int lane, LaneManager[] Board) {
         LaneManager TheLane = Board[lane - 1];
 
@@ -45,11 +46,11 @@ public class ThreadBear : ThreadBare {
             return;
         }
         LanePattern lanePattern = new LanePattern (FriendlyCreatures);
-        if (lanePattern1.Equals (lanePattern)) return;
+        if (LanePattern.Equals (lanePattern)) return;
 
-        for (int i = 0; i < lanePattern1.PatternDefinition.Length; i++) {
-            if (lanePattern.PatternDefinition.Length <= i || lanePattern1.PatternDefinition[i] != lanePattern.PatternDefinition[i])
-                if (!AIResponse.Spawn (lanePattern1.PatternDefinition[i], lane)) {
+        for (int i = 0; i < LanePattern.PatternDefinition.Length; i++) {
+            if (lanePattern.PatternDefinition.Length <= i || LanePattern.PatternDefinition[i] != lanePattern.PatternDefinition[i])
+                if (!AIResponse.Spawn (LanePattern.PatternDefinition[i], lane)) {
                     Debug.Log ("~~~~ Failed Spawn in Pattern");
                 } else {
                     Debug.Log ("~~~~ Success Spawn in Pattern");
