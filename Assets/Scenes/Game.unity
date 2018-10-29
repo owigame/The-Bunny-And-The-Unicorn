@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44165573, g: 0.49054664, b: 0.5705391, a: 1}
+  m_IndirectSpecularColor: {r: 0.4416554, g: 0.49054563, b: 0.57053846, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1859,13 +1859,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c45f21dfdfeca3469e6520f200bc481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  P1: {fileID: 11400000, guid: 75ac0af40f8a485488518a9a6fc203be, type: 2}
-  P2: {fileID: 11400000, guid: 3d0a10b0ddac13f49bc45323371e50a8, type: 2}
+  P1: {fileID: 11400000, guid: 760dba92ce7a04003b2d8ab8976ab98d, type: 2}
+  P2: {fileID: 11400000, guid: 6fce7205b699b6f4dbe3ce301a3c4dcf, type: 2}
   lanes:
   - {fileID: 370656674}
   - {fileID: 493088259}
   - {fileID: 1090472512}
-  offTickInterval: 1
+  offTickInterval: -129
   onTickInterval: 0
   bunnyRange: 1
   unicornRange: 4

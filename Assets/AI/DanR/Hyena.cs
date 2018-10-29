@@ -289,7 +289,7 @@ namespace AI.DanR
             return lane.GetFriendliesInLane(this);
         }
 
-        CreatureBase _hitEnemy;
+        private CreatureBase _hitEnemy;
 
         private void CheckIfClosestenemyIsInAttackingrange(CreatureBase allyWithMostProgress)
         {
@@ -313,51 +313,19 @@ namespace AI.DanR
             }
 
 
-            if (!foundAttackTarget)
-            {
-                int moveSpaces =
-                    allyWithMostProgress.ActiveLaneNode.laneManager.GetOpenNodes(allyWithMostProgress.ActiveLaneNode,
-                        _RightFacing);
-                if (moveSpaces > AIResponse.Tokens)
-                {
-                    moveSpaces = AIResponse.Tokens;
-                }
-
-                if (AIResponse.Move(allyWithMostProgress, moveSpaces))
-                {
-                }
-            }
-
-            /*
-            if (allyWithMostProgress == null) return;
-
-            Debug.Log(allyWithMostProgress.Range);
+            if (foundAttackTarget) return;
             
-            RaycastHit[] hits;
-
-            hits = Physics.RaycastAll(allyWithMostProgress.gameObject.transform.position,
-                allyWithMostProgress.gameObject.transform.forward, allyWithMostProgress.Range + 3);
-
-
-            foreach (var variable in hits)
+            int moveSpaces =
+                allyWithMostProgress.ActiveLaneNode.laneManager.GetOpenNodes(allyWithMostProgress.ActiveLaneNode,
+                    _RightFacing);
+            if (moveSpaces > AIResponse.Tokens)
             {
-                _hitEnemy = variable.collider.gameObject.GetComponent<CreatureBase>();
-                Debug.Log("Did hit");
+                moveSpaces = AIResponse.Tokens;
             }
 
-            if (_hitEnemy == null) return;
-
-            if (_hitEnemy.Owner != this)
+            if (AIResponse.Move(allyWithMostProgress, moveSpaces))
             {
-                Debug.Log("Here");
-
-                if (AIResponse.Attack(allyWithMostProgress, 1) == false)
-                {
-                    AIResponse.Move(allyWithMostProgress, 2);
-                }                
             }
-            
-            */
         }
     }
 }
