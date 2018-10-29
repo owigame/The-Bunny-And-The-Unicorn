@@ -1,87 +1,133 @@
-﻿using System.Collections.Generic;
-using AI;
+using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu (fileName = "Hyena", menuName = "AI/Hyena", order = 0)]
-public class Hyena : LogicBase
+namespace AI.DanR
 {
-    public int lanetospawn = 1;
-    private Spawnable LastSpawned;
-
-    public override void OnTick (IBoardState[] data)
+    [CreateAssetMenu (fileName = "Hyena", menuName = "AI/Hyena", order = 0)]
+    public class Hyena : LogicBase
     {
-        // AIResponse.onTick (null);
+        private Spawnable _lastSpawned;
+        private int _lanetospawn = 1;
+        private bool set = false;
 
-        // int maxCycles = 99;
+        private void Initialize ()
+        {
+            if (!set)
+            {
+                _lanetospawn = 1;
+                set = true;
+            }
+        }
 
-        // while (AIResponse.Tokens > 0 && maxCycles > 0)
-        // {
-        //     if (lanetospawn > 3)
-        //         lanetospawn = 1;
+        public override void OnTick (IBoardState[] data)
+        {
+            if (!AIResponse.Spawn (Spawnable.Unicorn, 1))
+            {
+                AIResponse.onTick (null);
 
-        //     if (LastSpawned == Spawnable.Unicorn)
-        //     {
+                var maxCycles = 99;
 
-        //         if (!AIResponse.Spawn (Spawnable.Bunny, lanetospawn))
-        //             MoveOrAttack (_Creatures[Random.Range (0, _Creatures.Count)]);
+                while (AIResponse.Tokens > 0 && maxCycles > 0)
+                {
+                    Initialize ();
 
-        //         else
-        //             LastSpawned = Spawnable.Bunny;
+                    SpawnEnemy ();
 
-        //     }
-        //     else if (LastSpawned == Spawnable.Bunny)
-        //     {
-        //         if (!AIResponse.Spawn (Spawnable.Unicorn, lanetospawn))
-        //             MoveOrAttack (_Creatures[Random.Range (0, _Creatures.Count)]);
-        //         else
-        //             LastSpawned = Spawnable.Unicorn;
-        //     }
-        //     else
-        //     {
+                    List<CreatureBase> lane1Frienlies = FindAllFriendlies (TournamentManager._instance.lanes[0]);
+                    List<CreatureBase> lane2Frienlies = FindAllFriendlies (TournamentManager._instance.lanes[1]);
+                    List<CreatureBase> lane3Frienlies = FindAllFriendlies (TournamentManager._instance.lanes[2]);
 
-        //         if (!AIResponse.Spawn (Spawnable.Unicorn, lanetospawn))
-        //             MoveOrAttack (_Creatures[Random.Range (0, _Creatures.Count)]);
-        //         else
-        //             LastSpawned = Spawnable.Unicorn;
-        //     }
+                    CheckIfClosestenemyIsInAttackingrange (FindFrendlyWithClosestEnemies (lane1Frienlies, lane2Frienlies, lane3Frienlies));
 
-        //     lanetospawn++;
+                    maxCycles--;
+                }
+            }
 
-        //     maxCycles--;
-        // }
+            AIResponse.FinalizeResponse ();
+        }
 
-        // AIResponse.FinalizeResponse ();
+        private void SpawnEnemy ()
+        {
+
+            // Round robin spawning
+            if (_lanetospawn > 3)
+                _lanetospawn = 1;
+
+            if (_lastSpawned == Spawnable.Unicorn)
+            {
+                if (!AIResponse.Spawn (Spawnable.Bunny, _lanetospawn))
+                    _lastSpawned = Spawnable.Bunny;
+            }
+            else if (_lastSpawned == Spawnable.Bunny)
+            {
+                if (!AIResponse.Spawn (Spawnable.Unicorn, _lanetospawn))
+                    _lastSpawned = Spawnable.Unicorn;
+            }
+            else
+            {
+                if (!AIResponse.Spawn (Spawnable.Bunny, _lanetospawn))
+                    _lastSpawned = Spawnable.Bunny;
+            }
+
+            _lanetospawn++;
+        }
+
+        private List<CreatureBase> FindAllFriendlies (LaneManager lane)
+        {
+            return lane.GetFriendliesInLane (this);
+        }
+
+        private CreatureBase FindFrendlyWithClosestEnemies (List<CreatureBase> lane1Frienlies, List<CreatureBase> lane2Frienlies, List<CreatureBase> lane3Frienlies)
+        {
+            int nearestDistance = 100;
+            CreatureBase allyWithEnemyClostest = null;
+
+            foreach (CreatureBase creature in lane1Frienlies)
+            {
+                if (GetNearestEnemyNodesAwayFrom (creature) < nearestDistance)
+                {
+                    nearestDistance = GetNearestEnemyNodesAwayFrom (creature);
+                    allyWithEnemyClostest = creature;
+                }
+            }
+
+            foreach (CreatureBase creature in lane2Frienlies)
+            {
+                if (GetNearestEnemyNodesAwayFrom (creature) < nearestDistance)
+                {
+                    nearestDistance = GetNearestEnemyNodesAwayFrom (creature);
+                    allyWithEnemyClostest = creature;
+                }
+            }
+
+            foreach (CreatureBase creature in lane3Frienlies)
+            {
+                if (GetNearestEnemyNodesAwayFrom (creature) < nearestDistance)
+                {
+                    nearestDistance = GetNearestEnemyNodesAwayFrom (creature);
+                    allyWithEnemyClostest = creature;
+                }
+            }
+
+            return allyWithEnemyClostest;
+        }
+
+        private void CheckIfClosestenemyIsInAttackingrange (CreatureBase AllyWithClosestEnemy)
+        {
+            if (AllyWithClosestEnemy == null) return;
+
+            if (GetNearestEnemyNodesAwayFrom (AllyWithClosestEnemy) <= AllyWithClosestEnemy.Range)
+            {
+                Debug.Log ("Attack");
+
+                if (!AIResponse.Attack (AllyWithClosestEnemy))
+                {
+                    AIResponse.Move (AllyWithClosestEnemy);
+                }
+
+            }
+
+        }
     }
 
-    // private void MoveOrAttack (CreatureBase creature)
-    // {
-    //     if (creature == null) return;
-
-    //     var searchTargetCreatures = creature.ActiveLaneNode.laneManager.SearchRange ((int) creature.Range, creature.ActiveLaneNode);
-
-    //     var foundAttackTarget = false;
-
-    //     foreach (var thisCreature in searchTargetCreatures)
-    //     {
-    //         if (thisCreature.Owner == creature.Owner) continue;
-
-    //         var CreatureTarget = creature.ActiveLaneNode.laneManager.SearchRange ((int) 0, creature.ActiveLaneNode);
-
-    //         if (CreatureTarget != null)
-    //             foundAttackTarget = true;
-    //     }
-
-    //     if (!foundAttackTarget)
-    //     {
-    //         var moveSpaces =
-    //             creature.ActiveLaneNode.laneManager.GetOpenNodes (creature.ActiveLaneNode, creature.RightFacing);
-
-    //         if (moveSpaces > AIResponse.Tokens)
-    //             moveSpaces = AIResponse.Tokens;
-
-    //         AIResponse.Move (creature, moveSpaces);
-    //     }
-    //     else
-    //         AIResponse.Attack (creature);
-    // }
 }

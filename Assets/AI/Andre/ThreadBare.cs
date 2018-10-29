@@ -7,7 +7,7 @@ using UnityEngine;
 
 [CreateAssetMenu (fileName = "ThreadBare", menuName = "AI/ThreadBare", order = 0)]
 public class ThreadBare : LogicBase {
-    LaneManager[] boardState;
+   protected LaneManager[] boardState;
     public override void OnTick (IBoardState[] board) {
         boardState = (LaneManager[]) board;
 
@@ -63,7 +63,3 @@ public class ThreadBare : LogicBase {
 
 }
 
-[CreateAssetMenu (fileName = "Pattern_", menuName = "LaneControl/LanePattern", order = 0)]
-public class LanePattern : ScriptableObject {
-    Spawnable[] PatternDefinition;
-}
