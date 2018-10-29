@@ -232,7 +232,15 @@ public class Kittyv2 : LogicBase
                         {
                             if (pair.ContainsCreature (toMove))
                             {
-                                pair.AttackAsPair (AIResponse);
+                                //---if first creature still exists---
+                                if (pair.creatures[0] != null)
+                                {
+                                    pair.AttackAsPair (AIResponse);
+                                }
+                                else
+                                {
+                                    pair.AttackSingle(pair.creatures[1], AIResponse);
+                                }
                                 break;
                             }
                         }
@@ -249,7 +257,15 @@ public class Kittyv2 : LogicBase
                     {
                         if (pair.ContainsCreature (toMove))
                         {
-                            pair.MovePair (AIResponse);
+                            //---if first creature still exists---
+                            if (pair.creatures[0] != null)
+                            {
+                                pair.MovePair (AIResponse);
+                            }
+                            else
+                            {
+                                pair.MoveSingle(pair.creatures[1], AIResponse, moveSpaces);
+                            }
                             break;
                         }
                     }
@@ -277,9 +293,22 @@ public class Kittyv2 : LogicBase
                 {
                     if (pair.ContainsCreature (closestFriendly))
                     {
-                        if (!pair.AttackAsPair (AIResponse))
+                        //---if first creature still exists---
+                        if (pair.creatures[0] != null)
                         {
-                            pair.MovePair (AIResponse);
+                            if (!pair.AttackAsPair (AIResponse))
+                            {
+                                pair.MovePair (AIResponse);
+                            }
+                        }
+                        else
+                        {
+                            //---------attempt to attack with second creature-----------
+                            if (!pair.AttackSingle(pair.creatures[1], AIResponse))
+                            {
+                                //--------else attempt to move second creature------------
+                                pair.MoveSingle(pair.creatures[1], AIResponse, openNodes);
+                            }
                         }
                         break;
                     }
@@ -426,6 +455,31 @@ public class AttackingPair
 
         return validAttack;
     }
+
+    public bool AttackSingle(CreatureBase _creature, AIResponseManager responseManager)
+    {
+        if (responseManager.Attack(creatures[1], 1))
+        {
+            return true;           
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool MoveSingle(CreatureBase _creature, AIResponseManager responseManager, int _Range)
+    {
+        if (responseManager.Move(creatures[1], _Range))
+        {
+            return true;           
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public bool ContainsCreature (CreatureBase creaturetoTest)
     {
         for (int i = 0; i < creatures.Length; i++)
