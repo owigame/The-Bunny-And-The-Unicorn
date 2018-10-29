@@ -395,7 +395,14 @@ public class AttackingPair
 
         if (spawnProg == 2)
         {
-            success = responseManager.Spawn (pairTypes[1], _Lane);
+            if (_unicorns < _bunnies)
+            {
+                success = responseManager.Spawn (pairTypes[0], _Lane);
+            }
+            else
+            {
+                success = responseManager.Spawn (pairTypes[1], _Lane);
+            }
         }
 
         if (spawnProg == 3)
