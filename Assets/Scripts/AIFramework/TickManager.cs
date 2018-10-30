@@ -25,6 +25,11 @@ public class TickManager : MonoBehaviour {
    [SerializeField] private IResponse[] P1, P2;
     int ResponsesRecieved = 0;
 
+    public void ResetTickManager(){
+        tickState = TickState.AwaitingResponses;
+        StopAllCoroutines();
+    }
+
     public void OnResponse (IResponse[] ResponseChain) {
         switch (tickState) {
             case TickState.AwaitingResponses:

@@ -16,19 +16,33 @@ public class UIManager : MonoBehaviour {
 	public Text playe1Name;
 	public Text playe2Name;
 	public Text roundCountText;
-	int roundCount = 0;
+	public Button btnNextPlayers;
 
-	public void Winner (string name) {
+	public void Winner (string name, bool tie = false) {
 		if (winText != null) {
 			winText.transform.parent.gameObject.SetActive (true);
-			winText.text = name + " wins!";
+			winText.text = name + (!tie ? " wins!" : "Tie");
 		}
+	}
+	public void WinnerReset () {
+		if (winText != null) {
+			winText.transform.parent.gameObject.SetActive (false);
+			UpdateScore();
+		}
+	}
+
+	public void EndGame () {
+		Debug.LogWarning ("$$$$ GAME OVER $$$$");
+		btnNextPlayers.gameObject.SetActive (false);
+	}
+
+	public void NextRound () {
+		playe1Name.text = TournamentManager._instance.P1.name;
+		playe2Name.text = TournamentManager._instance.P2.name;
 	}
 
 	void Awake () {
 		_instance = this;
-		playe1Name.text = TournamentManager._instance.P1.name;
-		playe2Name.text = TournamentManager._instance.P2.name;
 	}
 
 	private void Start () {
@@ -36,8 +50,7 @@ public class UIManager : MonoBehaviour {
 	}
 
 	public void OnTick (IBoardState[] data) {
-		roundCount++;
-		if (roundCountText != null) roundCountText.text = roundCount.ToString();
+		if (roundCountText != null) roundCountText.text = TournamentManager._instance.roundCount.ToString ();
 	}
 
 	public void UpdateScore () {
