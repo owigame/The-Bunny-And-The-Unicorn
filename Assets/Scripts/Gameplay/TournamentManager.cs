@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using EasyButtons;
 using Logging;
 using UnityEngine;
 
@@ -90,6 +91,13 @@ public class TournamentManager : MonoBehaviour {
         OnTick.Invoke (data);
 
         // LogStack.Log ("Tournament Manager initialised", LogLevel.System);
+    }
+
+    [Button]
+    void SwitchPlayers(){
+        AI.LogicBase temp1 = P1;
+        P1 = P2;
+        P2 = temp1;
     }
 
     void LaneReady () {
