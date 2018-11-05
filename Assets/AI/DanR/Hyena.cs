@@ -42,10 +42,10 @@ namespace AI.DanR
                 while (AIResponse.Tokens > 0 && maxCycles > 0)
                 {
 
-//                    if (CheckIfAlliesAreInAttackingDistance())
-//                    {
-//                        continue;
-//                    }
+                    if (CheckIfAlliesAreInAttackingDistance())
+                    {
+                        continue;
+                    }
                     
                     
                     
@@ -135,8 +135,17 @@ namespace AI.DanR
                 {
                     if (creature.ActiveLaneNode.laneManager.SearchRange(0, creature.ActiveLaneNode, this) != null && creature != null)
                     {
-                        AIResponse.Attack(creature);
-                        return true;
+                        var list = creature.ActiveLaneNode.laneManager.SearchRange(0, creature.ActiveLaneNode, this);
+
+                        foreach (var VARIABLE in list)
+                        {
+                            if (VARIABLE.Owner != this)
+                            {
+                                AIResponse.Attack(VARIABLE);
+                                return true;
+                            }
+                        }
+      
                     }                
                 }
 
