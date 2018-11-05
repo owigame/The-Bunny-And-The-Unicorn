@@ -9,16 +9,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b383c7a24d528544b0d62cae87f067b, type: 3}
-  m_Name: ActionEvolved-v1b
+  m_Name: Action-Elite
   m_EditorClassIdentifier: 
-  _Creatures: []
+  _Creatures:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _PlayerNumber: 1
   _RightFacing: 1
   _Start: 1
-  B_Init: 0
+  B_Init: 1
   B_StartLeft: 1
-  B_Bunnies: 0
-  iDefTokenThreshold: 3
-  iAttackTokenThreshold: 7
-  iOffensiveThreshold: 5
+  iDefTokenThreshold: 4
+  iAttackTokenThreshold: 12
+  iOffensiveThreshold: 8
   iPointPushThreshold: 5
+  I_TurnsBetweenChecks: 3
+  I_TurnsBetweenChanges: 7
+  I_TurnsToTrack: 7
+  I_PointValue: 30
+  I_ProgressValue: 2
+  I_TroopValue: 4
+  I_TokenValue: 3
+  ELearningState: 4
+  EAdaption: 3
