@@ -1,4 +1,5 @@
-﻿public class ActionResponse : IResponse {
+﻿[System.Serializable]
+public class ActionResponse : IResponse {
     private int _lane;
     private CreatureBase _creatureBase;
     private AI.LogicBase _logicBase;

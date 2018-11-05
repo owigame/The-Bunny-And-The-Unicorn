@@ -9,6 +9,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: Bunya
+  m_Name: Pattern_Variety
   m_EditorClassIdentifier: Assembly-CSharp::LanePattern
-  PatternDefinition: 010000000100000001000000
+  PatternDefinition: 

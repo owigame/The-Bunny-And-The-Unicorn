@@ -9,18 +9,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b383c7a24d528544b0d62cae87f067b, type: 3}
-  m_Name: DanielG_ActionV3
+  m_Name: ActionEvolved-v1b
   m_EditorClassIdentifier: 
-  _Creatures:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  _PlayerNumber: 2
-  _RightFacing: 0
-  B_Init: 1
-  B_StartLeft: 0
+  _Creatures: []
+  _PlayerNumber: 1
+  _RightFacing: 1
+  _Start: 1
+  B_Init: 0
+  B_StartLeft: 1
   B_Bunnies: 0
   iDefTokenThreshold: 3
   iAttackTokenThreshold: 7
-  iOffenseiveThreshold: 9
+  iOffensiveThreshold: 5
+  iPointPushThreshold: 5

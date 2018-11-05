@@ -86,6 +86,32 @@ public class LaneManager : MonoBehaviour, IBoardState {
         return openNodes;
     }
 
+    public int GetMaxNodes (LaneNode currentNode, bool rightFacing, int range) {
+        int openNodes = 0;
+        // if (rightFacing) {
+        //     for (int i = 1; i < currentNode.laneManager.allNodes.Count; i++) {
+        //         LaneNode nextNode = allNodes[allNodes.IndexOf (currentNode) + i];
+        //         if (nextNode.activeCreature == null) {
+        //             openNodes ++;
+        //         }
+        //     }
+        // }
+
+        for (int i = 1; i < currentNode.laneManager.allNodes.Count; i++) {
+            LaneNode nextNode = allNodes[Mathf.Clamp (allNodes.IndexOf (currentNode) + (rightFacing ? i : -i), 0, currentNode.laneManager.allNodes.Count - 1)];
+            if (nextNode != null && nextNode.activeCreature == null) {
+                openNodes++;
+            } else if (nextNode.activeCreature != null) {
+                break;
+            }
+        }
+        return Mathf.Clamp (openNodes, 0, range);
+    }
+
+    public int GetNodeDistance (LaneNode firstNode, LaneNode secondNode) {
+        return Mathf.Abs(firstNode.laneManager.allNodes.IndexOf (firstNode) - firstNode.laneManager.allNodes.IndexOf (secondNode));
+    }
+
     public LaneNode GetNextLaneNode (LaneNode currentNode, bool rightFacing, int range, bool forced = false) {
         //TODO: Something not right
         //If the next block has a creature in it, fail the move
@@ -136,6 +162,11 @@ public class LaneManager : MonoBehaviour, IBoardState {
 
     public int GetNodeCount {
         get { return allNodes.Count; }
+    }
+
+    public LaneNode PreviousNode (LaneNode nextNode, LogicBase owner) {
+        nextNode = nextNode.laneManager.allNodes[nextNode.laneManager.allNodes.IndexOf (nextNode) + (owner._RightFacing ? -1 : 1)];
+        return nextNode;
     }
 
 }
