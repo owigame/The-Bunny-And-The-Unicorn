@@ -1,5 +1,5 @@
 /*
-This code runs extreamly slow in the method FindFrendlyWithClosestEnemies need an alternative thos this method.
+Best Version so far
 */
 
 
@@ -41,6 +41,15 @@ namespace AI.DanR
 
                 while (AIResponse.Tokens > 0 && maxCycles > 0)
                 {
+
+//                    if (CheckIfAlliesAreInAttackingDistance())
+//                    {
+//                        continue;
+//                    }
+                    
+                    
+                    
+                    
                     SpawnEnemy();
 
 
@@ -120,6 +129,20 @@ namespace AI.DanR
                 AIResponse.FinalizeResponse();
             }
 
+            private bool CheckIfAlliesAreInAttackingDistance()
+            {
+                foreach (var creature in _Creatures)
+                {
+                    if (creature.ActiveLaneNode.laneManager.SearchRange(0, creature.ActiveLaneNode, this) != null && creature != null)
+                    {
+                        AIResponse.Attack(creature);
+                        return true;
+                    }                
+                }
+
+                return false;
+            }
+
             private void SpawnEnemy()
             {
                 // Round robin spawning
@@ -194,6 +217,10 @@ namespace AI.DanR
 
                 if (AIResponse.Move(allyWithMostProgress, moveSpaces))
                 {
+                }
+                else if(AIResponse.Move(_Creatures[_Creatures.Count -1], 2))
+                {
+                    
                 }
             }
         }
