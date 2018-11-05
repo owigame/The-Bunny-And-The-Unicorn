@@ -22,8 +22,9 @@ public class TickManager : MonoBehaviour {
     #endregion
 
     public TickState tickState;
-   [SerializeField] private IResponse[] P1, P2;
+    [SerializeField] private IResponse[] P1, P2;
     int ResponsesRecieved = 0;
+    bool alternateTurns = false;
 
     public void OnResponse (IResponse[] ResponseChain) {
         switch (tickState) {
@@ -56,7 +57,12 @@ public class TickManager : MonoBehaviour {
             case TickState.PerformingResponses:
                 LogStack.Log ("Performing Responses", LogLevel.Stack);
                 if (P1 != null && P2 != null) {
-                    StartCoroutine (PerformActions (P1.Concat (P2).ToArray ()));
+                    alternateTurns = !alternateTurns;
+                    if (alternateTurns){
+                        StartCoroutine (PerformActions (P1.Concat (P2).ToArray ()));
+                    } else {
+                        StartCoroutine (PerformActions (P2.Concat (P1).ToArray ()));
+                    }
                 } else if (P1 != null) {
                     StartCoroutine (PerformActions (P1));
                 } else {
