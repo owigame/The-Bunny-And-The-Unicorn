@@ -280,7 +280,7 @@ public class DanielG_Action : LogicBase
         int iCount = 0;
         foreach (LaneManager lane in TournamentManager._instance.lanes)
         {
-            if (lane.GetFriendliesInLane(this).Count == 0)
+            if (lane.GetFriendliesInLane(this).Count == 0 || lane.startNode.activeCreature == null)
             {
                 if (lane.GetEnemiesInLane(this).Count > iBiggestThreat)
                 {
@@ -570,7 +570,7 @@ public class DanielG_Action : LogicBase
             if (iDefTokenThreshold > 0) iDefTokenThreshold--;
             iOffensiveThreshold++;
         }
-        if (iAttackTokenThreshold > 0) iAttackTokenThreshold--;
+        iOffensiveThreshold++;
     }
 
     private void IncreaseOffense(bool b_Alot = false)
@@ -580,7 +580,7 @@ public class DanielG_Action : LogicBase
             if (iOffensiveThreshold > 0) iOffensiveThreshold--;
             iDefTokenThreshold++;
         }
-        iAttackTokenThreshold++;
+        if (iOffensiveThreshold > 0) iOffensiveThreshold--;
     }
 
     private float UpdateProgressData (List<CreatureBase> creatures)

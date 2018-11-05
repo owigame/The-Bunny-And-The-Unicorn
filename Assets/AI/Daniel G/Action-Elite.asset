@@ -17,14 +17,15 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  _PlayerNumber: 1
-  _RightFacing: 1
+  - {fileID: 0}
+  _PlayerNumber: 2
+  _RightFacing: 0
   _Start: 1
   B_Init: 1
-  B_StartLeft: 1
+  B_StartLeft: 0
   iDefTokenThreshold: 4
-  iAttackTokenThreshold: 12
-  iOffensiveThreshold: 8
+  iAttackTokenThreshold: 7
+  iOffensiveThreshold: 4
   iPointPushThreshold: 5
   I_TurnsBetweenChecks: 3
   I_TurnsBetweenChanges: 7
@@ -33,5 +34,5 @@ MonoBehaviour:
   I_ProgressValue: 2
   I_TroopValue: 4
   I_TokenValue: 3
-  ELearningState: 4
-  EAdaption: 3
+  ELearningState: 2
+  EAdaption: 2
