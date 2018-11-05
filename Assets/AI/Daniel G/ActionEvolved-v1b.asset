@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Name: ActionEvolved-v1b
   m_EditorClassIdentifier: 
   _Creatures: []
-  _PlayerNumber: 2
-  _RightFacing: 0
+  _PlayerNumber: 1
+  _RightFacing: 1
   _Start: 1
   B_Init: 0
-  B_StartLeft: 0
+  B_StartLeft: 1
   B_Bunnies: 0
   iDefTokenThreshold: 3
   iAttackTokenThreshold: 7
-  iOffenseiveThreshold: 9
+  iOffensiveThreshold: 5
   iPointPushThreshold: 5
