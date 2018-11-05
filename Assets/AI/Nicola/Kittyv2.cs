@@ -231,7 +231,15 @@ public class Kittyv2 : LogicBase
                         {
                             if (pair.ContainsCreature (toMove))
                             {
-                                pair.AttackAsPair (AIResponse);
+                                //---if first creature still exists---
+                                if (pair.creatures[0] != null)
+                                {
+                                    pair.AttackAsPair (AIResponse);
+                                }
+                                else
+                                {
+                                    pair.AttackSingle(pair.creatures[1], AIResponse);
+                                }
                                 break;
                             }
                         }
@@ -248,7 +256,15 @@ public class Kittyv2 : LogicBase
                     {
                         if (pair.ContainsCreature (toMove))
                         {
-                            pair.MovePair (AIResponse);
+                            //---if first creature still exists---
+                            if (pair.creatures[0] != null)
+                            {
+                                pair.MovePair (AIResponse);
+                            }
+                            else
+                            {
+                                pair.MoveSingle(pair.creatures[1], AIResponse, moveSpaces);
+                            }
                             break;
                         }
                     }
@@ -276,9 +292,22 @@ public class Kittyv2 : LogicBase
                 {
                     if (pair.ContainsCreature (closestFriendly))
                     {
-                        if (!pair.AttackAsPair (AIResponse))
+                        //---if first creature still exists---
+                        if (pair.creatures[0] != null)
                         {
-                            pair.MovePair (AIResponse);
+                            if (!pair.AttackAsPair (AIResponse))
+                            {
+                                pair.MovePair (AIResponse);
+                            }
+                        }
+                        else
+                        {
+                            //---------attempt to attack with second creature-----------
+                            if (!pair.AttackSingle(pair.creatures[1], AIResponse))
+                            {
+                                //--------else attempt to move second creature------------
+                                pair.MoveSingle(pair.creatures[1], AIResponse, openNodes);
+                            }
                         }
                         break;
                     }
@@ -306,11 +335,11 @@ public class AttackingPair
     public AttackingPair (int thelane, LogicBase Owner)
     {
         //  Debug.Log ("-----Create Pair-----");
-        Lane = thelane;
+        _Lane = thelane;
         owner = Owner;
     }
     LogicBase owner;
-    public int Lane;
+    public int _Lane;
     public int spawnProg = 0;
     public CreatureBase[] creatures = new CreatureBase[2] { null, null };
 
@@ -319,16 +348,44 @@ public class AttackingPair
     public void SpawnPair (AIResponseManager responseManager)
     {
         bool success = false;
+        int _bunnies = 0;
+        int _unicorns = 0;
 
+        //---before spawning pair...get amount of bunnies and unicorns in lane to spawn...if more bunnies, start with unicorn..or two uniconrs?----
+        List<CreatureBase> _enemies = TournamentManager._instance.lanes[_Lane - 1].GetEnemiesInLane(owner);
+        if (_enemies != null)
+        {
+            foreach (CreatureBase creature in _enemies)
+            {
+                if (creature.CreatureType == Spawnable.Bunny)
+                {
+                    _bunnies++;
+                }
+                else
+                {
+                    _unicorns++;
+                }
+            }
+        }
+
+       
         Debug.Log ("----SpawnPair--------");
+
         if (spawnProg == 0)
         {
-            success = responseManager.Spawn (pairTypes[0], Lane);
+             if (_unicorns < _bunnies)
+             {
+                success = responseManager.Spawn (pairTypes[1], _Lane);
+             }
+             else
+             {
+                success = responseManager.Spawn (pairTypes[0], _Lane);
+             }
         }
 
         if (spawnProg == 1)
         {
-            creatures[0] = TournamentManager._instance.lanes[Lane - 1].GetFirstLaneNode (owner).activeCreature;
+            creatures[0] = TournamentManager._instance.lanes[_Lane - 1].GetFirstLaneNode (owner).activeCreature;
             if (creatures[0] != null)
             {
                 success = responseManager.Move (creatures[0]);
@@ -337,12 +394,19 @@ public class AttackingPair
 
         if (spawnProg == 2)
         {
-            success = responseManager.Spawn (pairTypes[1], Lane);
+            if (_unicorns < _bunnies)
+            {
+                success = responseManager.Spawn (pairTypes[0], _Lane);
+            }
+            else
+            {
+                success = responseManager.Spawn (pairTypes[1], _Lane);
+            }
         }
 
         if (spawnProg == 3)
         {
-            creatures[1] = TournamentManager._instance.lanes[Lane - 1].GetFirstLaneNode (owner).activeCreature;
+            creatures[1] = TournamentManager._instance.lanes[_Lane - 1].GetFirstLaneNode (owner).activeCreature;
             success = true;
         }
 
@@ -425,6 +489,31 @@ public class AttackingPair
 
         return validAttack;
     }
+
+    public bool AttackSingle(CreatureBase _creature, AIResponseManager responseManager)
+    {
+        if (responseManager.Attack(creatures[1], 1))
+        {
+            return true;           
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool MoveSingle(CreatureBase _creature, AIResponseManager responseManager, int _Range)
+    {
+        if (responseManager.Move(creatures[1], _Range))
+        {
+            return true;           
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public bool ContainsCreature (CreatureBase creaturetoTest)
     {
         for (int i = 0; i < creatures.Length; i++)
