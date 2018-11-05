@@ -16,13 +16,18 @@ public class Jarvis : LogicBase
 
         int cnt = 0;
 
-        if (saving && fresh)
+        if (saving)
             if (tokens > 30)
             {
                 saving = false;
                 fresh = false;
             }
-                
+              
+        foreach(LaneManager lane in TournamentManager._instance.lanes)
+        {
+            if(lane.GetEnemiesInLane(this).Count > 0)
+                saving = false;
+        }
 
         if (!saving)
         {
@@ -52,65 +57,89 @@ public class Jarvis : LogicBase
             enemiesinlane = l.GetEnemiesInLane(this).Count;
             friendliesinlane = l.GetFriendliesInLane(this).Count;
 
-            if (enemiesinlane == 0 && friendliesinlane == 0)
-            {
+            if (mostImportant == null)
                 mostImportant = l;
-            }
             else
-            if (enemiesinlane > 0 && friendliesinlane == 0)
             {
-                mostImportant = l;
-            }
-            else
-            if(enemiesinlane == 0 && friendliesinlane > 0)
-            {
-                if(!(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0))
+                if (enemiesinlane > 0 && friendliesinlane == 0)
+                {
                     mostImportant = l;
-            }
-            else
-            {
-                if (!(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count > 0))
+                }
+                else
+                if (enemiesinlane == 0 && friendliesinlane > 0)
+                {
+                    if (!(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0))
+                        mostImportant = l;
+                }
+                else    
+                if (enemiesinlane == 0 && friendliesinlane == 0)
+                {
                     mostImportant = l;
+                }
+                else
+                {
+                    if (!(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count > 0))
+                        mostImportant = l;
+                }
             }
-
             cnt++;
         }
 
-        enemiesinlane = mostImportant.GetEnemiesInLane(this).Count;
-        friendliesinlane = mostImportant.GetFriendliesInLane(this).Count;
-        cnt = mostImportant.LaneNumber - 1;
+        Debug.Log("Most important lane is: " + mostImportant.LaneNumber);
 
-        if (enemiesinlane == 0 && friendliesinlane == 0)
+        if (mostImportant != null)
         {
-            if (Random.Range(0, 3) >= 1)
+            enemiesinlane = mostImportant.GetEnemiesInLane(this).Count;
+            friendliesinlane = mostImportant.GetFriendliesInLane(this).Count;
+            cnt = mostImportant.LaneNumber - 1;
+
+            if (enemiesinlane == 0 && friendliesinlane == 0)
             {
-                AIResponse.Spawn(Spawnable.Unicorn, cnt + 1);
+                if (Random.Range(0, 3) >= 1)
+                {
+                    AIResponse.Spawn(Spawnable.Unicorn, cnt + 1);
+                }
+                else
+                {
+                    AIResponse.Spawn(Spawnable.Bunny, cnt + 1);
+                }
+            }
+            else
+            if(friendliesinlane == 0)
+            {
+                if (Random.Range(0, 3) >= 1)
+                {
+                    AIResponse.Spawn(Spawnable.Unicorn, cnt + 1);
+                }
+                else
+                {
+                    AIResponse.Spawn(Spawnable.Bunny, cnt + 1);
+                }
             }
             else
             {
-                AIResponse.Spawn(Spawnable.Bunny, cnt + 1);
-            }
-        }
-        else
-        {
-            CreatureBase highestprog = null;
-            foreach (CreatureBase creat in mostImportant.GetFriendliesInLane(this))
-            {
-                if (creat.LaneProgress > highestprog.LaneProgress || highestprog == null)
+                CreatureBase highestprog = null;
+                foreach (CreatureBase creat in mostImportant.GetFriendliesInLane(this))
                 {
-                    highestprog = creat;
+                    if (highestprog == null)
+                        highestprog = creat;
+                    else
+                    if (creat.LaneProgress > highestprog.LaneProgress)
+                    {
+                        highestprog = creat;
+                    }
                 }
+
+                if(highestprog != null)
+                    MoveAtk(highestprog);
             }
-
-            MoveAtk(highestprog);
         }
-
 
     }
 
     public void MoveAtk(CreatureBase creat)
     {
-
+        Debug.Log("Moving or attacking: " + creat.name + ", in lane: " + creat.LaneIndex.ToString());
         if (creat != null)
         {
             bool TargetInRange = false;
