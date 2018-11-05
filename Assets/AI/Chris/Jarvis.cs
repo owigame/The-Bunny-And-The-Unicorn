@@ -16,74 +16,24 @@ public class Jarvis : LogicBase
 
         int cnt = 0;
 
-        if(fresh)
-            while (cnt < 2)
-                for (int i = 0; i < 2; i++)
-                {
-                    if (TournamentManager._instance.lanes[i].GetEnemiesInLane(this).Count > 0) 
-                    {
-                        saving = false;
-                        fresh = false;
-                    }
-
-                    cnt++;
-                }
-
-
-        if (!fresh)
-            if (tokens >= 3)
-                saving = false;
-
         if (saving)
             if (tokens > 30)
             {
                 saving = false;
                 fresh = false;
             }
-                
+              
+        foreach(LaneManager lane in TournamentManager._instance.lanes)
+        {
+            if(lane.GetEnemiesInLane(this).Count > 0)
+                saving = false;
+        }
 
         if (!saving)
         {
             while (AIResponse.Tokens > 0 && maxCycles > 0)
             {
-                if (_Creatures.Count > 7)
-                {
-                    CreatureBase emptylanecreat = null;
-                    CreatureBase creatureCanAttack = null;
-
-                    foreach (CreatureBase creatur in _Creatures)
-                    {
-                        if (creatur.ActiveLaneNode.laneManager.GetEnemiesInLane(this).Count == 0)
-                        {
-                            emptylanecreat = creatur;
-                        }
-                        else
-                        if (creatur != null && creatur.ActiveLaneNode.laneManager.SearchRange((int)creatur.Range, creatur.ActiveLaneNode, this).Count > 0)
-                            creatureCanAttack = creatur;
-                    } 
-
-                    if(emptylanecreat != null)
-                    {
-                        MoveAtk(emptylanecreat);
-                    }
-
-                    if (creatureCanAttack != null)
-                        MoveAtk(creatureCanAttack);
-                }
-
-                cnt = 0;
-                while (cnt < 2)
-                    for (int i = 0; i < 2; i++)
-                    {
-                        if (TournamentManager._instance.lanes[i].GetFriendliesInLane(this).Count == 0)
-                        {
-                            DoSpawn(i);
-                        }
-                        cnt++;
-                    }
-
-
-                DoSpawn(randomlane: true);
+                DoSpawn();
 
                 maxCycles--;
             }
@@ -91,8 +41,6 @@ public class Jarvis : LogicBase
         }
         //IResponse[] responses = AIResponse.QueryResponse();
 
-        if (tokens <= 3)
-            saving = true;
 
         AIResponse.FinalizeResponse();
     }
@@ -100,44 +48,98 @@ public class Jarvis : LogicBase
     //Do spawn is zero indexed but uses spawing like it needsit
     public void DoSpawn(int lane = 0, bool randomlane = false)
     {
-        if (randomlane)
-            lane = Random.Range(1, TournamentManager._instance.lanes.Count);
-
-        LogStack.Log("Do Spawn. Lane: " + lane + ", Is Random: " + randomlane.ToString(), Logging.LogLevel.Debug);
-
-        if (Random.Range(0, 3) != 1)
+        var enemiesinlane = 0;
+        var friendliesinlane = 0;
+        int cnt = 0;
+        LaneManager mostImportant = null;
+        foreach (LaneManager l in TournamentManager._instance.lanes)
         {
-            LogStack.Log("Attempting spawn: Unicorn", Logging.LogLevel.Debug);
-            if (!AIResponse.Spawn(Spawnable.Unicorn, lane + 1))
+            enemiesinlane = l.GetEnemiesInLane(this).Count;
+            friendliesinlane = l.GetFriendliesInLane(this).Count;
+
+            if (mostImportant == null)
+                mostImportant = l;
+            else
             {
-                LogStack.Log("Couldn't spawn Unicorn in Lane " + lane, Logging.LogLevel.Debug);
-                if (_Creatures.Count > 0)
+                if (enemiesinlane > 0 && friendliesinlane == 0)
                 {
-                    LogStack.Log("Choosing random creature to move or attack", Logging.LogLevel.Debug);
-                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count - 1)];
-                    MoveAtk(randomCreature);
+                    mostImportant = l;
+                }
+                else
+                if (enemiesinlane == 0 && friendliesinlane > 0)
+                {
+                    if (!(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0))
+                        mostImportant = l;
+                }
+                else    
+                if (enemiesinlane == 0 && friendliesinlane == 0)
+                {
+                    mostImportant = l;
+                }
+                else
+                {
+                    if (!(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count > 0))
+                        mostImportant = l;
                 }
             }
+            cnt++;
         }
-        else
+
+        Debug.Log("Most important lane is: " + mostImportant.LaneNumber);
+
+        if (mostImportant != null)
         {
-            LogStack.Log("Attempting spawn: Bunny", Logging.LogLevel.Debug);
-            if (!AIResponse.Spawn(Spawnable.Bunny, lane + 1))
+            enemiesinlane = mostImportant.GetEnemiesInLane(this).Count;
+            friendliesinlane = mostImportant.GetFriendliesInLane(this).Count;
+            cnt = mostImportant.LaneNumber - 1;
+
+            if (enemiesinlane == 0 && friendliesinlane == 0)
             {
-                LogStack.Log("Couldn't spawn Bunny in Lane " + lane, Logging.LogLevel.Debug);
-                if (_Creatures.Count > 0)
+                if (Random.Range(0, 3) >= 1)
                 {
-                    LogStack.Log("Choosing random creature to move or attack", Logging.LogLevel.Debug);
-                    CreatureBase randomCreature = _Creatures[Random.Range(0, _Creatures.Count)];
-                    MoveAtk(randomCreature);
+                    AIResponse.Spawn(Spawnable.Unicorn, cnt + 1);
+                }
+                else
+                {
+                    AIResponse.Spawn(Spawnable.Bunny, cnt + 1);
                 }
             }
+            else
+            if(friendliesinlane == 0)
+            {
+                if (Random.Range(0, 3) >= 1)
+                {
+                    AIResponse.Spawn(Spawnable.Unicorn, cnt + 1);
+                }
+                else
+                {
+                    AIResponse.Spawn(Spawnable.Bunny, cnt + 1);
+                }
+            }
+            else
+            {
+                CreatureBase highestprog = null;
+                foreach (CreatureBase creat in mostImportant.GetFriendliesInLane(this))
+                {
+                    if (highestprog == null)
+                        highestprog = creat;
+                    else
+                    if (creat.LaneProgress > highestprog.LaneProgress)
+                    {
+                        highestprog = creat;
+                    }
+                }
+
+                if(highestprog != null)
+                    MoveAtk(highestprog);
+            }
         }
+
     }
 
     public void MoveAtk(CreatureBase creat)
     {
-
+        Debug.Log("Moving or attacking: " + creat.name + ", in lane: " + creat.LaneIndex.ToString());
         if (creat != null)
         {
             bool TargetInRange = false;
