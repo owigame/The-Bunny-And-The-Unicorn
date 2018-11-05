@@ -59,6 +59,7 @@ public class DanielG_Action : LogicBase
     private int I_EnemyProgress = 0;
     private float F_AverageProgress = 0f;
     private float F_AverageEnemyProgress = 0f;
+    private bool B_SuperDefense = false;
     private Queue<float> Q_RoundPerformances = new Queue<float>();
     private enum EPerformanceState { VeryBad, Bad, Normal, Good, VeryGood }
     [SerializeField]
@@ -167,6 +168,7 @@ public class DanielG_Action : LogicBase
         iAttackTokenThreshold = 7;
         iOffensiveThreshold = 9;
         iPointPushThreshold = 5;
+        B_SuperDefense = false;
         LI_ActiveTroops.Clear();
         LI_LaneAdvantage.Clear();
         LI_LaneTypes.Clear();
@@ -280,7 +282,7 @@ public class DanielG_Action : LogicBase
         int iCount = 0;
         foreach (LaneManager lane in TournamentManager._instance.lanes)
         {
-            if (lane.GetFriendliesInLane(this).Count == 0 || lane.startNode.activeCreature == null)
+            if (lane.GetFriendliesInLane(this).Count == 0 || (B_SuperDefense && lane.startNode.activeCreature == null))
             {
                 if (lane.GetEnemiesInLane(this).Count > iBiggestThreat)
                 {
@@ -567,19 +569,23 @@ public class DanielG_Action : LogicBase
     {
         if (b_Alot)
         {
+            B_SuperDefense = true;
             if (iDefTokenThreshold > 0) iDefTokenThreshold--;
             iOffensiveThreshold++;
         }
+        if (iAttackTokenThreshold > 3) iAttackTokenThreshold--;
         iOffensiveThreshold++;
     }
 
     private void IncreaseOffense(bool b_Alot = false)
     {
+        B_SuperDefense = false;
         if (b_Alot)
         {
             if (iOffensiveThreshold > 0) iOffensiveThreshold--;
             iDefTokenThreshold++;
         }
+        iAttackTokenThreshold++;
         if (iOffensiveThreshold > 0) iOffensiveThreshold--;
     }
 
