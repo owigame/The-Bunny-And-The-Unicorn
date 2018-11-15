@@ -57,31 +57,54 @@ public class Jarvis : LogicBase
             enemiesinlane = l.GetEnemiesInLane(this).Count;
             friendliesinlane = l.GetFriendliesInLane(this).Count;
 
+            bool mostImportantNeedFriendlies = (mostImportant != null && mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0);
+            bool mostImportantCanPush = (mostImportant != null && mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count > 0);
+            bool mostImportantIsEmpty = (mostImportant != null && mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0);
+
+            if(mostImportant != null)
+                Debug.Log("Lane " + mostImportant.LaneNumber + " needs friendlies: " + mostImportantNeedFriendlies.ToString() + " and Can push: " + mostImportantCanPush.ToString() + " and is empty is: " + mostImportantIsEmpty.ToString());
+
+            CreatureBase highestprog = null;
+            foreach (CreatureBase creat in l.GetEnemiesInLane(this))
+            {
+                if (highestprog == null)
+                    highestprog = creat;
+                else
+                if (creat.LaneProgress > highestprog.LaneProgress)
+                {
+                    highestprog = creat;
+                }
+
+                if (highestprog.LaneProgress < 7)
+                    highestprog = null;
+                    
+            }
+
+            if(highestprog != null)
+            {
+                mostImportant = highestprog.ActiveLaneNode.laneManager;
+            }
+            else
+            if (!mostImportantNeedFriendlies && (enemiesinlane > 0 && friendliesinlane == 0))
+            {
+                mostImportant = l;
+            }
+            else
+            if (!(mostImportantCanPush && mostImportantNeedFriendlies) && (enemiesinlane == 0 && friendliesinlane > 0))
+            {
+                mostImportant = l;
+            }
+            else
+            if (!(mostImportantCanPush && mostImportantNeedFriendlies && mostImportantIsEmpty) && (enemiesinlane == 0 && friendliesinlane == 0))
+            {
+                mostImportant = l;
+            }
+            else
             if (mostImportant == null)
                 mostImportant = l;
-            else
-            {
-                if (enemiesinlane > 0 && friendliesinlane == 0)
-                {
-                    mostImportant = l;
-                }
-                else
-                if (enemiesinlane == 0 && friendliesinlane > 0)
-                {
-                    if (!(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0))
-                        mostImportant = l;
-                }
-                else    
-                if (enemiesinlane == 0 && friendliesinlane == 0)
-                {
-                    mostImportant = l;
-                }
-                else
-                {
-                    if (!(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count > 0 && mostImportant.GetFriendliesInLane(this).Count == 0) && !(mostImportant.GetEnemiesInLane(this).Count == 0 && mostImportant.GetFriendliesInLane(this).Count > 0))
-                        mostImportant = l;
-                }
-            }
+                        
+                        
+            
             cnt++;
         }
 
@@ -139,7 +162,7 @@ public class Jarvis : LogicBase
 
     public void MoveAtk(CreatureBase creat)
     {
-        Debug.Log("Moving or attacking: " + creat.name + ", in lane: " + creat.LaneIndex.ToString());
+        Debug.Log("Moving or attacking: " + creat.name + ", in lane: " + creat.ActiveLaneNode.laneManager.LaneNumber.ToString());
         if (creat != null)
         {
             bool TargetInRange = false;
