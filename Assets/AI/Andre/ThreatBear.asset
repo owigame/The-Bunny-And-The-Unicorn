@@ -8,7 +8,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: Pattern_variety 1
-  m_EditorClassIdentifier: Assembly-CSharp::LanePattern
-  PatternDefinition: 0000000001000000
+  m_Script: {fileID: 11500000, guid: b38e497cc329f4d4e910b641025a12d1, type: 3}
+  m_Name: ThreatBear
+  m_EditorClassIdentifier: 
+  _Creatures: []
+  _PlayerNumber: 0
+  _RightFacing: 0
+  _Start: 1
+  LanePattern: {fileID: 0}
+  Threshhold: 3

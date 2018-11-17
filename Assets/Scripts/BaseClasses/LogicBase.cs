@@ -31,8 +31,9 @@ namespace AI {
 
             _AIResponder = new AIResponseManager (this);
             TournamentManager._instance.OnTick.AddListener (_AIResponder.onTick);
+            Init();
         }
-
+        public virtual void Init() { }
         public CreatureBase GetNearestEnemy (LaneManager[] Board) {
             CreatureBase[] NearestEnemies = GetNearestEnemies (Board);
             if (NearestEnemies.Length > 0) {
