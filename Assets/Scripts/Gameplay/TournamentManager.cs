@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EasyButtons;
 using Logging;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TournamentManager : MonoBehaviour {
     #region  Singleton management
@@ -32,6 +33,7 @@ public class TournamentManager : MonoBehaviour {
     public TickEvent OnTick;
 
     public delegate void CreatureEvents(CreatureBase creature);
+    [HideInInspector]public AIEvent WinnerEvent;
     public static CreatureEvents OnCreatureDead;
 
     [Header ("Player Setup")]
@@ -107,6 +109,7 @@ public class TournamentManager : MonoBehaviour {
     void Winner (AI.LogicBase winner) {
         Time.timeScale = 0;
         UIManager._instance.Winner(winner.name);
+        WinnerEvent.Invoke(winner);
     }
 
     public void ScoreUpdate (CreatureBase creature) {
@@ -130,3 +133,4 @@ public class TournamentManager : MonoBehaviour {
     }
 
 }
+public class AIEvent : UnityEvent<AI.LogicBase> { }

@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Pattern_a
   m_EditorClassIdentifier: Assembly-CSharp::LanePattern
-  PatternDefinition: 
+  PatternDefinition: 0000000001000000

@@ -11,9 +11,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b38e497cc329f4d4e910b641025a12d1, type: 3}
   m_Name: ThreatBear
   m_EditorClassIdentifier: 
-  _Creatures: []
-  _PlayerNumber: 0
-  _RightFacing: 0
+  _Creatures:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _PlayerNumber: 1
+  _RightFacing: 1
   _Start: 1
-  LanePattern: {fileID: 0}
-  Threshhold: 3
+  LanePattern: {fileID: 11400000, guid: 81a90db74035b724894f7db82a57cec6, type: 2}
+  Threshhold: 2

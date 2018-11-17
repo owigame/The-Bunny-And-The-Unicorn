@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour {
 	public Text playe1Name;
 	public Text playe2Name;
 	public Text roundCountText;
-	int roundCount = 0;
+	[HideInInspector]public int roundCount = 0;
 
 	public void Winner (string name) {
 		if (winText != null) {
